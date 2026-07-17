@@ -29,7 +29,12 @@
     "web": "expo start --web",
     "export:android": "expo export --platform android --output-dir /tmp/akademika-sdk54-export",
     "start:clear": "expo start -c",
-    "start:lan": "expo start -c --lan"
+    "start:lan": "expo start -c --lan",
+    "manual:prepare": "node -e \"console.log('No manual preparation required')\"",
+    "catalog:validate": "node scripts/validateCatalogContent.js",
+    "catalog:generate-assets": "node scripts/generateCatalogAssetRegistry.js",
+    "catalog:prepare": "npm run catalog:validate && npm run catalog:generate-assets",
+    "content:prepare": "npm run manual:prepare && npm run catalog:prepare"
   },
   "private": true,
   "devDependencies": {
