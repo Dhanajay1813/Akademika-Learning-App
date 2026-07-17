@@ -1,0 +1,13 @@
+{
+  "manuals": [
+    {
+      "manualId": "acs",
+      "productId": "acs",
+      "categoryId": "analog_communication",
+      "productName": "ACS: Analog Communication Training System",
+      "categoryName": "Analog Communication",
+      "path": "src/content/manuals/acs/manualContent.json",
+      "experimentCount": 1
+    }
+  ]
+}
