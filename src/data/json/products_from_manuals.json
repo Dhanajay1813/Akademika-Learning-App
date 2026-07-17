@@ -1,0 +1,18 @@
+{
+  "categories": [
+    {
+      "categoryId": "analog_communication",
+      "categoryFolder": "ANALOG COMMUNICATION",
+      "products": [
+        {
+          "productId": "acl_am_ad",
+          "productFolder": "ACL-AM-AD_VER-19.0",
+          "categoryId": "analog_communication",
+          "manualIds": [
+            "acl_am_ad"
+          ]
+        }
+      ]
+    }
+  ]
+}

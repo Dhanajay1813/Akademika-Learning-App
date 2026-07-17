@@ -1,0 +1,30 @@
+{
+  "matchedProducts": [
+    {
+      "productId": "acl-am",
+      "productName": "ACL-AM: Amplitude Modulation Transmitter Kit",
+      "manualId": "acl_am_ad",
+      "manualProductId": "acl_am_ad",
+      "matchType": "obvious_alias"
+    },
+    {
+      "productId": "acl-ad",
+      "productName": "ACL-AD: Amplitude Demodulation Receiver Kit",
+      "manualId": "acl_am_ad",
+      "manualProductId": "acl_am_ad",
+      "matchType": "obvious_alias"
+    }
+  ],
+  "unmatchedProducts": [],
+  "unmatchedManuals": [],
+  "aliasMatchesUsed": [
+    {
+      "productId": "acl-am",
+      "manualId": "acl_am_ad"
+    },
+    {
+      "productId": "acl-ad",
+      "manualId": "acl_am_ad"
+    }
+  ]
+}

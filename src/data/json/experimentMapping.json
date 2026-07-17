@@ -1,0 +1,775 @@
+{
+  "manuals": {
+    "acl_am_ad": {
+      "manualId": "acl_am_ad",
+      "productId": "acl_am_ad",
+      "categoryId": "analog_communication",
+      "experiments": [
+        {
+          "id": "exp1",
+          "title": "9- ANALOG COMMUNICATION",
+          "sections": {
+            "objective": [
+              "page_013.png"
+            ],
+            "theory": [
+              "page_013.png"
+            ],
+            "functionalBlock": [
+              "page_024.png"
+            ],
+            "procedure": [
+              "page_013.png",
+              "page_021.png",
+              "page_025.png",
+              "page_026.png",
+              "page_027.png"
+            ],
+            "equipments": [
+              "page_021.png",
+              "page_025.png",
+              "page_026.png"
+            ],
+            "technicalData": {
+              "datasheet": [
+                "page_011.png",
+                "page_012.png",
+                "page_013.png",
+                "page_014.png",
+                "page_015.png",
+                "page_016.png",
+                "page_017.png",
+                "page_018.png",
+                "page_019.png",
+                "page_020.png",
+                "page_021.png",
+                "page_022.png",
+                "page_023.png",
+                "page_024.png",
+                "page_025.png",
+                "page_026.png",
+                "page_027.png",
+                "page_028.png"
+              ],
+              "blockDiagram": [
+                "page_024.png"
+              ],
+              "circuitDiagram": [
+                "page_011.png",
+                "page_012.png",
+                "page_013.png",
+                "page_014.png",
+                "page_015.png",
+                "page_016.png",
+                "page_017.png",
+                "page_018.png",
+                "page_019.png",
+                "page_020.png",
+                "page_021.png",
+                "page_022.png",
+                "page_023.png",
+                "page_024.png",
+                "page_025.png",
+                "page_026.png",
+                "page_027.png",
+                "page_028.png"
+              ],
+              "referenceSignal": [
+                "page_013.png",
+                "page_018.png",
+                "page_019.png",
+                "page_020.png",
+                "page_021.png",
+                "page_023.png",
+                "page_025.png",
+                "page_026.png",
+                "page_027.png"
+              ]
+            }
+          }
+        },
+        {
+          "id": "exp2",
+          "title": "27 - ANALOG COMMUNICATION",
+          "sections": {
+            "objective": [
+              "page_031.png"
+            ],
+            "theory": [
+              "page_031.png"
+            ],
+            "functionalBlock": [
+              "page_030.png",
+              "page_032.png",
+              "page_033.png",
+              "page_042.png"
+            ],
+            "procedure": [
+              "page_035.png",
+              "page_039.png",
+              "page_041.png",
+              "page_043.png",
+              "page_044.png"
+            ],
+            "equipments": [
+              "page_039.png",
+              "page_043.png"
+            ],
+            "technicalData": {
+              "datasheet": [
+                "page_029.png",
+                "page_030.png",
+                "page_031.png",
+                "page_032.png",
+                "page_033.png",
+                "page_034.png",
+                "page_035.png",
+                "page_036.png",
+                "page_037.png",
+                "page_038.png",
+                "page_039.png",
+                "page_040.png",
+                "page_041.png",
+                "page_042.png",
+                "page_043.png",
+                "page_044.png",
+                "page_045.png",
+                "page_046.png"
+              ],
+              "blockDiagram": [
+                "page_030.png",
+                "page_032.png",
+                "page_033.png",
+                "page_042.png"
+              ],
+              "circuitDiagram": [
+                "page_029.png",
+                "page_030.png",
+                "page_031.png",
+                "page_032.png",
+                "page_033.png",
+                "page_034.png",
+                "page_035.png",
+                "page_036.png",
+                "page_037.png",
+                "page_038.png",
+                "page_039.png",
+                "page_040.png",
+                "page_041.png",
+                "page_042.png",
+                "page_043.png",
+                "page_044.png",
+                "page_045.png",
+                "page_046.png"
+              ],
+              "referenceSignal": [
+                "page_032.png",
+                "page_033.png",
+                "page_036.png",
+                "page_038.png",
+                "page_039.png",
+                "page_041.png",
+                "page_043.png"
+              ]
+            }
+          }
+        },
+        {
+          "id": "exp3",
+          "title": "45 - ANALOG COMMUNICATION",
+          "sections": {
+            "objective": [
+              "page_048.png"
+            ],
+            "theory": [
+              "page_048.png"
+            ],
+            "functionalBlock": [
+              "page_047.png",
+              "page_048.png",
+              "page_049.png",
+              "page_050.png",
+              "page_051.png",
+              "page_052.png",
+              "page_053.png",
+              "page_054.png",
+              "page_055.png",
+              "page_056.png",
+              "page_057.png",
+              "page_058.png",
+              "page_059.png",
+              "page_060.png"
+            ],
+            "procedure": [
+              "page_050.png",
+              "page_051.png",
+              "page_053.png",
+              "page_054.png",
+              "page_056.png",
+              "page_057.png",
+              "page_059.png"
+            ],
+            "equipments": [
+              "page_050.png",
+              "page_053.png",
+              "page_056.png",
+              "page_057.png"
+            ],
+            "technicalData": {
+              "datasheet": [
+                "page_047.png",
+                "page_048.png",
+                "page_049.png",
+                "page_050.png",
+                "page_051.png",
+                "page_052.png",
+                "page_053.png",
+                "page_054.png",
+                "page_055.png",
+                "page_056.png",
+                "page_057.png",
+                "page_058.png",
+                "page_059.png",
+                "page_060.png"
+              ],
+              "blockDiagram": [
+                "page_047.png",
+                "page_048.png",
+                "page_049.png",
+                "page_050.png",
+                "page_051.png",
+                "page_052.png",
+                "page_053.png",
+                "page_054.png",
+                "page_055.png",
+                "page_056.png",
+                "page_057.png",
+                "page_058.png",
+                "page_059.png",
+                "page_060.png"
+              ],
+              "circuitDiagram": [
+                "page_047.png",
+                "page_048.png",
+                "page_049.png",
+                "page_050.png",
+                "page_051.png",
+                "page_052.png",
+                "page_053.png",
+                "page_054.png",
+                "page_055.png",
+                "page_056.png",
+                "page_057.png",
+                "page_058.png",
+                "page_059.png",
+                "page_060.png"
+              ],
+              "referenceSignal": [
+                "page_048.png",
+                "page_050.png",
+                "page_051.png",
+                "page_054.png",
+                "page_056.png",
+                "page_057.png",
+                "page_058.png"
+              ]
+            }
+          }
+        },
+        {
+          "id": "exp4",
+          "title": "59 - ANALOG COMMUNICATION",
+          "sections": {
+            "objective": [
+              "page_063.png"
+            ],
+            "theory": [
+              "page_063.png"
+            ],
+            "functionalBlock": [
+              "page_072.png",
+              "page_076.png"
+            ],
+            "procedure": [
+              "page_063.png",
+              "page_064.png",
+              "page_069.png",
+              "page_073.png",
+              "page_074.png",
+              "page_077.png",
+              "page_078.png"
+            ],
+            "equipments": [
+              "page_073.png",
+              "page_077.png"
+            ],
+            "technicalData": {
+              "datasheet": [
+                "page_061.png",
+                "page_062.png",
+                "page_063.png",
+                "page_064.png",
+                "page_065.png",
+                "page_066.png",
+                "page_067.png",
+                "page_068.png",
+                "page_069.png",
+                "page_070.png",
+                "page_071.png",
+                "page_072.png",
+                "page_073.png",
+                "page_074.png",
+                "page_075.png",
+                "page_076.png",
+                "page_077.png",
+                "page_078.png"
+              ],
+              "blockDiagram": [
+                "page_072.png",
+                "page_076.png"
+              ],
+              "circuitDiagram": [
+                "page_061.png",
+                "page_062.png",
+                "page_063.png",
+                "page_064.png",
+                "page_065.png",
+                "page_066.png",
+                "page_067.png",
+                "page_068.png",
+                "page_069.png",
+                "page_070.png",
+                "page_071.png",
+                "page_072.png",
+                "page_073.png",
+                "page_074.png",
+                "page_075.png",
+                "page_076.png",
+                "page_077.png",
+                "page_078.png"
+              ],
+              "referenceSignal": [
+                "page_065.png",
+                "page_067.png",
+                "page_071.png",
+                "page_074.png"
+              ]
+            }
+          }
+        },
+        {
+          "id": "exp5",
+          "title": "77 - ANALOG COMMUNICATION",
+          "sections": {
+            "objective": [
+              "page_081.png"
+            ],
+            "theory": [
+              "page_081.png"
+            ],
+            "functionalBlock": [
+              "page_080.png",
+              "page_083.png"
+            ],
+            "procedure": [
+              "page_083.png",
+              "page_085.png"
+            ],
+            "equipments": [
+              "page_083.png"
+            ],
+            "technicalData": {
+              "datasheet": [
+                "page_079.png",
+                "page_080.png",
+                "page_081.png",
+                "page_082.png",
+                "page_083.png",
+                "page_084.png",
+                "page_085.png",
+                "page_086.png"
+              ],
+              "blockDiagram": [
+                "page_080.png",
+                "page_083.png"
+              ],
+              "circuitDiagram": [
+                "page_079.png",
+                "page_080.png",
+                "page_081.png",
+                "page_082.png",
+                "page_083.png",
+                "page_084.png",
+                "page_085.png",
+                "page_086.png"
+              ],
+              "referenceSignal": [
+                "page_081.png",
+                "page_084.png",
+                "page_086.png"
+              ]
+            }
+          }
+        },
+        {
+          "id": "exp6",
+          "title": "85 - ANALOG COMMUNICATION",
+          "sections": {
+            "objective": [
+              "page_087.png"
+            ],
+            "theory": [
+              "page_087.png"
+            ],
+            "functionalBlock": [
+              "page_087.png",
+              "page_088.png",
+              "page_089.png",
+              "page_090.png"
+            ],
+            "procedure": [
+              "page_090.png"
+            ],
+            "equipments": [
+              "page_089.png"
+            ],
+            "technicalData": {
+              "datasheet": [
+                "page_087.png",
+                "page_088.png",
+                "page_089.png",
+                "page_090.png"
+              ],
+              "blockDiagram": [
+                "page_087.png",
+                "page_088.png",
+                "page_089.png",
+                "page_090.png"
+              ],
+              "circuitDiagram": [
+                "page_087.png",
+                "page_088.png",
+                "page_089.png",
+                "page_090.png"
+              ],
+              "referenceSignal": [
+                "page_089.png",
+                "page_090.png"
+              ]
+            }
+          }
+        },
+        {
+          "id": "exp7",
+          "title": "89 - ANALOG COMMUNICATION",
+          "sections": {
+            "objective": [
+              "page_091.png"
+            ],
+            "theory": [
+              "page_091.png"
+            ],
+            "functionalBlock": [
+              "page_091.png",
+              "page_092.png",
+              "page_093.png",
+              "page_094.png"
+            ],
+            "procedure": [
+              "page_093.png",
+              "page_094.png"
+            ],
+            "equipments": [
+              "page_093.png"
+            ],
+            "technicalData": {
+              "datasheet": [
+                "page_091.png",
+                "page_092.png",
+                "page_093.png",
+                "page_094.png"
+              ],
+              "blockDiagram": [
+                "page_091.png",
+                "page_092.png",
+                "page_093.png",
+                "page_094.png"
+              ],
+              "circuitDiagram": [
+                "page_091.png",
+                "page_092.png",
+                "page_093.png",
+                "page_094.png"
+              ],
+              "referenceSignal": [
+                "page_093.png",
+                "page_094.png"
+              ]
+            }
+          }
+        },
+        {
+          "id": "exp8",
+          "title": "93 - ANALOG COMMUNICATION",
+          "sections": {
+            "objective": [
+              "page_097.png"
+            ],
+            "theory": [
+              "page_097.png"
+            ],
+            "functionalBlock": [
+              "page_096.png"
+            ],
+            "procedure": [
+              "page_098.png",
+              "page_099.png",
+              "page_100.png"
+            ],
+            "equipments": [
+              "page_098.png",
+              "page_099.png"
+            ],
+            "technicalData": {
+              "datasheet": [
+                "page_095.png",
+                "page_096.png",
+                "page_097.png",
+                "page_098.png",
+                "page_099.png",
+                "page_100.png"
+              ],
+              "blockDiagram": [
+                "page_096.png"
+              ],
+              "circuitDiagram": [
+                "page_095.png",
+                "page_096.png",
+                "page_097.png",
+                "page_098.png",
+                "page_099.png",
+                "page_100.png"
+              ],
+              "referenceSignal": [
+                "page_097.png",
+                "page_098.png",
+                "page_099.png"
+              ]
+            }
+          }
+        },
+        {
+          "id": "exp9",
+          "title": "99 - ANALOG COMMUNICATION",
+          "sections": {
+            "objective": [
+              "page_103.png"
+            ],
+            "theory": [
+              "page_101.png"
+            ],
+            "functionalBlock": [
+              "page_101.png",
+              "page_102.png",
+              "page_103.png",
+              "page_104.png",
+              "page_105.png",
+              "page_106.png",
+              "page_107.png",
+              "page_108.png",
+              "page_109.png",
+              "page_110.png"
+            ],
+            "procedure": [
+              "page_103.png",
+              "page_105.png",
+              "page_106.png",
+              "page_108.png",
+              "page_109.png"
+            ],
+            "equipments": [
+              "page_103.png",
+              "page_105.png",
+              "page_108.png"
+            ],
+            "technicalData": {
+              "datasheet": [
+                "page_101.png",
+                "page_102.png",
+                "page_103.png",
+                "page_104.png",
+                "page_105.png",
+                "page_106.png",
+                "page_107.png",
+                "page_108.png",
+                "page_109.png",
+                "page_110.png"
+              ],
+              "blockDiagram": [
+                "page_101.png",
+                "page_102.png",
+                "page_103.png",
+                "page_104.png",
+                "page_105.png",
+                "page_106.png",
+                "page_107.png",
+                "page_108.png",
+                "page_109.png",
+                "page_110.png"
+              ],
+              "circuitDiagram": [
+                "page_101.png",
+                "page_102.png",
+                "page_103.png",
+                "page_104.png",
+                "page_105.png",
+                "page_106.png",
+                "page_107.png",
+                "page_108.png",
+                "page_109.png",
+                "page_110.png"
+              ],
+              "referenceSignal": [
+                "page_106.png",
+                "page_109.png",
+                "page_110.png"
+              ]
+            }
+          }
+        },
+        {
+          "id": "exp10",
+          "title": "109 - ANALOG COMMUNICATION",
+          "sections": {
+            "objective": [
+              "page_112.png"
+            ],
+            "theory": [
+              "page_112.png"
+            ],
+            "functionalBlock": [
+              "page_113.png"
+            ],
+            "procedure": [
+              "page_113.png"
+            ],
+            "equipments": [
+              "page_112.png"
+            ],
+            "technicalData": {
+              "datasheet": [
+                "page_111.png",
+                "page_112.png",
+                "page_113.png",
+                "page_114.png"
+              ],
+              "blockDiagram": [
+                "page_113.png"
+              ],
+              "circuitDiagram": [
+                "page_111.png",
+                "page_112.png",
+                "page_113.png",
+                "page_114.png"
+              ],
+              "referenceSignal": [
+                "page_112.png",
+                "page_113.png"
+              ]
+            }
+          }
+        },
+        {
+          "id": "exp11",
+          "title": "113 - ANALOG COMMUNICATION",
+          "sections": {
+            "objective": [
+              "page_116.png"
+            ],
+            "theory": [
+              "page_116.png"
+            ],
+            "functionalBlock": [
+              "page_117.png"
+            ],
+            "procedure": [
+              "page_117.png"
+            ],
+            "equipments": [
+              "page_116.png"
+            ],
+            "technicalData": {
+              "datasheet": [
+                "page_115.png",
+                "page_116.png",
+                "page_117.png",
+                "page_118.png",
+                "page_119.png",
+                "page_120.png"
+              ],
+              "blockDiagram": [
+                "page_117.png"
+              ],
+              "circuitDiagram": [
+                "page_115.png",
+                "page_116.png",
+                "page_117.png",
+                "page_118.png",
+                "page_119.png",
+                "page_120.png"
+              ],
+              "referenceSignal": [
+                "page_116.png",
+                "page_118.png",
+                "page_119.png"
+              ]
+            }
+          }
+        },
+        {
+          "id": "exp12",
+          "title": "119 - ANALOG COMMUNICATION",
+          "sections": {
+            "objective": [
+              "page_122.png"
+            ],
+            "theory": [
+              "page_121.png"
+            ],
+            "functionalBlock": [
+              "page_121.png",
+              "page_122.png",
+              "page_123.png"
+            ],
+            "procedure": [
+              "page_122.png"
+            ],
+            "equipments": [
+              "page_122.png"
+            ],
+            "technicalData": {
+              "datasheet": [
+                "page_121.png",
+                "page_122.png",
+                "page_123.png"
+              ],
+              "blockDiagram": [
+                "page_121.png",
+                "page_122.png",
+                "page_123.png"
+              ],
+              "circuitDiagram": [
+                "page_121.png",
+                "page_122.png",
+                "page_123.png"
+              ],
+              "referenceSignal": [
+                "page_123.png"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  }
+}

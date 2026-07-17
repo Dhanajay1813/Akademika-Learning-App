@@ -1,0 +1,11 @@
+[
+  {
+    "manualId": "acl_am_ad",
+    "productId": "acl_am_ad",
+    "categoryId": "analog_communication",
+    "manualTitle": "ACL-AM.AD_VER 19.0",
+    "manualVersion": "19.0",
+    "pageImageFolderPath": "./assets/02_processed_manuals/analog_communication/acl_am_ad/pages",
+    "status": "needs_review"
+  }
+]

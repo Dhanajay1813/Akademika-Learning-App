@@ -1,0 +1,71 @@
+# Learn more https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
+
+# dependencies
+node_modules/
+
+# Expo
+.expo/
+dist/
+web-build/
+expo-env.d.ts
+
+# Native
+.kotlin/
+*.orig.*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+
+# Metro
+.metro-health-check*
+
+# debug
+npm-debug.*
+yarn-debug.*
+yarn-error.*
+
+# macOS
+.DS_Store
+*.pem
+
+# local env files
+.env*.local
+
+# typescript
+*.tsbuildinfo
+
+# generated native folders
+/ios
+/android
+
+# credentials and signing keys
+.env
+.env.*
+!.env.example
+serviceAccountKey.json
+firebase-admin-key.json
+*.p12
+*.keystore
+
+# generated/manual processing outputs
+AkademikaManualData/
+AkademikaManualSnippetData/
+assets/02_processed_manuals/
+backups/
+logs/
+tmp/
+temp/
+export/
+exports/
+ocr/
+OCR/
+Akademika-json-creater/
+akademika-learning@1.0.0
+
+# debug logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+expo
