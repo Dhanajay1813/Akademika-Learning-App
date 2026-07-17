@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { FlatList, Image, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 import { colors } from '../constants/colors';
 import { getManualBlockImageSource, getManualPageSource } from '../data/manualData';
@@ -7,19 +7,26 @@ function isContentBlock(item) {
   return item && typeof item === 'object' && item.type;
 }
 
-function ManualImage({ source, label, width, aspectRatio = 1.414 }) {
+function ManualImage({ source, label, width, maxHeight, fallbackHeightRatio = 1.414 }) {
   const [failed, setFailed] = useState(false);
+  const fittedHeight = useMemo(() => {
+    const resolved = source ? Image.resolveAssetSource(source) : null;
+    const sourceWidth = resolved?.width || 0;
+    const sourceHeight = resolved?.height || 0;
+    const ratio = sourceWidth > 0 && sourceHeight > 0 ? sourceHeight / sourceWidth : fallbackHeightRatio;
+    return Math.min(Math.max(width * ratio, 160), maxHeight);
+  }, [fallbackHeightRatio, maxHeight, source, width]);
 
   return (
     <View style={styles.page}>
       {failed || !source ? (
-        <View style={[styles.image, styles.messageBox, { width, minHeight: width * 0.6 }]}>
+        <View style={[styles.image, styles.messageBox, { width, height: fittedHeight }]}>
           <Text style={styles.message}>Image not found.</Text>
         </View>
       ) : (
         <Image
           source={source}
-          style={[styles.image, { width, minHeight: width * 0.6, aspectRatio }]}
+          style={[styles.image, { width, height: fittedHeight }]}
           resizeMode="contain"
           onError={() => setFailed(true)}
         />
@@ -29,18 +36,19 @@ function ManualImage({ source, label, width, aspectRatio = 1.414 }) {
   );
 }
 
-function ManualPage({ manualId, pageFile, width }) {
-  return <ManualImage source={getManualPageSource(manualId, pageFile)} label={pageFile} width={width} />;
+function ManualPage({ manualId, pageFile, width, maxHeight }) {
+  return <ManualImage source={getManualPageSource(manualId, pageFile)} label={pageFile} width={width} maxHeight={maxHeight} />;
 }
 
-function ManualBlock({ manualId, block, width }) {
+function ManualBlock({ manualId, block, width, maxHeight }) {
   if (block.type === 'image') {
     return (
       <ManualImage
         source={getManualBlockImageSource(manualId, block.imageFile)}
         label={block.caption || block.imageFile}
         width={width}
-        aspectRatio={1.5}
+        maxHeight={maxHeight}
+        fallbackHeightRatio={0.75}
       />
     );
   }
@@ -71,8 +79,9 @@ function ManualBlock({ manualId, block, width }) {
 }
 
 export default function ManualPageList({ manualId, pageFiles }) {
-  const { width: windowWidth } = useWindowDimensions();
-  const imageWidth = Math.max(260, windowWidth - 36);
+  const { height: windowHeight, width: windowWidth } = useWindowDimensions();
+  const imageWidth = Math.max(180, windowWidth - 36);
+  const imageMaxHeight = Math.max(220, windowHeight * 0.72);
 
   if (!pageFiles?.length) {
     return (
@@ -89,8 +98,8 @@ export default function ManualPageList({ manualId, pageFiles }) {
       keyExtractor={(item, index) => isContentBlock(item) ? `${item.id}-${index}` : `${item}-${index}`}
       renderItem={({ item }) => (
         isContentBlock(item)
-          ? <ManualBlock manualId={manualId} block={item} width={imageWidth} />
-          : <ManualPage manualId={manualId} pageFile={item} width={imageWidth} />
+          ? <ManualBlock manualId={manualId} block={item} width={imageWidth} maxHeight={imageMaxHeight} />
+          : <ManualPage manualId={manualId} pageFile={item} width={imageWidth} maxHeight={imageMaxHeight} />
       )}
       initialNumToRender={4}
       maxToRenderPerBatch={6}
