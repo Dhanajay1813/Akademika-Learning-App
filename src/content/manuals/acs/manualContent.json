@@ -1,0 +1,48 @@
+{
+  "manuals": {
+    "acs": {
+      "manualId": "acs",
+      "productId": "acs",
+      "categoryId": "analog_communication",
+      "productName": "ACS: Analog Communication Training System",
+      "categoryName": "Analog Communication",
+      "experiments": [
+        {
+          "id": "test",
+          "experimentNumber": "test",
+          "title": "test",
+          "sections": {
+            "objective": [
+              {
+                "id": "objective_001",
+                "type": "text",
+                "order": 1,
+                "text": "test"
+              },
+              {
+                "id": "objective_002",
+                "type": "image",
+                "order": 2,
+                "imageFile": "images/test/objective/71XA_N8Xj1L._SX522_.jpg",
+                "caption": ""
+              }
+            ],
+            "theory": [],
+            "functionalBlock": [],
+            "procedure": [],
+            "observation": [],
+            "equipments": [],
+            "result": [],
+            "conclusion": [],
+            "technicalData": {
+              "datasheet": [],
+              "blockDiagram": [],
+              "circuitDiagram": [],
+              "referenceSignal": []
+            }
+          }
+        }
+      ]
+    }
+  }
+}
