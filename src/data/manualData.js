@@ -3,13 +3,16 @@ import experimentMapping from './json/experimentMapping.json';
 import manuals from './json/manuals.json';
 import { MANUAL_IMAGE_BASE_URL } from '../config/manualConfig';
 import { bundledManualPages } from './bundledManualPages';
+import { submittedManuals, getSubmittedManualImageSource } from '../content/contentRegistry';
 
 const processedRootMarker = '02_processed_manuals/';
 const manualsById = Object.fromEntries(manuals.map((manual) => [manual.manualId, manual]));
 
 export const getMappedManual = (manualId) => (
-  manualId ? experimentMapping.manuals[manualId] || null : null
+  manualId ? submittedManuals[manualId] || experimentMapping.manuals[manualId] || null : null
 );
+
+export const isSubmittedManual = (manualId) => Boolean(manualId && submittedManuals[manualId]);
 
 export const getMappedExperiment = (manualId, experimentId) => (
   getMappedManual(manualId)?.experiments.find((experiment) => experiment.id === experimentId) || null
@@ -22,6 +25,10 @@ export const getMappedSectionPages = (manualId, experimentId, sectionKey, techni
     ? experiment.sections.technicalData?.[sectionKey] || []
     : experiment.sections[sectionKey] || [];
 };
+
+export const getManualBlockImageSource = (manualId, imageFile) => (
+  getSubmittedManualImageSource(manualId, imageFile)
+);
 
 const getPageFolderRelativePath = (manualId) => {
   const folder = (manualsById[manualId]?.pageImageFolderPath || "").replaceAll("\\", "/");
