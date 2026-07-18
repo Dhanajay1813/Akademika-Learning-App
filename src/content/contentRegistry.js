@@ -8,6 +8,9 @@ export const submittedManuals = {
 };
 
 export const submittedManualAssets = {
+  'bel-ada/images/exp1/observation/01_Screenshot_from_2026-07-18_12-40-43.png': require('./manuals/bel-ada/images/exp1/observation/01_Screenshot_from_2026-07-18_12-40-43.png'),
+  'bel-ada/images/exp1/observation/02_Screenshot_from_2026-07-18_12-40-50.png': require('./manuals/bel-ada/images/exp1/observation/02_Screenshot_from_2026-07-18_12-40-50.png'),
+  'bel-ada/images/exp1/observation/03_Screenshot_from_2026-07-18_12-41-04.png': require('./manuals/bel-ada/images/exp1/observation/03_Screenshot_from_2026-07-18_12-41-04.png'),
   'bel-ada/images/exp1/technicalData/circuitDiagram/Screenshot_from_2026-07-18_11-20-10.png': require('./manuals/bel-ada/images/exp1/technicalData/circuitDiagram/Screenshot_from_2026-07-18_11-20-10.png'),
 };
 
