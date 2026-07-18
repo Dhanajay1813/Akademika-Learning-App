@@ -1,14 +1,14 @@
 import manualIndex from './manualIndex.json';
-import acsManualContent from './manuals/acs/manualContent.json';
+import bel_adaManualContent from './manuals/bel-ada/manualContent.json';
 
 export const submittedManualIndex = manualIndex;
 
 export const submittedManuals = {
-  acs: acsManualContent.manuals.acs,
+  'bel-ada': bel_adaManualContent.manuals['bel-ada'],
 };
 
 export const submittedManualAssets = {
-  'acs/images/test/objective/71XA_N8Xj1L._SX522_.jpg': require('./manuals/acs/images/test/objective/71XA_N8Xj1L._SX522_.jpg'),
+  'bel-ada/images/exp1/technicalData/datasheet/Screenshot_from_2026-07-18_11-20-10.png': require('./manuals/bel-ada/images/exp1/technicalData/datasheet/Screenshot_from_2026-07-18_11-20-10.png'),
 };
 
 export const getSubmittedManualImageSource = (manualId, imageFile) => (
