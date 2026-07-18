@@ -3,6 +3,7 @@ import { FlatList, Image, StyleSheet, Text, useWindowDimensions, View } from 're
 import { colors } from '../constants/colors';
 import { getManualBlockImageSource, getManualPageSource } from '../data/manualData';
 import ContentBlockRenderer, { useResponsiveManualTypography } from './ContentBlockRenderer';
+import ZoomableImage from './ZoomableImage';
 
 function isContentBlock(item) {
   return item && typeof item === 'object' && item.type;
@@ -25,10 +26,12 @@ function ManualImage({ source, label, width, maxHeight, fallbackHeightRatio = 1.
           <Text style={styles.message}>Image not found.</Text>
         </View>
       ) : (
-        <Image
+        <ZoomableImage
           source={source}
-          style={[styles.image, { width, height: fittedHeight }]}
-          resizeMode="contain"
+          label={label}
+          width={width}
+          height={fittedHeight}
+          imageStyle={styles.image}
           onError={() => setFailed(true)}
         />
       )}

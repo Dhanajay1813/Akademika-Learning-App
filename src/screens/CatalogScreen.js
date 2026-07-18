@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { Image, ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 import ScreenContainer from '../components/ScreenContainer';
+import ZoomableImage from '../components/ZoomableImage';
 import { ManualTextRenderer } from '../components/ContentBlockRenderer';
 import { colors } from '../constants/colors';
 import { getProductById } from '../data/products';
@@ -25,7 +26,15 @@ function CatalogImage({ productId, imageFile, label, width, maxHeight }) {
           <Text style={styles.placeholderText}>Catalog image missing.</Text>
         </View>
       ) : (
-        <Image source={source} style={[styles.image, { width, height }]} resizeMode="contain" onError={() => setFailed(true)} />
+        <ZoomableImage
+          source={source}
+          label={label}
+          width={width}
+          height={height}
+          imageStyle={styles.image}
+          placeholderText="Catalog image missing."
+          onError={() => setFailed(true)}
+        />
       )}
       {label ? <Text style={styles.pageLabel}>{label}</Text> : null}
     </View>
