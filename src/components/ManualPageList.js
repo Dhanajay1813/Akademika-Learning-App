@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { FlatList, Image, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 import { colors } from '../constants/colors';
 import { getManualBlockImageSource, getManualPageSource } from '../data/manualData';
+import ContentBlockRenderer from './ContentBlockRenderer';
 
 function isContentBlock(item) {
   return item && typeof item === 'object' && item.type;
@@ -73,7 +74,7 @@ function ManualBlock({ manualId, block, width, maxHeight }) {
 
   return (
     <View style={styles.block}>
-      <Text style={styles.blockText}>{block.text || 'No text added.'}</Text>
+      <ContentBlockRenderer block={block} />
     </View>
   );
 }

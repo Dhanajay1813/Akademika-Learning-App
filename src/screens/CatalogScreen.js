@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { Image, ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 import ScreenContainer from '../components/ScreenContainer';
+import { ManualTextRenderer } from '../components/ContentBlockRenderer';
 import { colors } from '../constants/colors';
 import { getProductById } from '../data/products';
 import { getCatalogContent } from '../services/catalogContentService';
@@ -56,7 +57,11 @@ export default function CatalogScreen({ route }) {
         <Text style={styles.title}>{catalog.title}</Text>
         {catalog.version ? <Text style={styles.meta}>Version: {catalog.version}</Text> : null}
         {catalog.revisionDate ? <Text style={styles.meta}>Revision: {catalog.revisionDate}</Text> : null}
-        {catalog.description ? <Text style={styles.description}>{catalog.description}</Text> : null}
+        {catalog.description ? (
+          <View style={styles.description}>
+            <ManualTextRenderer text={catalog.description} />
+          </View>
+        ) : null}
         <Text style={styles.meta}>Pages: {catalog.pageCount}</Text>
         {catalog.coverImage ? (
           <CatalogImage productId={productId} imageFile={catalog.coverImage} label="Cover" width={imageWidth} maxHeight={imageMaxHeight} />
@@ -81,7 +86,7 @@ const styles = StyleSheet.create({
   product: { color: colors.muted, fontSize: 14, fontWeight: '700', marginBottom: 4 },
   title: { color: colors.text, fontSize: 22, fontWeight: '900', marginBottom: 8 },
   meta: { color: colors.muted, fontSize: 14, marginBottom: 4 },
-  description: { color: colors.text, fontSize: 15, lineHeight: 22, marginVertical: 10 },
+  description: { marginVertical: 10 },
   pageWrap: { alignItems: 'center', marginTop: 14 },
   image: { backgroundColor: colors.surface, borderRadius: 6 },
   pageLabel: { color: colors.muted, fontSize: 12, marginTop: 6, textAlign: 'center' },
