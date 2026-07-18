@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "catalogId": "bel-ada",
+  "productId": "bel-ada",
+  "categoryId": "basic-electronics",
+  "productName": "BEL-ADA: Analog to Digital and Digital to Analog Converter Trainer",
+  "categoryName": "Basic Electronics",
+  "title": "BEL-ADA: Analog to Digital and Digital to Analog Converter Trainer Catalog",
+  "version": "",
+  "revisionDate": "",
+  "description": "",
+  "coverImage": "",
+  "pageCount": 1,
+  "pages": [
+    {
+      "pageNumber": 1,
+      "imageFile": "pages/page_001.webp"
+    }
+  ]
+}
