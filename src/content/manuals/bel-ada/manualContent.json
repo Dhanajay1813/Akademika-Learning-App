@@ -25,7 +25,7 @@
                 "id": "theory_001",
                 "type": "text",
                 "order": 1,
-                "text": "**THEORY:-**\n\nDigital to Analog Conversion involve conversion of Digital signal to Analog signal. It is an integral part of any A/D converter. This can be easily accomplished by designing a resistive network that will change each digital level into an equivalent binary weighted voltage. There are two methods by which we can do this process.\n\nFirst method is using binary weighted resistor method.\n\nIn this method the binary coded decimal code is used for the representation of the decimal number. The LSB which is at right most location is expressed as (1 or 0)*2^0, the next bit is 1 or 0*2¹ and so on, where 0 indicates 0V and 1 indicates 5V). Thus the weight of each column from right to left in n bit converter are 1, 2, 4, 8………2ⁿ⁻¹.\n\nFollowing criteria can be applied to this divider.\n\n* There must be one input resistor for each digital bit.\n* Beginning with the LSB, each following resistor value is one half of the size of the previous resistor.\n* The full scale output voltage is equal to the positive voltage of the digital I/P signal.\n* The LSB has a weight of 1/(2ⁿ-1), where n is the number of input bits.\n* The change in output voltage due change in LSB is equal to the V/(2ⁿ-1), where V is the digital input voltage level.\n* The output voltage can be found for any digital input signal by using the following modified form of Mill man’s theorem.\n\n**VOUT = (V0 2⁰ + V1 2¹ + V2 2² + ………….. + VN-1 2ᴺ⁻¹)/(2ᴺ-1)**\n\n**- 14 -**\n\n**BASIC ELECTRONIC\nBEL-ADA: A/D AND D/A CONVERTER TRAINER\nV-19.0**\n\nWhere V0, V1, V2…..VN-1 are the digital input voltage level (0V or 5V) and n is the number of input bits.\n\n**RESOLUTION:-**\n\nResolution indicates the smallest increment of the output corresponding to a 1 LSB input code change. For example for 8 bit DAC, 2⁸ = 256 codes, so the resolution is 1/256 of the output range.\n"
+                "text": "THEORY:-\n\nDigital to Analog Conversion involve conversion of Digital signal to Analog signal. It is an integral part of any A/D converter. This can be easily accomplished by designing a resistive network that will change each digital level into an equivalent binary weighted voltage. There are two methods by which we can do this process.\n\nFirst method is using binary weighted resistor method.\n\nIn this method the binary coded decimal code is used for the representation of the decimal number. The LSB which is at right most location is expressed as (1 or 0) × 2^0, the next bit is (1 or 0) × 2^1 and so on, where 0 indicates 0V and 1 indicates 5V. Thus the weight of each column from right to left in n bit converter are 1, 2, 4, 8………2^(n-1).\n\nFollowing criteria can be applied to this divider.\n\nThere must be one input resistor for each digital bit.\nBeginning with the LSB, each following resistor value is one half of the size of the previous resistor.\nThe full scale output voltage is equal to the positive voltage of the digital I/P signal.\nThe LSB has a weight of 1/(2^n - 1), where n is the number of input bits.\nThe change in output voltage due change in LSB is equal to V/(2^n - 1), where V is the digital input voltage level.\nThe output voltage can be found for any digital input signal by using the following modified form of Mill man’s theorem.\n\nVOUT = (V0 × 2^0 + V1 × 2^1 + V2 × 2^2 + ………….. + VN-1 × 2^(N-1)) / (2^N - 1)\n\nWhere V0, V1, V2…..VN-1 are the digital input voltage level (0V or 5V) and n is the number of input bits.\n\nRESOLUTION:-\n\nResolution indicates the smallest increment of the output corresponding to a 1 LSB input code change. For example for 8 bit DAC, 2^8 = 256 codes, so the resolution is 1/256 of the output range."
               }
             ],
             "functionalBlock": [],
@@ -39,16 +39,22 @@
             ],
             "observation": [
               {
-                "id": "table_001",
-                "type": "table",
+                "id": "observation_001",
+                "type": "image",
                 "order": 1,
-                "tableData": ""
+                "imageFile": "images/exp1/observation/01_Screenshot_from_2026-07-18_12-40-43.png",
+                "imageFiles": [
+                  "images/exp1/observation/01_Screenshot_from_2026-07-18_12-40-43.png",
+                  "images/exp1/observation/02_Screenshot_from_2026-07-18_12-40-50.png",
+                  "images/exp1/observation/03_Screenshot_from_2026-07-18_12-41-04.png"
+                ],
+                "caption": ""
               },
               {
                 "id": "observation_002",
                 "type": "text",
                 "order": 2,
-                "text": "CALCULATIONS:-\n\nVOUT = (V0 × 2^0 + V1 × 2^1 + V2 × 2^2 + ............ + VN-1 × 2^(N-1)) / (2^8 - 1)\n\nTake any combination, e.g. 00011000\n\nVOUT = 0 × 2^0 + 0 × 2^1 + 0 × 2^2 + 1 × 2^3 + 1 × 2^4 + 0 × 2^5 + 0 × 2^6 + 0 × 2^7\n\nVOUT = (24 × 5) / (2^8 - 1) = 0.470 V\n\nTake another one, i.e. 00111111\n\nVOUT = 1 × 2^0 + 1 × 2^1 + 1 × 2^2 + 1 × 2^3 + 1 × 2^4 + 1 × 2^5 + 0 × 2^6 + 0 × 2^7\n\nVOUT = (63 × 5) / (2^8 - 1) = 1.235 V\n\nRESOLUTION:-\n\nResolution of 8 bit converter can be calculated by using formula:\n\nResolution = (1 / 2^N) × Vref\n\nCalculated Value of Resolution = (1 / 2^8) × 5 = 0.019 V\n\nFor observed value, subtract any two consecutive observed readings:\n\nObserved Resolution = 0.042 - 0.021 = 0.021 V\n\nThis will give the observed value of Resolution."
+                "text": "CALCULATIONS:-\n\nVOUT = (V0 × 2^0 + V1 × 2^1 + V2 × 2^2 + ............ + VN-1 × 2^(N-1)) / (2^8 - 1)\n\nTake any combination, e.g. 00011000\n\nVOUT = 0 × 2^0 + 0 × 2^1 + 0 × 2^2 + 1 × 2^3 + 1 × 2^4 + 0 × 2^5 + 0 × 2^6 + 0 × 2^7\n\nVOUT = (24 × 5) / (2^8 - 1) = 0.470 V\n\nTake another one, i.e. 00111111\n\nVOUT = 1 × 2^0 + 1 × 2^1 + 1 × 2^2 + 1 × 2^3 + 1 × 2^4 + 1 × 2^5 + 0 × 2^6 + 0 × 2^7\n\nVOUT = (63 × 5) / (2^8 - 1) = 1.235 V\n\n"
               }
             ],
             "equipments": [
@@ -56,16 +62,23 @@
                 "id": "equipments_001",
                 "type": "text",
                 "order": 1,
-                "text": "BEL-ADA Board\nPower supply\nDMM"
+                "text": "1) BEL-ADA Board\n2) Power supply\n3) DMM"
               }
             ],
-            "result": [],
+            "result": [
+              {
+                "id": "result_001",
+                "type": "text",
+                "order": 1,
+                "text": "RESOLUTION:-\n\nResolution of 8 bit converter can be calculated by using formula:\n\nResolution = (1 / 2^N) × Vref\n\nCalculated Value of Resolution = (1 / 2^8) × 5 = 0.019 V\n\nFor observed value, subtract any two consecutive observed readings:\n\nObserved Resolution = 0.042 - 0.021 = 0.021 V\n\nThis will give the observed value of Resolution."
+              }
+            ],
             "conclusion": [
               {
                 "id": "conclusion_001",
                 "type": "text",
                 "order": 1,
-                "text": "CONCLUSION:-\nThe analog output voltage can be found for any digital input signal by using the binary weighted resister network and its resolution for 8 bits is 0.019V(LSB)"
+                "text": "The analog output voltage can be found for any digital input signal by using the binary weighted resister network and its resolution for 8 bits is 0.019V(LSB)"
               }
             ],
             "technicalData": {
@@ -77,6 +90,9 @@
                   "type": "image",
                   "order": 1,
                   "imageFile": "images/exp1/technicalData/circuitDiagram/Screenshot_from_2026-07-18_11-20-10.png",
+                  "imageFiles": [
+                    "images/exp1/technicalData/circuitDiagram/Screenshot_from_2026-07-18_11-20-10.png"
+                  ],
                   "caption": ""
                 }
               ],
