@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import { FlatList, Image, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 import { colors } from '../constants/colors';
 import { getManualBlockImageSource, getManualPageSource } from '../data/manualData';
-import ContentBlockRenderer from './ContentBlockRenderer';
+import ContentBlockRenderer, { useResponsiveManualTypography } from './ContentBlockRenderer';
 
 function isContentBlock(item) {
   return item && typeof item === 'object' && item.type;
@@ -42,6 +42,8 @@ function ManualPage({ manualId, pageFile, width, maxHeight }) {
 }
 
 function ManualBlock({ manualId, block, width, maxHeight }) {
+  const typography = useResponsiveManualTypography();
+  const contentBlockStyle = [styles.block, styles.contentBlock, { padding: typography.cardPadding }];
   if (block.type === 'image') {
     return (
       <ManualImage
@@ -65,15 +67,15 @@ function ManualBlock({ manualId, block, width, maxHeight }) {
 
   if (block.type === 'note') {
     return (
-      <View style={[styles.block, styles.noteBlock]}>
+      <View style={[contentBlockStyle, styles.noteBlock]}>
         <Text style={styles.blockTitle}>Note</Text>
-        <Text style={styles.blockText}>{block.text || 'No note added.'}</Text>
+        <ContentBlockRenderer block={{ ...block, text: block.text || 'No note added.' }} />
       </View>
     );
   }
 
   return (
-    <View style={styles.block}>
+    <View style={contentBlockStyle}>
       <ContentBlockRenderer block={block} />
     </View>
   );
@@ -124,6 +126,7 @@ const styles = StyleSheet.create({
     padding: 16,
     marginBottom: 12,
   },
+  contentBlock: { width: '100%', alignSelf: 'stretch' },
   noteBlock: { borderColor: colors.primary },
   blockTitle: { color: colors.text, fontSize: 15, fontWeight: '800', marginBottom: 8 },
   blockText: { color: colors.text, fontSize: 16, lineHeight: 24 },
