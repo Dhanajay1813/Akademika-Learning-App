@@ -8,7 +8,7 @@ export const submittedManuals = {
 };
 
 export const submittedManualAssets = {
-  'bel-ada/images/exp1/technicalData/circuitDiagram/Screenshot_from_2026-07-18_11-20-10.png': require('./manuals/bel-ada/images/exp1/technicalData/circuitDiagram/Screenshot_from_2026-07-18_11-20-10.png'),
+  'bel-ada/images/exp1/technicalData/datasheet/Screenshot_from_2026-07-18_11-20-10.png': require('./manuals/bel-ada/images/exp1/technicalData/datasheet/Screenshot_from_2026-07-18_11-20-10.png'),
 };
 
 export const getSubmittedManualImageSource = (manualId, imageFile) => (
