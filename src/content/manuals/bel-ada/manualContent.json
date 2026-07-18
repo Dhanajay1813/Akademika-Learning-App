@@ -1,0 +1,90 @@
+{
+  "manuals": {
+    "bel-ada": {
+      "manualId": "bel-ada",
+      "productId": "bel-ada",
+      "categoryId": "basic-electronics",
+      "productName": "BEL-ADA: Analog to Digital and Digital to Analog Converter Trainer",
+      "categoryName": "Basic Electronics",
+      "experiments": [
+        {
+          "id": "exp1",
+          "experimentNumber": "Experiment 1",
+          "title": "Study of D/A Conversion Using Binary Weighted Resistor And Measurement Of Its Resolution",
+          "sections": {
+            "objective": [
+              {
+                "id": "objective_001",
+                "type": "text",
+                "order": 1,
+                "text": "To study 8 bit Digital to Analog Conversion using Binary Weighted Resistors Method and measures its resolution."
+              }
+            ],
+            "theory": [
+              {
+                "id": "theory_001",
+                "type": "text",
+                "order": 1,
+                "text": "**THEORY:-**\n\nDigital to Analog Conversion involve conversion of Digital signal to Analog signal. It is an integral part of any A/D converter. This can be easily accomplished by designing a resistive network that will change each digital level into an equivalent binary weighted voltage. There are two methods by which we can do this process.\n\nFirst method is using binary weighted resistor method.\n\nIn this method the binary coded decimal code is used for the representation of the decimal number. The LSB which is at right most location is expressed as (1 or 0)*2^0, the next bit is 1 or 0*2¹ and so on, where 0 indicates 0V and 1 indicates 5V). Thus the weight of each column from right to left in n bit converter are 1, 2, 4, 8………2ⁿ⁻¹.\n\nFollowing criteria can be applied to this divider.\n\n* There must be one input resistor for each digital bit.\n* Beginning with the LSB, each following resistor value is one half of the size of the previous resistor.\n* The full scale output voltage is equal to the positive voltage of the digital I/P signal.\n* The LSB has a weight of 1/(2ⁿ-1), where n is the number of input bits.\n* The change in output voltage due change in LSB is equal to the V/(2ⁿ-1), where V is the digital input voltage level.\n* The output voltage can be found for any digital input signal by using the following modified form of Mill man’s theorem.\n\n**VOUT = (V0 2⁰ + V1 2¹ + V2 2² + ………….. + VN-1 2ᴺ⁻¹)/(2ᴺ-1)**\n\n**- 14 -**\n\n**BASIC ELECTRONIC\nBEL-ADA: A/D AND D/A CONVERTER TRAINER\nV-19.0**\n\nWhere V0, V1, V2…..VN-1 are the digital input voltage level (0V or 5V) and n is the number of input bits.\n\n**RESOLUTION:-**\n\nResolution indicates the smallest increment of the output corresponding to a 1 LSB input code change. For example for 8 bit DAC, 2⁸ = 256 codes, so the resolution is 1/256 of the output range.\n"
+              }
+            ],
+            "functionalBlock": [],
+            "procedure": [
+              {
+                "id": "procedure_001",
+                "type": "text",
+                "order": 1,
+                "text": "1. Connect the trainer kit with its power supply.\n2. Give the desired logic input to the 8 BIT BINARY WEIGHTED DAC from on board slider switches as shown below in FIGURE-1.1.\n3. Measure the equivalent output voltage at VOUT of 8 BIT BINARY WEIGHTED DAC for different digital input voltage level with the help of DMM.\n4. Observed the calculated and observed readings for different input levels.\n"
+              }
+            ],
+            "observation": [
+              {
+                "id": "table_001",
+                "type": "table",
+                "order": 1,
+                "tableData": "| 2⁷ | 2⁶ | 2⁵ | 2⁴ | 2³ | 2² | 2¹ | 2⁰ | Calculated O/P Voltage (in V) | Observed O/P Voltage (in V) |\n| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |\n| 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |\n| 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0.019 | 0.021 |\n| 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 0.039 | 0.042 |\n| 0 | 0 | 0 | 0 | 0 | 0 | 1 | 1 | 0.058 | 0.064 |\n| 0 | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0.078 | 0.083 |\n| 0 | 0 | 0 | 0 | 0 | 1 | 0 | 1 | 0.098 | 0.104 |\n| 0 | 0 | 0 | 0 | 0 | 1 | 1 | 0 | 0.117 | 0.126 |\n| 0 | 0 | 0 | 0 | 0 | 1 | 1 | 1 | 0.137 | 0.147 |\n| 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0.156 | 0.166 |\n| 0 | 0 | 0 | 0 | 1 | 0 | 0 | 1 | 0.176 | 0.187 |\n| 0 | 0 | 0 | 0 | 1 | 0 | 1 | 0 | 0.196 | 0.209 |\n| 0 | 0 | 0 | 0 | 1 | 0 | 1 | 1 | 0.215 | 0.23 |\n| 0 | 0 | 0 | 0 | 1 | 1 | 0 | 0 | 0.235 | 0.249 |\n| 0 | 0 | 0 | 0 | 1 | 1 | 0 | 1 | 0.254 | 0.271 |\n| 0 | 0 | 0 | 0 | 1 | 1 | 1 | 0 | 0.274 | 0.292 |\n| 0 | 0 | 0 | 0 | 1 | 1 | 1 | 1 | 0.294 | 0.313 |\n| 0 | 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0.313 | 0.328 |\n| 0 | 0 | 0 | 1 | 0 | 0 | 0 | 1 | 0.333 | 0.347 |\n| 0 | 0 | 0 | 1 | 0 | 0 | 1 | 0 | 0.352 | 0.369 |\n| 0 | 0 | 0 | 1 | 0 | 0 | 1 | 1 | 0.372 | 0.39 |\n| 0 | 0 | 0 | 1 | 0 | 1 | 0 | 0 | 0.392 | 0.409 |\n| 0 | 0 | 0 | 1 | 0 | 1 | 0 | 1 | 0.411 | 0.43 |\n| 0 | 0 | 0 | 1 | 0 | 1 | 1 | 0 | 0.431 | 0.451 |\n| 0 | 0 | 0 | 1 | 0 | 1 | 1 | 1 | 0.45 | 0.472 |\n| 0 | 0 | 0 | 1 | 1 | 0 | 0 | 0 | 0.47 | 0.492 |\n| 0 | 0 | 0 | 1 | 1 | 0 | 0 | 1 | 0.49 | 0.512 |\n| 0 | 0 | 0 | 1 | 1 | 0 | 1 | 0 | 0.509 | 0.534 |\n| 0 | 0 | 0 | 1 | 1 | 0 | 1 | 1 | 0.529 | 0.555 |\n| 0 | 0 | 0 | 1 | 1 | 1 | 0 | 0 | 0.549 | 0.574 |\n| 0 | 0 | 0 | 1 | 1 | 1 | 0 | 1 | 0.568 | 0.596 |\n| 0 | 0 | 0 | 1 | 1 | 1 | 1 | 0 | 0.588 | 0.618 |\n| 0 | 0 | 0 | 1 | 1 | 1 | 1 | 1 | 0.607 | 0.639 |\n| 0 | 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0.627 | 0.659 |\n| 0 | 0 | 1 | 0 | 0 | 0 | 0 | 1 | 0.647 | 0.68 |\n| 0 | 0 | 1 | 0 | 0 | 0 | 1 | 0 | 0.666 | 0.701 |\n| 0 | 0 | 1 | 0 | 0 | 0 | 1 | 1 | 0.686 | 0.722 |\n| 0 | 0 | 1 | 0 | 0 | 1 | 0 | 0 | 0.705 | 0.742 |\n| 0 | 0 | 1 | 0 | 0 | 1 | 0 | 1 | 0.725 | 0.763 |\n| 0 | 0 | 1 | 0 | 0 | 1 | 1 | 0 | 0.745 | 0.784 |\n| 0 | 0 | 1 | 0 | 0 | 1 | 1 | 1 | 0.764 | 0.806 |\n| 0 | 0 | 1 | 0 | 1 | 0 | 0 | 0 | 0.784 | 0.823 |\n| 0 | 0 | 1 | 0 | 1 | 0 | 0 | 1 | 0.803 | 0.841 |\n| 0 | 0 | 1 | 0 | 1 | 0 | 1 | 0 | 0.823 | 0.862 |\n| 0 | 0 | 1 | 0 | 1 | 0 | 1 | 1 | 0.843 | 0.883 |\n| 0 | 0 | 1 | 0 | 1 | 1 | 0 | 0 | 0.862 | 0.902 |\n| 0 | 0 | 1 | 0 | 1 | 1 | 0 | 1 | 0.882 | 0.923 |\n| 0 | 0 | 1 | 0 | 1 | 1 | 1 | 0 | 0.901 | 0.945 |\n| 0 | 0 | 1 | 0 | 1 | 1 | 1 | 1 | 0.921 | 0.966 |\n| 0 | 0 | 1 | 1 | 0 | 0 | 0 | 0 | 0.941 | 0.982 |\n| 0 | 0 | 1 | 1 | 0 | 0 | 0 | 1 | 0.96 | 1.004 |\n| 0 | 0 | 1 | 1 | 0 | 0 | 1 | 0 | 0.98 | 1.026 |\n| 0 | 0 | 1 | 1 | 0 | 0 | 1 | 1 | 1 | 1.047 |\n| 0 | 0 | 1 | 1 | 0 | 1 | 0 | 0 | 1.019 | 1.062 |\n| 0 | 0 | 1 | 1 | 0 | 1 | 0 | 1 | 1.039 | 1.087 |\n| 0 | 0 | 1 | 1 | 0 | 1 | 1 | 0 | 1.058 | 1.11 |\n| 0 | 0 | 1 | 1 | 0 | 1 | 1 | 1 | 1.078 | 1.129 |\n| 0 | 0 | 1 | 1 | 1 | 0 | 0 | 0 | 1.098 | 1.148 |\n| 0 | 0 | 1 | 1 | 1 | 0 | 0 | 1 | 1.117 | 1.17 |\n| 0 | 0 | 1 | 1 | 1 | 0 | 1 | 0 | 1.137 | 1.19 |\n| 0 | 0 | 1 | 1 | 1 | 0 | 1 | 1 | 1.156 | 1.212 |\n| 0 | 0 | 1 | 1 | 1 | 1 | 0 | 0 | 1.176 | 1.229 |\n| 0 | 0 | 1 | 1 | 1 | 1 | 0 | 1 | 1.196 | 1.253 |\n| 0 | 0 | 1 | 1 | 1 | 1 | 1 | 0 | 1.215 | 1.273 |\n| 0 | 0 | 1 | 1 | 1 | 1 | 1 | 1 | 1.235 | 1.298 |\n| 0 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1.254 | 1.386 |\n| 0 | 1 | 0 | 0 | 0 | 0 | 0 | 1 | 1.274 | 1.408 |\n| 1 | 1 | 1 | 1 | 1 | 1 | 1 | 1 | 5 | 5.09 |"
+              },
+              {
+                "id": "observation_002",
+                "type": "text",
+                "order": 2,
+                "text": "CALCULATIONS:-\n\nVOUT = (V0 × 2^0 + V1 × 2^1 + V2 × 2^2 + ............ + VN-1 × 2^(N-1)) / (2^8 - 1)\n\nTake any combination, e.g. 00011000\n\nVOUT = 0 × 2^0 + 0 × 2^1 + 0 × 2^2 + 1 × 2^3 + 1 × 2^4 + 0 × 2^5 + 0 × 2^6 + 0 × 2^7\n\nVOUT = (24 × 5) / (2^8 - 1) = 0.470 V\n\nTake another one, i.e. 00111111\n\nVOUT = 1 × 2^0 + 1 × 2^1 + 1 × 2^2 + 1 × 2^3 + 1 × 2^4 + 1 × 2^5 + 0 × 2^6 + 0 × 2^7\n\nVOUT = (63 × 5) / (2^8 - 1) = 1.235 V\n\nRESOLUTION:-\n\nResolution of 8 bit converter can be calculated by using formula:\n\nResolution = (1 / 2^N) × Vref\n\nCalculated Value of Resolution = (1 / 2^8) × 5 = 0.019 V\n\nFor observed value, subtract any two consecutive observed readings:\n\nObserved Resolution = 0.042 - 0.021 = 0.021 V\n\nThis will give the observed value of Resolution."
+              }
+            ],
+            "equipments": [
+              {
+                "id": "equipments_001",
+                "type": "text",
+                "order": 1,
+                "text": "BEL-ADA Board\nPower supply\nDMM"
+              }
+            ],
+            "result": [],
+            "conclusion": [
+              {
+                "id": "conclusion_001",
+                "type": "text",
+                "order": 1,
+                "text": "CONCLUSION:-\nThe analog output voltage can be found for any digital input signal by using the binary weighted resister network and its resolution for 8 bits is 0.019V(LSB)"
+              }
+            ],
+            "technicalData": {
+              "datasheet": [
+                {
+                  "id": "datasheet_001",
+                  "type": "image",
+                  "order": 1,
+                  "imageFile": "images/exp1/technicalData/datasheet/Screenshot_from_2026-07-18_11-20-10.png",
+                  "caption": ""
+                }
+              ],
+              "blockDiagram": [],
+              "circuitDiagram": [],
+              "referenceSignal": []
+            }
+          }
+        }
+      ]
+    }
+  }
+}
