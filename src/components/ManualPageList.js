@@ -41,18 +41,53 @@ function ManualPage({ manualId, pageFile, width, maxHeight }) {
   return <ManualImage source={getManualPageSource(manualId, pageFile)} label={pageFile} width={width} maxHeight={maxHeight} />;
 }
 
+function getBlockImageItems(block) {
+  const imageFiles = Array.isArray(block.imageFiles) ? block.imageFiles : [];
+  const normalizedItems = imageFiles
+    .map((item) => {
+      if (typeof item === 'string') {
+        return { imageFile: item, caption: block.caption || '' };
+      }
+      if (item && typeof item === 'object' && item.imageFile) {
+        return { imageFile: item.imageFile, caption: item.caption || block.caption || '' };
+      }
+      return null;
+    })
+    .filter(Boolean);
+
+  if (normalizedItems.length) {
+    return normalizedItems;
+  }
+
+  return block.imageFile ? [{ imageFile: block.imageFile, caption: block.caption || '' }] : [];
+}
+
 function ManualBlock({ manualId, block, width, maxHeight }) {
   const typography = useResponsiveManualTypography();
   const contentBlockStyle = [styles.block, styles.contentBlock, { padding: typography.cardPadding }];
   if (block.type === 'image') {
+    const imageItems = getBlockImageItems(block);
     return (
-      <ManualImage
-        source={getManualBlockImageSource(manualId, block.imageFile)}
-        label={block.caption || block.imageFile}
-        width={width}
-        maxHeight={maxHeight}
-        fallbackHeightRatio={0.75}
-      />
+      <View style={styles.imageGroup}>
+        {imageItems.length ? imageItems.map((item, index) => (
+          <ManualImage
+            key={`${item.imageFile}-${index}`}
+            source={getManualBlockImageSource(manualId, item.imageFile)}
+            label={item.caption || item.imageFile}
+            width={width}
+            maxHeight={maxHeight}
+            fallbackHeightRatio={0.75}
+          />
+        )) : (
+          <ManualImage
+            source={null}
+            label={block.caption || ''}
+            width={width}
+            maxHeight={maxHeight}
+            fallbackHeightRatio={0.75}
+          />
+        )}
+      </View>
     );
   }
 
@@ -117,6 +152,7 @@ const styles = StyleSheet.create({
   flatList: { flex: 1 },
   list: { paddingBottom: 12 },
   page: { alignItems: 'center', marginBottom: 18 },
+  imageGroup: { width: '100%', alignItems: 'center' },
   image: { backgroundColor: colors.surface, borderRadius: 6 },
   block: {
     borderWidth: 1,
