@@ -69,17 +69,17 @@
               }
             ],
             "technicalData": {
-              "datasheet": [],
-              "blockDiagram": [],
-              "circuitDiagram": [
+              "datasheet": [
                 {
-                  "id": "circuitDiagram_001",
+                  "id": "datasheet_001",
                   "type": "image",
                   "order": 1,
-                  "imageFile": "images/exp1/technicalData/circuitDiagram/Screenshot_from_2026-07-18_11-20-10.png",
+                  "imageFile": "images/exp1/technicalData/datasheet/Screenshot_from_2026-07-18_11-20-10.png",
                   "caption": ""
                 }
               ],
+              "blockDiagram": [],
+              "circuitDiagram": [],
               "referenceSignal": []
             }
           }
