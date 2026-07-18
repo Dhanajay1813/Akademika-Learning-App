@@ -8,6 +8,15 @@
       "categoryName": "Analog Communication",
       "path": "src/content/manuals/acs/manualContent.json",
       "experimentCount": 1
+    },
+    {
+      "manualId": "bel-ada",
+      "productId": "bel-ada",
+      "categoryId": "basic-electronics",
+      "productName": "BEL-ADA: Analog to Digital and Digital to Analog Converter Trainer",
+      "categoryName": "Basic Electronics",
+      "path": "src/content/manuals/bel-ada/manualContent.json",
+      "experimentCount": 1
     }
   ]
 }
