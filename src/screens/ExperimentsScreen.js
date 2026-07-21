@@ -30,7 +30,7 @@ export default function ExperimentsScreen({ route, navigation }) {
 
   const open = async (experimentId) => {
     if (guest) return;
-    await saveDraftPatch({ productId, experimentId, patch: { manualId } });
+    await saveDraftPatch({ productId, experimentId, manualId, patch: { manualId } });
     navigation.navigate('ExperimentMenu', { productId, experimentId, manualId });
   };
 

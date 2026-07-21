@@ -12,7 +12,7 @@ import { generateWorkbookPdf, sharePdf } from '../utils/pdfGenerator';
 import { hasFilledTable } from '../utils/graphUtils';
 
 export default function GeneratePDFScreen({ route, navigation }) {
-  const { productId, experimentId } = route.params;
+  const { productId, experimentId, manualId } = route.params;
   const product = getProductById(productId);
   const experiment = getExperimentById(experimentId);
   const [user, setUser] = useState(null);
@@ -22,7 +22,7 @@ export default function GeneratePDFScreen({ route, navigation }) {
   const load = async () => {
     setUser(await getCurrentUser());
     const drafts = await getDrafts();
-    setDraft(drafts.find((item) => item.productId === productId && item.experimentId === experimentId) || {});
+    setDraft(drafts.find((item) => item.productId === productId && item.experimentId === experimentId && (!manualId || !item.manualId || item.manualId === manualId)) || {});
   };
 
   useEffect(() => { load(); }, []);
@@ -31,7 +31,7 @@ export default function GeneratePDFScreen({ route, navigation }) {
     try {
       const pdfUri = await generateWorkbookPdf({ user, product, experiment, draft: draft || {} });
       const id = `JRN-${Date.now()}`;
-      const next = await saveDraftPatch({ productId, experimentId, patch: { pdfGenerated: true, pdfUri, journalId: id } });
+      const next = await saveDraftPatch({ productId, experimentId, manualId, patch: { manualId, pdfGenerated: true, pdfUri, journalId: id } });
       setDraft(next);
       setJournalId(id);
     } catch (error) {

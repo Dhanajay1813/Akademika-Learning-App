@@ -10,14 +10,14 @@ import { saveDraftPatch } from '../storage/autosave';
 import { getNumericPairs, hasPlottableTable } from '../utils/graphUtils';
 
 export default function GraphScreen({ route }) {
-  const { productId, experimentId } = route.params;
+  const { productId, experimentId, manualId } = route.params;
   const [table, setTable] = useState({ columns: [], rows: [] });
   const [graph, setGraph] = useState({ generated: false, xAxis: '', yAxis: '', graphType: 'line' });
 
   useEffect(() => {
     (async () => {
       const drafts = await getDrafts();
-      const draft = drafts.find((item) => item.productId === productId && item.experimentId === experimentId);
+      const draft = drafts.find((item) => item.productId === productId && item.experimentId === experimentId && (!manualId || !item.manualId || item.manualId === manualId));
       if (draft?.table) {
         setTable(draft.table);
         setGraph({
@@ -29,7 +29,7 @@ export default function GraphScreen({ route }) {
         });
       }
     })();
-  }, [experimentId, productId]);
+  }, [experimentId, manualId, productId]);
 
   const update = (patch) => setGraph((current) => ({ ...current, ...patch, generated: false }));
 
@@ -52,7 +52,7 @@ export default function GraphScreen({ route }) {
 
     const next = { ...graph, generated: true };
     setGraph(next);
-    await saveDraftPatch({ productId, experimentId, patch: { graph: next } });
+    await saveDraftPatch({ productId, experimentId, manualId, patch: { manualId, graph: next } });
   };
 
   const saveGraph = async () => {
@@ -60,7 +60,7 @@ export default function GraphScreen({ route }) {
       Alert.alert('Generate graph', 'Generate Graph before saving.');
       return;
     }
-    await saveDraftPatch({ productId, experimentId, patch: { graph } });
+    await saveDraftPatch({ productId, experimentId, manualId, patch: { manualId, graph } });
   };
 
   return (

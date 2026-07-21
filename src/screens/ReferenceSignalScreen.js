@@ -30,7 +30,7 @@ export default function ReferenceSignalScreen({ route, navigation }) {
   }, [allowGuestWorkbookAccess]));
 
   useEffect(() => {
-    if (loadedUser && !guestBlocked) saveDraftPatch({ productId, experimentId, patch: { manualId }, openedSection: 'referenceSignal' });
+    if (loadedUser && !guestBlocked) saveDraftPatch({ productId, experimentId, manualId, patch: { manualId }, openedSection: 'technical:referenceSignal' });
   }, [experimentId, guestBlocked, loadedUser, manualId, productId]);
 
   if (!loadedUser) return <ScreenContainer title="Reference Signal" scroll={false} />;

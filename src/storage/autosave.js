@@ -1,9 +1,9 @@
 import { getCurrentUser, getDrafts, setDrafts } from './storage';
 import { makeId } from '../utils/ids';
-import { calculateProgress } from '../utils/progress';
+import { applyProgressToDraft } from '../services/experimentProgressService';
 import { getDraftOwnerId } from '../auth/userRole';
 
-export const saveDraftPatch = async ({ productId, experimentId, patch = {}, openedSection }) => {
+export const saveDraftPatch = async ({ productId, experimentId, manualId, patch = {}, openedSection }) => {
   const user = await getCurrentUser();
   if (!productId || !experimentId) return null;
 
@@ -11,13 +11,15 @@ export const saveDraftPatch = async ({ productId, experimentId, patch = {}, open
   const drafts = await getDrafts();
   const index = drafts.findIndex((draft) => {
     const sameExperiment = draft.productId === productId && draft.experimentId === experimentId;
-    return sameExperiment && (!draft.userId || draft.userId === userId);
+    const sameManual = manualId ? (!draft.manualId || draft.manualId === manualId) : true;
+    return sameExperiment && sameManual && (!draft.userId || draft.userId === userId);
   });
 
   const existing = index >= 0 ? drafts[index] : {
     id: makeId('draft'),
     userId,
     productId,
+    manualId,
     experimentId,
     openedSections: [],
     capturedImages: [],
@@ -30,8 +32,14 @@ export const saveDraftPatch = async ({ productId, experimentId, patch = {}, open
   };
 
   const openedSections = openedSection ? Array.from(new Set([...(existing.openedSections || []), openedSection])) : existing.openedSections || [];
-  const nextDraft = { ...existing, ...patch, userId: existing.userId || userId, openedSections, lastSavedAt: new Date().toISOString() };
-  nextDraft.progress = calculateProgress(nextDraft);
+  const nextDraft = applyProgressToDraft({
+    ...existing,
+    ...patch,
+    manualId: patch.manualId || existing.manualId || manualId,
+    userId: existing.userId || userId,
+    openedSections,
+    lastSavedAt: new Date().toISOString(),
+  });
 
   if (index >= 0) drafts[index] = nextDraft;
   else drafts.push(nextDraft);

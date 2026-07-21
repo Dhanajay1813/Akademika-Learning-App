@@ -10,7 +10,7 @@ function isContentBlock(item) {
   return item && typeof item === 'object' && item.type;
 }
 
-function ManualImage({ source, label, width, maxHeight, fallbackHeightRatio = 1.414, metadata, cacheKey }) {
+function ManualImage({ source, label, width, maxHeight, fallbackHeightRatio = 1.414, metadata, cacheKey, onZoomStateChange, resetSignal }) {
   const [failed, setFailed] = useState(false);
   const fittedHeight = useMemo(() => {
     const resolved = source ? RNImage.resolveAssetSource(source) : null;
@@ -23,7 +23,7 @@ function ManualImage({ source, label, width, maxHeight, fallbackHeightRatio = 1.
   return (
     <View style={styles.page}>
       {failed || !source ? (
-        <View style={[styles.image, styles.messageBox, { width, height: fittedHeight }]}>
+        <View style={[styles.image, styles.messageBox, { width, height: fittedHeight }]}> 
           <Text style={styles.message}>Image not found.</Text>
         </View>
       ) : (
@@ -36,6 +36,8 @@ function ManualImage({ source, label, width, maxHeight, fallbackHeightRatio = 1.
           onError={() => setFailed(true)}
           recyclingKey={cacheKey || label}
           cacheKey={metadata?.sha256 ? `${cacheKey || label}:${metadata.sha256}` : cacheKey}
+          onZoomStateChange={onZoomStateChange}
+          resetSignal={resetSignal}
         />
       )}
       {label ? <Text style={styles.pageLabel}>{label}</Text> : null}
@@ -43,8 +45,19 @@ function ManualImage({ source, label, width, maxHeight, fallbackHeightRatio = 1.
   );
 }
 
-function ManualPage({ manualId, pageFile, width, maxHeight }) {
-  return <ManualImage source={getManualPageSource(manualId, pageFile)} label={pageFile} width={width} maxHeight={maxHeight} cacheKey={`${manualId}:${pageFile}`} />;
+function ManualPage({ manualId, pageFile, width, maxHeight, activeZoomKey, setActiveZoomKey }) {
+  const imageKey = `${manualId}:${pageFile}`;
+  return (
+    <ManualImage
+      source={getManualPageSource(manualId, pageFile)}
+      label={pageFile}
+      width={width}
+      maxHeight={maxHeight}
+      cacheKey={imageKey}
+      onZoomStateChange={(zoomed) => setActiveZoomKey(zoomed ? imageKey : null)}
+      resetSignal={activeZoomKey && activeZoomKey !== imageKey ? activeZoomKey : null}
+    />
+  );
 }
 
 function getBlockImageItems(block) {
@@ -68,23 +81,30 @@ function getBlockImageItems(block) {
   return block.imageFile ? [{ imageFile: block.imageFile, caption: block.caption || '' }] : [];
 }
 
-function ManualBlock({ manualId, block, width, maxHeight }) {
+function ManualBlock({ manualId, block, width, maxHeight, activeZoomKey, setActiveZoomKey }) {
   const typography = useResponsiveManualTypography();
   const contentBlockStyle = [styles.block, styles.contentBlock, { padding: typography.cardPadding }];
   if (block.type === 'image') {
     const imageItems = getBlockImageItems(block);
     return (
       <View style={styles.imageGroup}>
-        {imageItems.length ? imageItems.map((item, index) => (
-          <ManualImage
-            key={`${item.imageFile}-${index}`}
-            source={getManualBlockImageSource(manualId, item.imageFile)}
-            label={item.caption || item.imageFile}
-            width={width}
-            maxHeight={maxHeight}
-            fallbackHeightRatio={0.75}
-          />
-        )) : (
+        {imageItems.length ? imageItems.map((item, index) => {
+          const imageKey = `${manualId}:${item.imageFile}:${index}`;
+          return (
+            <ManualImage
+              key={imageKey}
+              source={getManualBlockImageSource(manualId, item.imageFile)}
+              label={item.caption || item.imageFile}
+              width={width}
+              maxHeight={maxHeight}
+              fallbackHeightRatio={0.75}
+              metadata={item}
+              cacheKey={imageKey}
+              onZoomStateChange={(zoomed) => setActiveZoomKey(zoomed ? imageKey : null)}
+              resetSignal={activeZoomKey && activeZoomKey !== imageKey ? activeZoomKey : null}
+            />
+          );
+        }) : (
           <ManualImage
             source={null}
             label={block.caption || ''}
@@ -139,8 +159,9 @@ const getPrefetchSources = (manualId, items) => {
     .filter(Boolean);
 };
 
-export default function ManualPageList({ manualId, pageFiles }) {
+export default function ManualPageList({ manualId, pageFiles, ListFooterComponent }) {
   const { height: windowHeight, width: windowWidth } = useWindowDimensions();
+  const [activeZoomKey, setActiveZoomKey] = useState(null);
   const imageWidth = Math.max(180, windowWidth - 36);
   const imageMaxHeight = Math.max(220, windowHeight * 0.72);
 
@@ -148,6 +169,8 @@ export default function ManualPageList({ manualId, pageFiles }) {
     const uris = getPrefetchSources(manualId, pageFiles).slice(0, 2);
     prefetchRemoteImages(uris, 2);
   }, [manualId, pageFiles]);
+
+  useEffect(() => () => setActiveZoomKey(null), []);
 
   if (!pageFiles?.length) {
     return (
@@ -164,14 +187,16 @@ export default function ManualPageList({ manualId, pageFiles }) {
       keyExtractor={(item, index) => isContentBlock(item) ? `${item.id}-${index}` : `${item}-${index}`}
       renderItem={({ item }) => (
         isContentBlock(item)
-          ? <ManualBlock manualId={manualId} block={item} width={imageWidth} maxHeight={imageMaxHeight} />
-          : <ManualPage manualId={manualId} pageFile={item} width={imageWidth} maxHeight={imageMaxHeight} />
+          ? <ManualBlock manualId={manualId} block={item} width={imageWidth} maxHeight={imageMaxHeight} activeZoomKey={activeZoomKey} setActiveZoomKey={setActiveZoomKey} />
+          : <ManualPage manualId={manualId} pageFile={item} width={imageWidth} maxHeight={imageMaxHeight} activeZoomKey={activeZoomKey} setActiveZoomKey={setActiveZoomKey} />
       )}
+      scrollEnabled={!activeZoomKey}
       initialNumToRender={1}
       maxToRenderPerBatch={2}
       updateCellsBatchingPeriod={80}
       windowSize={3}
       removeClippedSubviews={false}
+      ListFooterComponent={ListFooterComponent || null}
       contentContainerStyle={styles.list}
     />
   );

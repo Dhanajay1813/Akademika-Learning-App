@@ -9,6 +9,7 @@ import { getExperimentById } from '../data/experiments';
 import { getProductById } from '../data/products';
 import { getCurrentUser, getDrafts } from '../storage/storage';
 import { getDraftOwnerId, isGuestUser } from '../auth/userRole';
+import { applyProgressToDraft } from '../services/experimentProgressService';
 
 export default function WorkbookScreen({ navigation }) {
   const [tab, setTab] = useState('progress');
@@ -23,7 +24,9 @@ export default function WorkbookScreen({ navigation }) {
       }
       const userId = getDraftOwnerId(user);
       const all = await getDrafts();
-      const visibleDrafts = all.filter((draft) => !draft.userId || draft.userId === userId);
+      const visibleDrafts = all
+        .filter((draft) => !draft.userId || draft.userId === userId)
+        .map(applyProgressToDraft);
       setDrafts(visibleDrafts);
     })();
   }, [navigation]));
