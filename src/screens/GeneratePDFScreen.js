@@ -27,6 +27,7 @@ export default function GeneratePDFScreen({ route, navigation }) {
   const [journalId, setJournalId] = useState('');
   const [generating, setGenerating] = useState(false);
   const [lastError, setLastError] = useState('');
+  const [imageWarnings, setImageWarnings] = useState([]);
 
   const load = async () => {
     const currentUser = await getCurrentUser();
@@ -43,6 +44,7 @@ export default function GeneratePDFScreen({ route, navigation }) {
 
   const generate = async () => {
     setLastError('');
+    setImageWarnings([]);
     const loaded = await load();
     const currentUser = loaded?.currentUser || user;
     const currentDraft = loaded?.selectedDraft || draft || { productId, manualId: manual?.manualId || manualId, experimentId };
@@ -56,10 +58,15 @@ export default function GeneratePDFScreen({ route, navigation }) {
       setGenerating(true);
       const result = await generateCompleteExperimentPdf({ user: currentUser, product, manual, experiment, studentRecord: currentDraft, completionDetails: currentCompletion });
       const id = `JRN-${Date.now()}`;
-      const next = await saveDraftPatch({ productId, experimentId, manualId: currentDraft.manualId || manual?.manualId || manualId, patch: { manualId: currentDraft.manualId || manual?.manualId || manualId, pdfGenerated: true, pdfUri: result.uri, pdfFilename: result.filename, journalId: id } });
+      const next = await saveDraftPatch({ productId, experimentId, manualId: currentDraft.manualId || manual?.manualId || manualId, patch: { manualId: currentDraft.manualId || manual?.manualId || manualId, pdfGenerated: true, pdfUri: result.uri, pdfFilename: result.filename, journalId: id, pdfImageWarnings: result.warnings || [] } });
       setDraft(next);
       setJournalId(id);
-      Alert.alert('PDF ready', 'Complete experiment report was generated.');
+      setImageWarnings(result.warnings || []);
+      if (result.warnings?.length) {
+        Alert.alert('PDF ready with image warnings', `${result.warnings.length} image could not be included. The report includes a warning in its place.`);
+      } else {
+        Alert.alert('PDF ready', 'Complete experiment report was generated.');
+      }
     } catch (error) {
       setLastError(error?.message || 'PDF generation could not be completed.');
       Alert.alert('PDF', 'PDF generation could not be completed. Please try again.');
@@ -70,12 +77,19 @@ export default function GeneratePDFScreen({ route, navigation }) {
 
   const reportItems = buildReportContentList({ manualId: manual?.manualId || manualId, experiment, draft: draft || {}, completionDetails: completion });
   const complete = completion?.percentage === 100;
+  const displayedImageWarnings = imageWarnings.length ? imageWarnings : draft?.pdfImageWarnings || [];
 
   if (draft?.pdfGenerated) {
     return (
       <ScreenContainer title="PDF Generated Successfully">
         <Text style={styles.meta}>Journal ID: {draft.journalId || journalId}</Text>
         {draft.pdfFilename ? <Text style={styles.meta}>File: {draft.pdfFilename}</Text> : null}
+        {displayedImageWarnings.length ? (
+          <View style={styles.warningBox}>
+            <Text style={styles.warningTitle}>Image warnings</Text>
+            {displayedImageWarnings.map((warning, index) => <Text key={`${warning.label}-${index}`} style={styles.warningText}>{warning.label} could not be included.</Text>)}
+          </View>
+        ) : null}
         <AppButton title="Open PDF" accessibilityLabel="Open generated experiment PDF" onPress={() => draft.pdfUri ? Linking.openURL(draft.pdfUri) : null} />
         <AppButton title="Share PDF" accessibilityLabel="Share generated experiment PDF" onPress={() => sharePdf(draft.pdfUri)} variant="secondary" />
         <AppButton title="Generate Again" onPress={generate} variant="secondary" disabled={generating || !complete} />
@@ -97,6 +111,12 @@ export default function GeneratePDFScreen({ route, navigation }) {
       </View>
       {generating ? <Text style={styles.help} accessibilityLabel="Preparing complete experiment report">Preparing complete experiment report…</Text> : null}
       {lastError ? <Text style={styles.error}>{lastError}</Text> : null}
+      {displayedImageWarnings.length ? (
+        <View style={styles.warningBox}>
+          <Text style={styles.warningTitle}>Image warnings</Text>
+          {displayedImageWarnings.map((warning, index) => <Text key={`${warning.label}-${index}`} style={styles.warningText}>{warning.label} could not be included.</Text>)}
+        </View>
+      ) : null}
       <AppButton title="Generate Complete Experiment PDF" accessibilityLabel={complete ? 'Generate complete experiment PDF' : 'Complete the pending experiment items before generating the report'} onPress={generate} disabled={!complete || generating} />
     </ScreenContainer>
   );
@@ -108,6 +128,9 @@ const styles = StyleSheet.create({
   pending: { color: colors.muted, fontSize: 18, fontWeight: '900', marginBottom: 8 },
   help: { color: colors.muted, fontSize: 14, lineHeight: 21, marginBottom: 10 },
   error: { color: colors.danger || '#B42318', fontSize: 14, lineHeight: 21, marginBottom: 10 },
+  warningBox: { borderWidth: 1, borderColor: colors.warning, backgroundColor: '#FFFAEB', borderRadius: 8, padding: 12, marginBottom: 10 },
+  warningTitle: { color: colors.warning, fontSize: 15, fontWeight: '900', marginBottom: 6 },
+  warningText: { color: colors.text, fontSize: 14, lineHeight: 20 },
   list: { backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.border, borderRadius: 8, padding: 16, marginVertical: 12 },
   listTitle: { color: colors.text, fontSize: 16, fontWeight: '900', marginBottom: 8 },
   item: { color: colors.text, fontSize: 15, marginBottom: 8, lineHeight: 21 },
