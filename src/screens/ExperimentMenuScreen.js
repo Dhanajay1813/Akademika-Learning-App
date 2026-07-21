@@ -10,6 +10,7 @@ import { saveDraftPatch } from '../storage/autosave';
 import { getCurrentUser, getDrafts } from '../storage/storage';
 import { getDraftOwnerId, isGuestUser } from '../auth/userRole';
 import { calculateExperimentProgress, hasValidContent } from '../services/experimentProgressService';
+import { buildReportContentList } from '../services/experimentPdfService';
 
 const standardSections = [
   ['objective', 'Objective'],
@@ -42,7 +43,9 @@ export default function ExperimentMenuScreen({ route, navigation }) {
   const [loadedUser, setLoadedUser] = useState(false);
   const [guestBlocked, setGuestBlocked] = useState(false);
   const [progress, setProgress] = useState(null);
+  const [currentDraft, setCurrentDraft] = useState(null);
   const [detailsOpen, setDetailsOpen] = useState(false);
+  const [reportPreviewOpen, setReportPreviewOpen] = useState(false);
   const experiment = getMappedExperiment(manualId, experimentId) || getExperimentById(experimentId);
   const isMappedExperiment = Boolean(manualId && experiment?.sections);
   const visibleStandardSections = isMappedExperiment
@@ -57,6 +60,7 @@ export default function ExperimentMenuScreen({ route, navigation }) {
     const userId = getDraftOwnerId(user);
     const drafts = await getDrafts();
     const draft = findDraft(drafts, productId, manualId, experimentId, userId) || { productId, manualId, experimentId };
+    setCurrentDraft(draft);
     setProgress(calculateExperimentProgress({ productId, manualId: draft.manualId || manualId, experimentId, draft }));
     return user;
   }, [experimentId, manualId, productId]);
@@ -103,6 +107,7 @@ export default function ExperimentMenuScreen({ route, navigation }) {
   const totalCount = progress?.totalCount || 0;
   const percentage = progress?.percentage || 0;
   const remainingCount = Math.max(0, totalCount - completedCount);
+  const reportItems = buildReportContentList({ manualId, experiment, draft: currentDraft || { productId, manualId, experimentId }, completionDetails: progress });
 
   return (
     <ScreenContainer title={experiment?.title || 'Experiment'}>
@@ -117,7 +122,13 @@ export default function ExperimentMenuScreen({ route, navigation }) {
         <Text style={styles.progressStatus} accessibilityLabel={remainingCount === 1 ? 'One completion item remaining' : progress?.statusText}>
           {totalCount === 0 ? 'No completion requirements are available' : percentage === 100 ? 'Experiment Completed ✓' : `${remainingCount} ${remainingCount === 1 ? 'item' : 'items'} remaining`}
         </Text>
-        <AppButton title="View Pending Items" onPress={() => setDetailsOpen(true)} variant="secondary" />
+        <AppButton title="View Pending Items" onPress={() => setDetailsOpen(true)} variant="secondary" accessibilityLabel="View pending experiment items" />
+        {percentage === 100 ? (
+          <>
+            <AppButton title="Generate Complete Experiment PDF" accessibilityLabel="Generate complete experiment PDF" onPress={() => navigation.navigate('GeneratePDF', { productId, experimentId, manualId })} />
+            <AppButton title="Preview Report Contents" onPress={() => setReportPreviewOpen(true)} variant="secondary" />
+          </>
+        ) : null}
       </View>
 
       {visibleStandardSections.map(([sectionKey, title]) => (
@@ -129,6 +140,19 @@ export default function ExperimentMenuScreen({ route, navigation }) {
       {visibleRecordSections.map(([sectionKey, title]) => (
         <AppButton key={sectionKey} title={title} onPress={() => open(sectionKey, title)} />
       ))}
+
+      <Modal visible={reportPreviewOpen} transparent animationType="fade" onRequestClose={() => setReportPreviewOpen(false)}>
+        <Pressable style={styles.modalOverlay} onPress={() => setReportPreviewOpen(false)}>
+          <Pressable style={styles.detailsCard} onPress={() => {}}>
+            <Text style={styles.detailsTitle}>Report Contents</Text>
+            <ScrollView style={styles.detailsScroll}>
+              {reportItems.map((item) => <Text key={item} style={styles.completedItem}>✓ {item}</Text>)}
+            </ScrollView>
+            <AppButton title="Generate PDF" accessibilityLabel="Generate complete experiment PDF" onPress={() => { setReportPreviewOpen(false); navigation.navigate('GeneratePDF', { productId, experimentId, manualId }); }} />
+            <AppButton title="Cancel" onPress={() => setReportPreviewOpen(false)} variant="secondary" />
+          </Pressable>
+        </Pressable>
+      </Modal>
 
       <Modal visible={detailsOpen} transparent animationType="fade" onRequestClose={() => setDetailsOpen(false)}>
         <Pressable style={styles.modalOverlay} onPress={() => setDetailsOpen(false)}>
