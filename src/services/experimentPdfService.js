@@ -266,6 +266,12 @@ function userDetailsHtml(user = {}) {
   return rows.length ? `<table class="report-table report-meta-table"><tbody>${rows.map(([label, value]) => `<tr><th class="label-column">${escapeHtml(label)}</th><td class="value-column">${escapeHtml(value)}</td></tr>`).join('')}</tbody></table>` : '<p class="report-paragraph">No student details available.</p>';
 }
 
+function completionHtml(completionDetails) {
+  const details = completionDetails || { percentage: 0, completedCount: 0, totalCount: 0, completedItems: [] };
+  const completedItems = details.completedItems || [];
+  return `<section class="completion-summary-block"><h2 class="report-heading">Completion Summary</h2><p class="report-paragraph"><strong>Experiment Status:</strong> ${details.percentage === 100 ? 'Completed' : 'Incomplete'}</p><p class="report-paragraph"><strong>Progress:</strong> ${details.percentage || 0}%</p><p class="report-paragraph"><strong>Completed Requirements:</strong> ${details.completedCount || 0} of ${details.totalCount || 0}</p><ul class="completion-list">${completedItems.map((item) => `<li>${escapeHtml(item.completeLabel || item.label)}</li>`).join('')}</ul></section>`;
+}
+
 function capturedSignalsHtml(resolvedImages = []) {
   if (!resolvedImages.length) return '';
   return resolvedImages.map(({ record, dataUri, failed }) => {
@@ -313,7 +319,7 @@ function studentRecordHtml(draft = {}) {
 
 export function buildReportContentList({ manualId, experiment, draft = {}, completionDetails }) {
   const sections = experiment?.sections || {};
-  const items = ['Cover and experiment details', 'Student details'];
+  const items = ['Cover and experiment details', 'Student details', 'Completion summary'];
   PRE_TECHNICAL_SECTION_ORDER.forEach(([key, label]) => {
     if (hasRenderableBlocks(sections[key])) items.push(label);
   });
@@ -383,6 +389,14 @@ export function buildCompleteExperimentHtml({ user, product, manual, experiment,
     .report-table thead { display: table-header-group; }
     .report-meta-table .label-column { width: 32%; }
     .report-meta-table .value-column { width: 68%; }
+    .report-details-page { break-after: page; page-break-after: always; }
+    .report-details-page .report-heading { margin-top: 12px; margin-bottom: 6px; }
+    .report-details-page .report-table { margin: 6px 0 10px; }
+    .report-details-page .report-table th, .report-details-page .report-table td { padding: 4px 6px; line-height: 1.25; font-size: 9.6pt; }
+    .completion-summary-block { margin-top: 10px; break-inside: avoid; page-break-inside: avoid; }
+    .completion-list { list-style: none; margin: 6px 0 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; column-gap: 16px; row-gap: 3px; }
+    .completion-list li { position: relative; padding-left: 16px; margin: 0; font-size: 9.5pt; line-height: 1.3; break-inside: avoid; page-break-inside: avoid; }
+    .completion-list li::before { content: "✓"; position: absolute; left: 0; font-weight: 700; color: #087443; }
     .report-list { margin: 7px 0 12px; padding-left: 20px; }
     .report-list li { margin-bottom: 5px; padding-left: 3px; line-height: 1.42; break-inside: avoid; page-break-inside: avoid; }
     .report-numbered-list { margin: 7px 0 12px; }
@@ -406,10 +420,13 @@ export function buildCompleteExperimentHtml({ user, product, manual, experiment,
     .signoff { display: flex; justify-content: space-between; gap: 24px; margin-top: 28px; }
     .line { border-top: 1px solid #172033; padding-top: 7px; width: 42%; font-size: 10pt; }
   </style></head><body>
-    <section class="cover"><h1>Akademika Learning</h1><h2 class="report-heading">Complete Experiment Report</h2><table class="report-table report-meta-table"><tbody>${coverRows.map(([label, value]) => `<tr><th class="label-column">${escapeHtml(label)}</th><td class="value-column">${escapeHtml(value)}</td></tr>`).join('')}</tbody></table></section>
-    <section class="report-section"><div class="section-opening"><h2 class="report-heading">Student Details</h2>${userDetailsHtml(user)}</div></section>
-    ${warningHtml}
+    <div class="report-details-page">
+      <section class="cover"><h1>Akademika Learning</h1><h2 class="report-heading">Complete Experiment Report</h2><table class="report-table report-meta-table"><tbody>${coverRows.map(([label, value]) => `<tr><th class="label-column">${escapeHtml(label)}</th><td class="value-column">${escapeHtml(value)}</td></tr>`).join('')}</tbody></table></section>
+      <section class="report-section"><div class="section-opening"><h2 class="report-heading">Student Details</h2>${userDetailsHtml(user)}</div></section>
+      ${completionHtml(completionDetails)}
+    </div>
     ${preTechnicalSections}
+    ${warningHtml}
     ${technicalHtml}
     ${postTechnicalSections}
     ${studentRecordHtml(studentRecord)}
