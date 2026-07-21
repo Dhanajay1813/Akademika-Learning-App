@@ -31,19 +31,10 @@ const TECHNICAL_ORDER = [
   ['referenceSignal', 'Reference Signal'],
 ];
 
-const FLOW_SECTION_ORDER = [
-  ['objective', 'Objective'],
-  ['theory', 'Theory'],
-  ['functionalBlock', 'Functional Block'],
-  ['procedure', 'Procedure'],
-  ['observation', 'Observation Instructions'],
-  ['equipments', 'Equipments'],
-  ['result', 'Result Guidance'],
-  ['conclusion', 'Conclusion Guidance'],
-];
 
-const PRINTABLE_PAGE_HEIGHT_MM = 268;
-const ESTIMATED_PAGE_HEIGHT = PRINTABLE_PAGE_HEIGHT_MM * 3.78;
+const CSS_PX_PER_MM = 3.78;
+const PRINTABLE_WIDTH_MM = 184;
+const DOCUMENT_PAGE_MAX_WIDTH_PX = Math.round(PRINTABLE_WIDTH_MM * CSS_PX_PER_MM * 0.94);
 
 
 const escapeHtml = (value) => String(value ?? '')
@@ -96,10 +87,46 @@ function imageVariantForSection(sectionKey, item = {}, block = {}) {
   return classifyImage({ sectionKey, item, block });
 }
 
-function reportImageHtml(dataUri, caption, alt, variant = 'photo') {
-  if (!dataUri) return imageWarning(alt || caption || 'Image');
-  const captionHtml = hasText(caption) ? `<div class="image-caption">${escapeHtml(caption)}</div>` : '';
-  return `<div class="content-block pdf-image pdf-image--${variant} keep-together"><img src="${dataUri}" alt="${escapeHtml(alt || caption || 'Experiment image')}"/>${captionHtml}</div>`;
+function getPdfDocumentPageDimensions({ imageWidth, imageHeight, isFirstPageInSection = false } = {}) {
+  const maxHeightMm = isFirstPageInSection ? 218 : 235;
+  const maxHeightPx = Math.round(maxHeightMm * CSS_PX_PER_MM);
+  const width = numericDimension(imageWidth);
+  const height = numericDimension(imageHeight);
+
+  if (!width || !height) {
+    return {
+      width: DOCUMENT_PAGE_MAX_WIDTH_PX,
+      height: Math.round((isFirstPageInSection ? 210 : 226) * CSS_PX_PER_MM),
+    };
+  }
+
+  const ratio = width / height;
+  const renderedWidth = Math.min(DOCUMENT_PAGE_MAX_WIDTH_PX, Math.round(maxHeightPx * ratio));
+  const renderedHeight = Math.min(maxHeightPx, Math.round(renderedWidth / ratio));
+  return { width: renderedWidth, height: renderedHeight };
+}
+
+function documentPageImageHtml(item, title, isFirstPageInSection = false) {
+  const caption = item?.caption || "";
+  const alt = item?.alt || caption || title || "Document page";
+  const dataUri = item?.dataUri;
+  const dimensions = getPdfDocumentPageDimensions({
+    imageWidth: item?.dimensions?.width,
+    imageHeight: item?.dimensions?.height,
+    isFirstPageInSection,
+  });
+  const headingHtml = isFirstPageInSection ? `<h2 class="report-section-title">${escapeHtml(title)}</h2>` : "";
+  const captionHtml = hasText(caption) ? `<div class="image-caption">${escapeHtml(caption)}</div>` : "";
+  const imageHtml = dataUri
+    ? `<img src="${dataUri}" alt="${escapeHtml(alt)}" style="width: ${dimensions.width}px; height: ${dimensions.height}px; max-width: 100%; object-fit: contain;"/>${captionHtml}`
+    : imageWarning(alt);
+  return `<div class="document-page ${isFirstPageInSection ? "document-page--first" : "document-page--continuation"}">${headingHtml}<div class="pdf-image pdf-image--document-page">${imageHtml}</div></div>`;
+}
+
+function reportImageHtml(dataUri, caption, alt, variant = "photo") {
+  if (!dataUri) return imageWarning(alt || caption || "Image");
+  const captionHtml = hasText(caption) ? `<div class="image-caption">${escapeHtml(caption)}</div>` : "";
+  return `<div class="content-block pdf-image pdf-image--${variant} keep-together"><img src="${dataUri}" alt="${escapeHtml(alt || caption || "Experiment image")}"/>${captionHtml}</div>`;
 }
 
 function imageItemsFromBlock(block) {
@@ -172,50 +199,20 @@ async function prepareReportImages({ manualId, sections = {}, capturedImages = [
   return { manualImages, captured, warnings, temporaryUris };
 }
 
-function estimateTextBlockHeight(text = '') {
-  const length = String(text || '').length;
-  return Math.max(20, Math.ceil(length / 92) * 15 + 8);
-}
-
-function estimateImageBlockHeight(variant = 'photo', dimensions = {}) {
-  const ratio = dimensions.ratio || 1.25;
-  if (variant === 'document-page') return 930;
-  if (variant === 'wide-diagram') return 360;
-  if (variant === 'diagram') return 470;
-  if (variant === 'signal-wide') return 380;
-  if (variant === 'signal') return 440;
-  if (variant === 'graph') return 370;
-  return ratio > 1.35 ? 330 : 440;
-}
-
-function estimateTableHeight(columns = [], rows = []) {
-  const rowCount = Array.isArray(rows) ? rows.filter((row) => Array.isArray(row) && row.some((cell) => hasText(String(cell || '')))).length : 0;
-  const columnCount = Array.isArray(columns) ? columns.length : 0;
-  const rowHeight = columnCount > 5 ? 28 : 23;
-  return 34 + Math.min(rowCount, 24) * rowHeight;
-}
-
-function estimateSectionOpeningHeight(firstItem) {
-  return 42 + (firstItem?.estimate || 35);
-}
-
-function shouldStartNewPage({ sectionKey, firstItem, remainingHeight }) {
-  if (!firstItem) return false;
-  const openingHeight = estimateSectionOpeningHeight(firstItem);
-  if (sectionKey === 'observation' && firstItem.classification === 'document-page') return true;
-  if (firstItem.type === 'image' && openingHeight > ESTIMATED_PAGE_HEIGHT * 0.58) return remainingHeight < openingHeight + 40;
-  if (firstItem.type === 'graph') return remainingHeight < 420;
-  return remainingHeight < Math.min(openingHeight + 30, 220);
-}
-
 function isContentLabel(line) {
   return /^([A-Z][A-Z0-9 /()&+.-]{2,}|[A-Z][A-Za-z0-9 /()&+.-]{2,})\s*:-?$/.test(line)
     || /^(THEORY|RESOLUTION|CALCULATIONS?|OBSERVATION|PROCEDURE|RESULT|CONCLUSION)\s*:-?$/i.test(line);
 }
 
 function isFormulaLine(line) {
-  return /(=|\bV(?:OUT|IN)?\b|\bResolution\b|\bLSB\b|\bCALCULATIONS?\b|\bFormula\b|\d+\s*[xX*/+-]\s*\d+)/i.test(line)
-    && !/^\d+[.)]\s+/.test(line);
+  const trimmed = String(line || "").trim();
+  if (/^\d+[.)]\s+/.test(trimmed)) return false;
+  if (/^(VOUT|VIN|VREF|VLSB|LSB|Resolution|Calculated Value|Observed Resolution)\s*=/i.test(trimmed)) return true;
+  if (/^(VOUT|VIN|VREF|VLSB|LSB)\s*[=:]/i.test(trimmed)) return true;
+  if (/^[A-Z][A-Z0-9_()/-]{0,12}\s*=\s*[^=]+$/i.test(trimmed) && /[+\-*\/^×÷]|[0-9]/.test(trimmed)) return true;
+  const nonMath = trimmed.replace(/[0-9A-Za-z\s.=+\-*\/^×÷()%[\]{}:,]/g, "");
+  const mathSymbols = (trimmed.match(/[=+\-*\/^×÷]/g) || []).length;
+  return trimmed.includes("=") && mathSymbols >= 2 && trimmed.length <= 120 && nonMath.length === 0;
 }
 
 function structuredTextItems(text) {
@@ -230,20 +227,20 @@ function structuredTextItems(text) {
   const flushParagraph = () => {
     if (!paragraph.length) return;
     const className = paragraph.join(' ').length > 520 ? 'report-paragraph content-block content-block--long' : 'report-paragraph content-block content-block--short';
-    items.push({ type: 'text', classification: className.includes('long') ? 'long-paragraph' : 'short-paragraph', html: `<p class="${className}">${paragraph.map(escapeHtml).join('<br/>')}</p>`, estimate: estimateTextBlockHeight(paragraph.join(' ')) });
+    items.push({ type: 'text', classification: className.includes('long') ? 'long-paragraph' : 'short-paragraph', html: `<p class="${className}">${paragraph.map(escapeHtml).join('<br/>')}</p>` });
     paragraph = [];
   };
   const flushFormula = () => {
     if (!formula.length) return;
-    items.push({ type: 'formula', classification: formula.length > 3 ? 'long-formula' : 'formula', html: `<div class="formula-block content-block">${formula.map(escapeHtml).join('<br/>')}</div>`, estimate: 34 + formula.length * 16 });
+    items.push({ type: 'formula', classification: formula.length > 3 ? 'long-formula' : 'formula', html: `<div class="formula-block content-block">${formula.map(escapeHtml).join('<br/>')}</div>` });
     formula = [];
   };
   const flushList = () => {
     if (!list.length) return;
     if (listType === 'numbered') {
-      items.push({ type: 'numbered-list', classification: list.length > 8 ? 'long-list' : 'short-list', html: `<div class="report-numbered-list content-block">${list.map((item) => `<div class="report-numbered-item"><div class="report-numbered-marker">${escapeHtml(item.marker)}.</div><div class="report-numbered-body">${escapeHtml(item.body)}</div></div>`).join('')}</div>`, estimate: 16 + list.length * 20 });
+      items.push({ type: 'numbered-list', classification: list.length > 8 ? 'long-list' : 'short-list', html: `<div class="report-numbered-list content-block">${list.map((item) => `<div class="report-numbered-item"><div class="report-numbered-marker">${escapeHtml(item.marker)}.</div><div class="report-numbered-body">${escapeHtml(item.body)}</div></div>`).join('')}</div>` });
     } else {
-      items.push({ type: 'bullet-list', classification: list.length > 8 ? 'long-list' : 'short-list', html: `<ul class="report-list content-block">${list.map((item) => `<li>${escapeHtml(item.body)}</li>`).join('')}</ul>`, estimate: 16 + list.length * 18 });
+      items.push({ type: 'bullet-list', classification: list.length > 8 ? 'long-list' : 'short-list', html: `<ul class="report-list content-block">${list.map((item) => `<li>${escapeHtml(item.body)}</li>`).join('')}</ul>` });
     }
     list = [];
     listType = null;
@@ -272,7 +269,7 @@ function structuredTextItems(text) {
       flushParagraph();
       flushFormula();
       flushList();
-      items.push({ type: 'label', classification: 'content-label', html: `<div class="content-label content-block">${escapeHtml(trimmed)}</div>`, estimate: 22 });
+      items.push({ type: 'label', classification: 'content-label', html: `<div class="content-label content-block">${escapeHtml(trimmed)}</div>` });
       return;
     }
     if (isFormulaLine(trimmed)) {
@@ -327,12 +324,15 @@ function blockHtmlItems(block, manualImages = {}, sectionKey = '') {
       const variant = imageVariantForSection(sectionKey, item, block);
       const label = item.caption || block.caption || 'Manual image';
       return {
-        type: 'image',
+        type: "image",
         classification: variant,
+        caption: item.caption || block.caption || "",
+        alt: label,
+        dataUri: manualImages[item.imageFile],
+        dimensions,
         html: manualImages[item.imageFile]
-          ? reportImageHtml(manualImages[item.imageFile], item.caption || block.caption || '', label, variant)
+          ? reportImageHtml(manualImages[item.imageFile], item.caption || block.caption || "", label, variant)
           : imageWarning(label),
-        estimate: estimateImageBlockHeight(variant, dimensions),
       };
     });
   }
@@ -343,27 +343,18 @@ function blockHtmlItems(block, manualImages = {}, sectionKey = '') {
     if (!table) return [];
     const rowCount = rows.filter((row) => Array.isArray(row) && row.some((cell) => hasText(String(cell || '')))).length;
     const classification = rowCount > 18 ? 'long-table' : rowCount > 8 ? 'medium-table' : 'small-table';
-    return [{ type: 'table', classification, html: `<div class="table-block table--${classification.replace('-table', '')}">${table}</div>`, estimate: estimateTableHeight(columns, rows) }];
+    return [{ type: 'table', classification, html: `<div class="table-block table--${classification.replace('-table', '')}">${table}</div>` }];
   }
   if (block.type === 'note') {
     const html = `<div class="note keep-together content-block"><strong>Note:</strong>${structuredTextHtml(block.text || block.note || '')}</div>`;
-    return [{ type: 'note', classification: 'note', html, estimate: estimateTextBlockHeight(block.text || block.note || '') + 18 }];
+    return [{ type: 'note', classification: 'note', html }];
   }
   return structuredTextItems(block.text || block.tableData || '');
-}
-
-function blockHtml(block, manualImages = {}, sectionKey = '') {
-  return blockHtmlItems(block, manualImages, sectionKey).map(renderItem).join('');
 }
 
 function blockItemsHtml(blocks, manualImages = {}, sectionKey = '') {
   if (!Array.isArray(blocks)) return structuredTextItems(blocks);
   return blocks.flatMap((block) => blockHtmlItems(block, manualImages, sectionKey)).filter((item) => renderItem(item));
-}
-
-function blocksHtml(blocks, manualImages = {}, sectionKey = '') {
-  if (!Array.isArray(blocks)) return structuredTextHtml(blocks);
-  return blocks.map((block) => blockHtml(block, manualImages, sectionKey)).filter(Boolean).join('');
 }
 
 function hasRenderableBlocks(blocks) {
@@ -377,18 +368,31 @@ function hasRenderableBlocks(blocks) {
   });
 }
 
-function sectionHtml(title, blocks, manualImages, extra = '', sectionKey = '', options = {}) {
+function sectionHtml(title, blocks, manualImages, extra = "", sectionKey = "", options = {}) {
   const items = blockItemsHtml(blocks, manualImages, sectionKey);
-  if (!items.length && !extra) return '';
+  if (!items.length && !extra) return "";
+  const headingTag = options.subsection ? "h3" : "h2";
+  const headingClass = options.subsection ? "report-subsection-title" : "report-section-title";
+
+  if (sectionKey === "observation" && items[0]?.classification === "document-page") {
+    const documentPages = [];
+    const remainingItems = [];
+    items.forEach((item) => {
+      if (item?.classification === "document-page") documentPages.push(item);
+      else remainingItems.push(item);
+    });
+    const pagesHtml = documentPages
+      .map((item, index) => documentPageImageHtml(item, title, index === 0))
+      .join("");
+    const remainingHtml = remainingItems.length || extra
+      ? `<section class="report-section allow-break">${remainingItems.map(renderItem).join("")}${extra}</section>`
+      : "";
+    return `<section class="report-section observation-section allow-break">${pagesHtml}${remainingHtml}</section>`;
+  }
+
   const first = items.shift() || null;
-  const headingTag = options.subsection ? 'h3' : 'h2';
-  const headingClass = options.subsection ? 'report-subsection-title' : 'report-section-title';
-  const sectionClasses = ['report-section', 'allow-break'];
-  const remainingEstimate = options.remainingHeight || ESTIMATED_PAGE_HEIGHT;
-  if (options.forcePageBefore || shouldStartNewPage({ sectionKey, firstItem: first, remainingHeight: remainingEstimate })) sectionClasses.push('force-page-before');
-  if (sectionKey === 'observation' && first?.classification === 'document-page') sectionClasses.push('observation-section');
   const firstHtml = renderItem(first);
-  return `<section class="${sectionClasses.join(' ')}"><div class="section-opening ${sectionKey === 'observation' ? 'observation-opening' : ''}"><${headingTag} class="${headingClass}">${escapeHtml(title)}</${headingTag}>${firstHtml}</div>${items.map(renderItem).join('')}${extra}</section>`;
+  return `<section class="report-section allow-break"><div class="section-opening"><${headingTag} class="${headingClass}">${escapeHtml(title)}</${headingTag}>${firstHtml}</div>${items.map(renderItem).join("")}${extra}</section>`;
 }
 
 function buildAdaptiveReportModel(sections = {}) {
@@ -414,27 +418,8 @@ function buildAdaptiveReportModel(sections = {}) {
   return model;
 }
 
-function estimateSectionHeightFromBlocks(blocks, manualImages, sectionKey) {
-  return blockItemsHtml(blocks, manualImages, sectionKey).reduce((sum, item) => sum + (item.estimate || 35), 42);
-}
-
-function buildAdaptiveReportLayout(model, manualImages = {}) {
-  let remainingHeight = ESTIMATED_PAGE_HEIGHT;
-  return model.map((section) => {
-    if (section.type === 'technicalData') {
-      const subsectionEstimate = section.subsections.reduce((sum, subsection) => sum + estimateSectionHeightFromBlocks(subsection.blocks, manualImages, subsection.key), 48);
-      const forcePageBefore = shouldStartNewPage({ sectionKey: section.key, firstItem: { type: 'section', estimate: Math.min(subsectionEstimate, 520) }, remainingHeight });
-      remainingHeight = forcePageBefore ? ESTIMATED_PAGE_HEIGHT - Math.min(subsectionEstimate, ESTIMATED_PAGE_HEIGHT) : remainingHeight - Math.min(subsectionEstimate, remainingHeight);
-      return { ...section, forcePageBefore };
-    }
-    const items = blockItemsHtml(section.blocks, manualImages, section.key);
-    const firstItem = items[0];
-    const estimated = items.reduce((sum, item) => sum + (item.estimate || 35), 48);
-    const forcePageBefore = section.key !== 'objective' && shouldStartNewPage({ sectionKey: section.key, firstItem, remainingHeight });
-    remainingHeight = forcePageBefore ? ESTIMATED_PAGE_HEIGHT - Math.min(estimated, ESTIMATED_PAGE_HEIGHT) : remainingHeight - Math.min(estimated, remainingHeight);
-    if (remainingHeight < 80) remainingHeight = ESTIMATED_PAGE_HEIGHT;
-    return { ...section, forcePageBefore };
-  });
+function buildAdaptiveReportLayout(model) {
+  return model;
 }
 
 function renderReportModel(layout, manualImages = {}, extras = {}) {
@@ -444,10 +429,10 @@ function renderReportModel(layout, manualImages = {}, extras = {}) {
       if (!firstSubsection) return '';
       const firstHtml = sectionHtml(firstSubsection.title, firstSubsection.blocks, manualImages, '', firstSubsection.key, { subsection: true });
       const remainingHtml = remainingSubsections.map((subsection) => sectionHtml(subsection.title, subsection.blocks, manualImages, '', subsection.key, { subsection: true })).join('');
-      return `<section class="report-section technical-section allow-break${section.forcePageBefore ? ' force-page-before' : ''}"><div class="section-opening"><h2 class="report-section-title">Technical Data</h2>${firstHtml}</div>${remainingHtml}</section>`;
+      return `<section class="report-section technical-section allow-break"><div class="section-opening"><h2 class="report-section-title">Technical Data</h2>${firstHtml}</div>${remainingHtml}</section>`;
     }
     const extra = section.key === 'observation' ? extras.studentObservation || '' : section.key === 'result' ? extras.studentResult || '' : '';
-    return sectionHtml(section.title, section.blocks, manualImages, extra, section.key, { forcePageBefore: section.forcePageBefore });
+    return sectionHtml(section.title, section.blocks, manualImages, extra, section.key, {});
   }).join('');
 }
 
@@ -588,9 +573,6 @@ export function buildCompleteExperimentHtml({ user, product, manual, experiment,
     .section-opening, .observation-opening, .keep-together, .table--small, .graph-block, .graph-values-block, .signoff-block, .completion-summary-block { break-inside: avoid; page-break-inside: avoid; }
     .keep-with-next { break-after: avoid; page-break-after: avoid; }
     .allow-break { break-inside: auto; page-break-inside: auto; }
-    .force-page-before { break-before: page; page-break-before: always; }
-    .page-break-before { break-before: page; page-break-before: always; }
-    .page-break-after { break-after: page; page-break-after: always; }
     .report-details-page { break-after: page; page-break-after: always; }
     .cover { background: #FFFFFF; border: 1px solid #E2E8F0; padding: 10px 12px; border-radius: 5px; break-inside: avoid; page-break-inside: avoid; }
     .report-details-page .report-heading, .report-details-page .report-section-title { margin-top: 11px; margin-bottom: 5px; }
@@ -623,16 +605,17 @@ export function buildCompleteExperimentHtml({ user, product, manual, experiment,
     .pdf-image--diagram img { max-width: 100%; max-height: 125mm; }
     .pdf-image--wide-diagram { margin: 7px 0 12px; }
     .pdf-image--wide-diagram img { max-width: 100%; max-height: 100mm; }
-    .pdf-image--document-page { text-align: center; margin: 6px 0 10px; break-inside: avoid; page-break-inside: avoid; }
-    .pdf-image--document-page img { display: block; max-width: 94%; max-height: 245mm; width: auto; height: auto; object-fit: contain; margin: 0 auto; }
     .observation-section { break-before: page; page-break-before: always; }
-    .observation-section > .pdf-image--document-page { break-before: page; page-break-before: always; }
-    .observation-section .pdf-image--document-page + .pdf-image--document-page { break-before: page; page-break-before: always; }
+    .document-page { break-inside: avoid; page-break-inside: avoid; overflow: hidden; width: 100%; text-align: center; }
+    .document-page--first { break-inside: avoid; page-break-inside: avoid; }
+    .document-page--continuation { break-before: page; page-break-before: always; }
+    .pdf-image--document-page { text-align: center; margin: 4px 0 6px; break-inside: avoid; page-break-inside: avoid; }
+    .pdf-image--document-page img { display: block; max-width: 100%; width: auto; height: auto; object-fit: contain; margin: 0 auto; }
     .pdf-image--photo, .pdf-image--signal, .pdf-image--signal-wide, .pdf-image--wide-photo { text-align: center; margin: 8px 0 14px; break-inside: avoid; page-break-inside: avoid; }
     .pdf-image--photo img { max-width: 78%; max-height: 125mm; }
     .pdf-image--wide-photo img { max-width: 88%; max-height: 110mm; }
-    .pdf-image--signal img { max-width: 72%; max-height: 125mm; }
-    .pdf-image--signal-wide img { max-width: 88%; max-height: 105mm; }
+    .pdf-image--signal img { max-width: 68%; max-height: 108mm; }
+    .pdf-image--signal-wide img { max-width: 90%; max-height: 95mm; }
     .image-caption { margin-top: 5px; font-size: 8.5pt; line-height: 1.3; color: #64748B; text-align: center; break-inside: avoid; page-break-inside: avoid; }
     .image-warning { margin: 10px 0 12px; padding: 8px 10px; border: 1px solid #FEC84B; background: #FFFAEB; color: #A15C07; font-weight: 700; break-inside: avoid; page-break-inside: avoid; }
     .note { border-left: 4px solid #0B5CAD; background: #F8FAFC; padding: 8px 10px; margin: 8px 0 12px; }
@@ -641,8 +624,8 @@ export function buildCompleteExperimentHtml({ user, product, manual, experiment,
     .table--small { break-inside: avoid; page-break-inside: avoid; }
     .table--wide .report-table th, .table--wide .report-table td, .table--long .report-table th, .table--long .report-table td { font-size: 9pt; padding: 5px 6px; }
     .graph-block { margin-top: 8px; break-inside: avoid; page-break-inside: avoid; }
-    .graph-image, .graph-container { display: block; max-width: 94%; max-height: 92mm; width: auto; height: auto; margin: 7px auto 0; }
-    .graph-values-block { margin-top: 10px; break-inside: avoid; page-break-inside: avoid; }
+    .graph-image, .graph-container { display: block; max-width: 92%; max-height: 88mm; width: auto; height: auto; margin: 7px auto 0; }
+    .graph-values-block { margin-top: 10px; break-inside: auto; page-break-inside: auto; }
     .signoff-block { margin-top: 18px; break-inside: avoid; page-break-inside: avoid; }
     .signature-row { display: flex; gap: 28px; margin-top: 24px; }
     .signature-column { width: 50%; }
