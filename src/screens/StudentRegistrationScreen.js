@@ -67,10 +67,7 @@ export default function StudentRegistrationScreen({ navigation }) {
         { text: 'OK', onPress: () => navigation.reset({ index: 0, routes: [{ name: 'Home' }] }) },
       ]);
     } catch (registrationError) {
-      Alert.alert(
-        'Registration failed',
-        `Tried email: ${email}\n\n${registrationError.message || 'Unable to register student.'}`
-      );
+      Alert.alert('Registration failed', 'Unable to register student. Please check the details and try again.');
     } finally {
       setSubmitting(false);
     }

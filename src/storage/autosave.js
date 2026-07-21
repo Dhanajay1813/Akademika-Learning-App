@@ -1,8 +1,7 @@
 import { getCurrentUser, getDrafts, setDrafts } from './storage';
 import { makeId } from '../utils/ids';
 import { calculateProgress } from '../utils/progress';
-
-const getDraftOwnerId = (user) => user?.id || user?.firebaseUid || user?.email || 'local-user';
+import { getDraftOwnerId } from '../auth/userRole';
 
 export const saveDraftPatch = async ({ productId, experimentId, patch = {}, openedSection }) => {
   const user = await getCurrentUser();

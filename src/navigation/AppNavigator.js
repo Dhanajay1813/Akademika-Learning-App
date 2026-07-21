@@ -17,7 +17,6 @@ import ExperimentsScreen from '../screens/ExperimentsScreen';
 import ExperimentMenuScreen from '../screens/ExperimentMenuScreen';
 import TechnicalDataScreen from '../screens/TechnicalDataScreen';
 import ExperimentContentScreen from '../screens/ExperimentContentScreen';
-import ContentEditorScreen from '../screens/ContentEditorScreen';
 import ReferenceSignalScreen from '../screens/ReferenceSignalScreen';
 import CaptureImageScreen from '../screens/CaptureImageScreen';
 import TableScreen from '../screens/TableScreen';
@@ -60,7 +59,6 @@ export default function AppNavigator() {
           <Stack.Screen name="ExperimentMenu" component={ExperimentMenuScreen} options={{ title: 'Experiment Menu' }} />
           <Stack.Screen name="TechnicalData" component={TechnicalDataScreen} options={{ title: 'Technical Data' }} />
           <Stack.Screen name="ExperimentContent" component={ExperimentContentScreen} options={{ title: 'Experiment Content' }} />
-          <Stack.Screen name="ContentEditor" component={ContentEditorScreen} options={{ title: 'ACS Content Entry' }} />
           <Stack.Screen name="ReferenceSignal" component={ReferenceSignalScreen} options={{ title: 'Reference Signal' }} />
           <Stack.Screen name="CaptureImage" component={CaptureImageScreen} options={{ title: 'Your Signal' }} />
           <Stack.Screen name="Table" component={TableScreen} />

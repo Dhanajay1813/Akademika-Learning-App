@@ -3,7 +3,7 @@
     "acs": {
       "manualId": "acs",
       "productId": "acs",
-      "categoryId": "analog_communication",
+      "categoryId": "analog-communication",
       "productName": "ACS: Analog Communication Training System",
       "categoryName": "Analog Communication",
       "experiments": [

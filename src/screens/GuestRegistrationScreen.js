@@ -62,10 +62,7 @@ export default function GuestRegistrationScreen({ navigation }) {
         { text: 'OK', onPress: () => navigation.reset({ index: 0, routes: [{ name: 'Home' }] }) },
       ]);
     } catch (registrationError) {
-      Alert.alert(
-        'Registration failed',
-        `Tried email: ${email}\n\n${registrationError.message || 'Unable to register guest.'}`
-      );
+      Alert.alert('Registration failed', 'Unable to register guest. Please check the details and try again.');
     } finally {
       setSubmitting(false);
     }

@@ -1,10 +1,12 @@
-export const isValidMobile = (value) => /^[6-9]\d{9}$/.test(value.trim());
+const normalizePhone = (value) => value.trim().replace(/[\s().-]/g, '');
+
+export const isValidMobile = (value) => /^\+?[1-9]\d{6,14}$/.test(normalizePhone(value));
 export const isValidEmail = (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
 
 export const validateProfileCompletion = (values, userType) => {
   if (!values.fullName?.trim()) return 'Full Name is required.';
   if (!values.mobile?.trim()) return 'Mobile Number is required.';
-  if (!isValidMobile(values.mobile)) return 'Enter a valid 10-digit mobile number.';
+  if (!isValidMobile(values.mobile)) return 'Enter a valid phone number with country code if needed.';
   if (!values.email?.trim()) return 'Email ID is required.';
   if (!isValidEmail(values.email)) return 'Enter a valid email ID.';
 

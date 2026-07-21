@@ -23,7 +23,7 @@ export default function ForgotPasswordScreen() {
       await resetPassword(normalizedEmail);
       Alert.alert('Check your inbox!', 'We sent you a password reset link.');
     } catch (error) {
-      Alert.alert('Password reset failed', error.message || 'Unable to send reset link.');
+      Alert.alert('Password reset failed', 'Unable to send reset link. Please check the email ID and try again.');
     } finally {
       setSubmitting(false);
     }

@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
+import { Image, StyleSheet, View } from 'react-native';
 import { colors } from '../constants/colors';
 import { getCurrentUser } from '../storage/storage';
 
@@ -15,13 +15,12 @@ export default function SplashScreen({ navigation }) {
 
   return (
     <View style={styles.wrap}>
-      <Text style={styles.logo}>Akademika Learning App</Text>
-      <ActivityIndicator color={colors.primary} size="large" />
+      <Image source={require('../../assets/icon.png')} style={styles.logo} resizeMode="contain" />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   wrap: { flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.background, padding: 24 },
-  logo: { fontSize: 28, fontWeight: '800', color: colors.primary, marginBottom: 24, textAlign: 'center' },
+  logo: { width: 168, height: 168 },
 });

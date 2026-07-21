@@ -23,7 +23,6 @@ export async function registerGuest(email, password, fullName, mobileNumber, ter
 
     return userCredential.user;
   } catch (error) {
-    console.error('Guest registration failed:', error.message);
     throw error;
   }
 }
@@ -57,7 +56,6 @@ export async function registerStudent(
 
     return userCredential.user;
   } catch (error) {
-    console.error('Student registration failed:', error.message);
     throw error;
   }
 }
@@ -106,7 +104,6 @@ export async function loginUser(email, password) {
       },
     };
   } catch (error) {
-    console.error('Login failed:', error.message);
     throw error;
   }
 }
@@ -115,7 +112,6 @@ export async function logoutUser() {
   try {
     await signOut(auth);
   } catch (error) {
-    console.error('Logout failed:', error.message);
     throw error;
   }
 }
@@ -125,7 +121,6 @@ export async function resetPassword(email) {
     await sendPasswordResetEmail(auth, email);
     return true;
   } catch (error) {
-    console.error('Password reset failed:', error.message);
     throw error;
   }
 }

@@ -8,8 +8,7 @@ import { colors } from '../constants/colors';
 import { getExperimentById } from '../data/experiments';
 import { getProductById } from '../data/products';
 import { getCurrentUser, getDrafts } from '../storage/storage';
-
-const getDraftOwnerId = (user) => user?.id || user?.firebaseUid || user?.email || 'local-user';
+import { getDraftOwnerId, isGuestUser } from '../auth/userRole';
 
 export default function WorkbookScreen({ navigation }) {
   const [tab, setTab] = useState('progress');
@@ -18,12 +17,16 @@ export default function WorkbookScreen({ navigation }) {
   useFocusEffect(useCallback(() => {
     (async () => {
       const user = await getCurrentUser();
+      if (isGuestUser(user)) {
+        navigation.replace('Home');
+        return;
+      }
       const userId = getDraftOwnerId(user);
       const all = await getDrafts();
       const visibleDrafts = all.filter((draft) => !draft.userId || draft.userId === userId);
       setDrafts(visibleDrafts);
     })();
-  }, []));
+  }, [navigation]));
 
   const shown = drafts.filter((draft) => (tab === 'completed' ? draft.pdfGenerated : !draft.pdfGenerated));
 
@@ -40,18 +43,20 @@ export default function WorkbookScreen({ navigation }) {
       {shown.map((draft) => {
         const product = getProductById(draft.productId);
         const experiment = getExperimentById(draft.experimentId);
-        const subtitle = (product?.name || 'Product') + '\nLast saved: ' + (draft.lastSavedAt ? new Date(draft.lastSavedAt).toLocaleString() : 'Not saved') + '\nProgress: ' + (draft.progress || 0) + '%';
+        const subtitle = (product?.name || 'Product') + '\n'
+          + 'Last saved: ' + (draft.lastSavedAt ? new Date(draft.lastSavedAt).toLocaleString() : 'Not saved') + '\n'
+          + 'Progress: ' + (draft.progress || 0) + '%';
 
         return (
           <AppCard key={draft.id} title={experiment?.title || 'Experiment'} subtitle={subtitle}>
             {tab === 'completed' ? (
               <>
                 <Text style={styles.status}>PDF status: Generated</Text>
-                <AppButton title="View PDF" onPress={() => navigation.navigate('GeneratePDF', { productId: draft.productId, experimentId: draft.experimentId })} />
+                <AppButton title="View PDF" onPress={() => navigation.navigate('GeneratePDF', { productId: draft.productId, experimentId: draft.experimentId, manualId: draft.manualId || product?.manualId, allowGuestWorkbookAccess: true })} />
                 <AppButton title="Share" onPress={() => Alert.alert('Share', 'Open generated PDF screen to share.')} variant="secondary" />
               </>
             ) : (
-              <AppButton title="Resume" onPress={() => navigation.navigate('ExperimentMenu', { productId: draft.productId, experimentId: draft.experimentId })} />
+              <AppButton title="Resume" onPress={() => navigation.navigate('ExperimentMenu', { productId: draft.productId, experimentId: draft.experimentId, manualId: draft.manualId || product?.manualId, allowGuestWorkbookAccess: true })} />
             )}
           </AppCard>
         );

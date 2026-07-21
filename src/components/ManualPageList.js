@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { FlatList, Image, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 import { colors } from '../constants/colors';
 import { getManualBlockImageSource, getManualPageSource } from '../data/manualData';
@@ -119,10 +119,32 @@ function ManualBlock({ manualId, block, width, maxHeight }) {
   );
 }
 
+const getPrefetchSources = (manualId, items) => {
+  const sources = [];
+  for (const item of items || []) {
+    if (isContentBlock(item)) {
+      if (item.type !== 'image') continue;
+      for (const imageItem of getBlockImageItems(item)) {
+        sources.push(getManualBlockImageSource(manualId, imageItem.imageFile));
+      }
+    } else {
+      sources.push(getManualPageSource(manualId, item));
+    }
+  }
+  return sources
+    .map((source) => source?.uri)
+    .filter(Boolean);
+};
+
 export default function ManualPageList({ manualId, pageFiles }) {
   const { height: windowHeight, width: windowWidth } = useWindowDimensions();
   const imageWidth = Math.max(180, windowWidth - 36);
   const imageMaxHeight = Math.max(220, windowHeight * 0.72);
+
+  useEffect(() => {
+    const uris = getPrefetchSources(manualId, pageFiles).slice(0, 8);
+    uris.forEach((uri) => Image.prefetch(uri));
+  }, [manualId, pageFiles]);
 
   if (!pageFiles?.length) {
     return (
@@ -142,9 +164,10 @@ export default function ManualPageList({ manualId, pageFiles }) {
           ? <ManualBlock manualId={manualId} block={item} width={imageWidth} maxHeight={imageMaxHeight} />
           : <ManualPage manualId={manualId} pageFile={item} width={imageWidth} maxHeight={imageMaxHeight} />
       )}
-      initialNumToRender={4}
-      maxToRenderPerBatch={6}
-      windowSize={5}
+      initialNumToRender={1}
+      maxToRenderPerBatch={2}
+      updateCellsBatchingPeriod={80}
+      windowSize={3}
       removeClippedSubviews
       contentContainerStyle={styles.list}
     />

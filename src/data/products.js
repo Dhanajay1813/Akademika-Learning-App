@@ -1,18 +1,10 @@
-import manualLinkReport from './json/manual_link_report.json';
 import { submittedManualIndex } from '../content/contentRegistry';
-
-const legacyManualIdsByProduct = Object.fromEntries(
-  manualLinkReport.matchedProducts.map(({ productId, manualId }) => [productId, manualId])
-);
 
 const submittedManualIdsByProduct = Object.fromEntries(
   (submittedManualIndex.manuals || []).map(({ productId, manualId }) => [productId, manualId])
 );
 
-const manualIdsByProduct = {
-  ...legacyManualIdsByProduct,
-  ...submittedManualIdsByProduct,
-};
+const manualIdsByProduct = submittedManualIdsByProduct;
 
 export const productCategories = [
   { id: 'analog-communication', name: 'Analog Communication' },
