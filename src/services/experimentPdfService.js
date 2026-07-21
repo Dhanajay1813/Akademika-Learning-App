@@ -52,9 +52,16 @@ function imageWarning(label) {
   return `<div class="image-warning">${escapeHtml(label || 'Image')} could not be included.</div>`;
 }
 
-function reportImageHtml(dataUri, caption, alt) {
+function imageVariantForSection(sectionKey) {
+  if (['functionalBlock', 'datasheet', 'blockDiagram', 'circuitDiagram', 'referenceSignal'].includes(sectionKey)) return 'diagram';
+  if (sectionKey === 'observation') return 'document-page';
+  return 'photo';
+}
+
+function reportImageHtml(dataUri, caption, alt, variant = 'photo') {
   if (!dataUri) return imageWarning(alt || caption || 'Image');
-  return `<div class="report-image"><img src="${dataUri}" alt="${escapeHtml(alt || caption || 'Experiment image')}"/><div class="image-caption">${escapeHtml(caption || '')}</div></div>`;
+  const captionHtml = hasText(caption) ? `<div class="image-caption">${escapeHtml(caption)}</div>` : '';
+  return `<div class="pdf-image pdf-image--${variant} keep-together"><img src="${dataUri}" alt="${escapeHtml(alt || caption || 'Experiment image')}"/>${captionHtml}</div>`;
 }
 
 function imageItemsFromBlock(block) {
@@ -125,23 +132,26 @@ async function prepareReportImages({ manualId, sections = {}, capturedImages = [
   return { manualImages, captured, warnings, temporaryUris };
 }
 
-function structuredTextHtml(text) {
-  if (!hasText(text)) return '';
+function structuredTextItems(text) {
+  if (!hasText(text)) return [];
   const lines = String(text).replace(/\r\n/g, '\n').split('\n');
-  let html = '';
+  const items = [];
   let list = [];
   let listType = null;
   let paragraph = [];
 
   const flushParagraph = () => {
     if (!paragraph.length) return;
-    html += `<p>${paragraph.map(escapeHtml).join('<br/>')}</p>`;
+    items.push(`<p class="report-paragraph">${paragraph.map(escapeHtml).join('<br/>')}</p>`);
     paragraph = [];
   };
   const flushList = () => {
     if (!list.length) return;
-    const tag = listType === 'numbered' ? 'ol' : 'ul';
-    html += `<${tag}>${list.map((item) => `<li>${escapeHtml(item)}</li>`).join('')}</${tag}>`;
+    if (listType === 'numbered') {
+      items.push(`<div class="report-numbered-list">${list.map((item) => `<div class="report-numbered-item"><div class="report-numbered-marker">${escapeHtml(item.marker)}.</div><div class="report-numbered-body">${escapeHtml(item.body)}</div></div>`).join('')}</div>`);
+    } else {
+      items.push(`<ul class="report-list">${list.map((item) => `<li>${escapeHtml(item.body)}</li>`).join('')}</ul>`);
+    }
     list = [];
     listType = null;
   };
@@ -160,7 +170,7 @@ function structuredTextHtml(text) {
       const nextType = numbered ? 'numbered' : 'bullet';
       if (listType && listType !== nextType) flushList();
       listType = nextType;
-      list.push(numbered ? numbered[2] : bulleted[1]);
+      list.push(numbered ? { marker: numbered[1], body: numbered[2] } : { body: bulleted[1] });
       return;
     }
     flushList();
@@ -168,39 +178,61 @@ function structuredTextHtml(text) {
   });
   flushParagraph();
   flushList();
-  return html;
+  return items;
+}
+
+function structuredTextHtml(text) {
+  return structuredTextItems(text).join('');
+}
+
+function reportTableHtml({ columns = [], rows = [], className = '', tableText = '' }) {
+  if (hasText(tableText)) return `<pre class="manual-table-text">${escapeHtml(tableText)}</pre>`;
+  const meaningfulRows = rows.filter((row) => Array.isArray(row) && row.some((cell) => hasText(String(cell || ''))));
+  if (!columns.length && !meaningfulRows.length) return '';
+  const header = columns.length ? `<thead><tr>${columns.map((column) => `<th>${escapeHtml(column)}</th>`).join('')}</tr></thead>` : '';
+  const columnBasis = columns.length ? columns : meaningfulRows[0] || [];
+  const body = meaningfulRows
+    .map((row) => `<tr>${columnBasis.map((_, index) => `<td>${escapeHtml(row[index] || '')}</td>`).join('')}</tr>`)
+    .join('');
+  return body ? `<table class="report-table ${className}">${header}<tbody>${body}</tbody></table>` : '';
 }
 
 function manualTableHtml(block) {
   const rows = Array.isArray(block?.rows) ? block.rows : [];
   const columns = Array.isArray(block?.columns) ? block.columns : [];
   if (!columns.length && !rows.length && !hasText(block?.tableData)) return '';
-  if (hasText(block?.tableData)) return `<pre class="manual-table-text">${escapeHtml(block.tableData)}</pre>`;
-  const header = columns.length ? `<thead><tr>${columns.map((column) => `<th>${escapeHtml(column)}</th>`).join('')}</tr></thead>` : '';
-  const body = rows
-    .filter((row) => Array.isArray(row) && row.some((cell) => hasText(String(cell || ''))))
-    .map((row) => `<tr>${(columns.length ? columns : row).map((_, index) => `<td>${escapeHtml(row[index] || '')}</td>`).join('')}</tr>`)
-    .join('');
-  return body ? `<table>${header}<tbody>${body}</tbody></table>` : '';
+  return reportTableHtml({ columns, rows, tableText: block?.tableData });
 }
 
-function blockHtml(block, manualImages = {}) {
-  if (!block) return '';
+function blockHtmlItems(block, manualImages = {}, sectionKey = '') {
+  if (!block) return [];
   if (block.type === 'image') {
     return imageItemsFromBlock(block).map((item) => (
       manualImages[item.imageFile]
-        ? reportImageHtml(manualImages[item.imageFile], item.caption || block.caption || '', item.caption || 'Manual image')
+        ? reportImageHtml(manualImages[item.imageFile], item.caption || block.caption || '', item.caption || 'Manual image', imageVariantForSection(sectionKey))
         : imageWarning(item.caption || block.caption || 'Manual image')
-    )).join('');
+    ));
   }
-  if (block.type === 'table') return manualTableHtml(block);
-  if (block.type === 'note') return `<div class="note"><strong>Note:</strong>${structuredTextHtml(block.text || block.note || '')}</div>`;
-  return structuredTextHtml(block.text || block.tableData || '');
+  if (block.type === 'table') {
+    const table = manualTableHtml(block);
+    return table ? [`<div class="table-block">${table}</div>`] : [];
+  }
+  if (block.type === 'note') return [`<div class="note keep-together"><strong>Note:</strong>${structuredTextHtml(block.text || block.note || '')}</div>`];
+  return structuredTextItems(block.text || block.tableData || '');
 }
 
-function blocksHtml(blocks, manualImages = {}) {
+function blockHtml(block, manualImages = {}, sectionKey = '') {
+  return blockHtmlItems(block, manualImages, sectionKey).join('');
+}
+
+function blockItemsHtml(blocks, manualImages = {}, sectionKey = '') {
+  if (!Array.isArray(blocks)) return structuredTextItems(blocks);
+  return blocks.flatMap((block) => blockHtmlItems(block, manualImages, sectionKey)).filter(Boolean);
+}
+
+function blocksHtml(blocks, manualImages = {}, sectionKey = '') {
   if (!Array.isArray(blocks)) return structuredTextHtml(blocks);
-  return blocks.map((block) => blockHtml(block, manualImages)).filter(Boolean).join('');
+  return blocks.map((block) => blockHtml(block, manualImages, sectionKey)).filter(Boolean).join('');
 }
 
 function hasRenderableBlocks(blocks) {
@@ -214,10 +246,11 @@ function hasRenderableBlocks(blocks) {
   });
 }
 
-function sectionHtml(title, blocks, manualImages, extra = '') {
-  const body = blocksHtml(blocks, manualImages);
-  if (!body && !extra) return '';
-  return `<section><h2>${escapeHtml(title)}</h2>${body}${extra}</section>`;
+function sectionHtml(title, blocks, manualImages, extra = '', sectionKey = '') {
+  const items = blockItemsHtml(blocks, manualImages, sectionKey);
+  if (!items.length && !extra) return '';
+  const first = items.shift() || '';
+  return `<section class="report-section allow-break"><div class="section-opening"><h2 class="report-heading">${escapeHtml(title)}</h2>${first}</div>${items.join('')}${extra}</section>`;
 }
 
 function userDetailsHtml(user = {}) {
@@ -230,30 +263,26 @@ function userDetailsHtml(user = {}) {
     ['Registration / Roll Number', user.rollNumber || user.registrationNumber],
     ['Semester / Year', user.semesterYear],
   ].filter(([, value]) => hasText(value));
-  return rows.length ? `<table>${rows.map(([label, value]) => `<tr><th>${escapeHtml(label)}</th><td>${escapeHtml(value)}</td></tr>`).join('')}</table>` : '<p>No student details available.</p>';
+  return rows.length ? `<table class="report-table report-meta-table"><tbody>${rows.map(([label, value]) => `<tr><th class="label-column">${escapeHtml(label)}</th><td class="value-column">${escapeHtml(value)}</td></tr>`).join('')}</tbody></table>` : '<p class="report-paragraph">No student details available.</p>';
 }
 
 function completionHtml(completionDetails) {
   const details = completionDetails || { percentage: 0, completedCount: 0, totalCount: 0, completedItems: [] };
-  return `<section><h2>Completion Summary</h2><p><strong>Experiment Status:</strong> ${details.percentage === 100 ? 'Completed' : 'Incomplete'}</p><p><strong>Progress:</strong> ${details.percentage || 0}%</p><p><strong>Completed Requirements:</strong> ${details.completedCount || 0} of ${details.totalCount || 0}</p><ul>${(details.completedItems || []).map((item) => `<li>✓ ${escapeHtml(item.completeLabel || item.label)}</li>`).join('')}</ul></section>`;
+  return `<section class="report-section completion-section"><div class="section-opening completion-opening"><h2 class="report-heading">Completion Summary</h2><p class="report-paragraph"><strong>Experiment Status:</strong> ${details.percentage === 100 ? 'Completed' : 'Incomplete'}</p><p class="report-paragraph"><strong>Progress:</strong> ${details.percentage || 0}%</p><p class="report-paragraph"><strong>Completed Requirements:</strong> ${details.completedCount || 0} of ${details.totalCount || 0}</p><ul class="completion-list">${(details.completedItems || []).map((item) => `<li>${escapeHtml(item.completeLabel || item.label)}</li>`).join('')}</ul></div></section>`;
 }
 
 function capturedSignalsHtml(resolvedImages = []) {
   if (!resolvedImages.length) return '';
-  return `<section><h2>Captured Signal / Your Signal</h2>${resolvedImages.map(({ record, dataUri, failed }) => {
+  return resolvedImages.map(({ record, dataUri, failed }) => {
     const caption = record?.caption || record?.title || 'Captured signal';
-    return failed || !dataUri ? `${imageWarning('Captured signal image')}<div class="image-caption">${escapeHtml(caption)}</div>` : reportImageHtml(dataUri, caption, 'Captured signal');
-  }).join('')}</section>`;
+    const imageHtml = failed || !dataUri ? `${imageWarning('Captured signal image')}<div class="image-caption">${escapeHtml(caption)}</div>` : reportImageHtml(dataUri, caption, 'Captured signal', 'photo');
+    return `<section class="report-section signal-section keep-together"><h2 class="report-heading">Captured Signal / Your Signal</h2>${imageHtml}</section>`;
+  }).join('');
 }
 
 function studentTableHtml(table) {
   if (!hasFilledTable(table)) return '';
-  const header = (table.columns || []).map((column) => `<th>${escapeHtml(column)}</th>`).join('');
-  const rows = (table.rows || [])
-    .filter((row) => row.some((cell) => hasText(String(cell || ''))))
-    .map((row) => `<tr>${(table.columns || []).map((_, index) => `<td>${escapeHtml(row[index] || '')}</td>`).join('')}</tr>`)
-    .join('');
-  return `<section><h2>Observation Tables</h2><h3>${escapeHtml(table.tableName || 'Observation Table')}</h3><table><thead><tr>${header}</tr></thead><tbody>${rows}</tbody></table></section>`;
+  return `<section class="report-section table-section"><div class="section-opening"><h2 class="report-heading">Observation Tables</h2><h3 class="report-subheading">${escapeHtml(table.tableName || 'Observation Table')}</h3>${reportTableHtml({ columns: table.columns || [], rows: table.rows || [], className: 'student-table' })}</div></section>`;
 }
 
 function graphSvgHtml(table, graph) {
@@ -273,7 +302,7 @@ function graphSvgHtml(table, graph) {
   const yRange = maxY - minY || 1;
   const scaled = points.map((point) => ({ x: padding + ((point.x - minX) / xRange) * (width - padding * 2), y: height - padding - ((point.y - minY) / yRange) * (height - padding * 2) }));
   const polyline = scaled.map((point) => `${point.x},${point.y}`).join(' ');
-  return `<section><h2>Graphs</h2><p><strong>Type:</strong> ${escapeHtml(graph.graphType || 'line')} | <strong>X-Axis:</strong> ${escapeHtml(graph.xAxis)} | <strong>Y-Axis:</strong> ${escapeHtml(graph.yAxis)}</p><svg viewBox="0 0 ${width} ${height}" width="100%" height="300" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="0" width="${width}" height="${height}" fill="#F8FAFC" stroke="#D9E2EC"/><line x1="${padding}" y1="${padding}" x2="${padding}" y2="${height - padding}" stroke="#65758B"/><line x1="${padding}" y1="${height - padding}" x2="${width - padding}" y2="${height - padding}" stroke="#65758B"/><text x="${padding}" y="24" font-size="13" fill="#65758B">${escapeHtml(graph.yAxis || 'Y')}</text><text x="${width - padding - 80}" y="${height - 14}" font-size="13" fill="#65758B">${escapeHtml(graph.xAxis || 'X')}</text>${graph.graphType === 'line' && scaled.length > 1 ? `<polyline points="${polyline}" fill="none" stroke="#0B5CAD" stroke-width="3"/>` : ''}${scaled.map((point) => `<circle cx="${point.x}" cy="${point.y}" r="5" fill="#0B5CAD"/>`).join('')}</svg><h3>Graph Values</h3><table><thead><tr><th>${escapeHtml(graph.xAxis || 'X')}</th><th>${escapeHtml(graph.yAxis || 'Y')}</th></tr></thead><tbody>${points.map((point) => `<tr><td>${escapeHtml(point.x)}</td><td>${escapeHtml(point.y)}</td></tr>`).join('')}</tbody></table></section>`;
+  return `<section class="report-section graph-section"><div class="graph-block"><h2 class="report-heading">Graphs</h2><p class="report-paragraph"><strong>Type:</strong> ${escapeHtml(graph.graphType || 'line')} | <strong>X-Axis:</strong> ${escapeHtml(graph.xAxis)} | <strong>Y-Axis:</strong> ${escapeHtml(graph.yAxis)}</p><svg class="graph-image" viewBox="0 0 ${width} ${height}" width="100%" height="300" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="0" width="${width}" height="${height}" fill="#F8FAFC" stroke="#D9E2EC"/><line x1="${padding}" y1="${padding}" x2="${padding}" y2="${height - padding}" stroke="#65758B"/><line x1="${padding}" y1="${height - padding}" x2="${width - padding}" y2="${height - padding}" stroke="#65758B"/><text x="${padding}" y="24" font-size="13" fill="#65758B">${escapeHtml(graph.yAxis || 'Y')}</text><text x="${width - padding - 80}" y="${height - 14}" font-size="13" fill="#65758B">${escapeHtml(graph.xAxis || 'X')}</text>${graph.graphType === 'line' && scaled.length > 1 ? `<polyline points="${polyline}" fill="none" stroke="#0B5CAD" stroke-width="3"/>` : ''}${scaled.map((point) => `<circle cx="${point.x}" cy="${point.y}" r="5" fill="#0B5CAD"/>`).join('')}</svg></div><div class="graph-values-block"><h3 class="report-subheading">Graph Values</h3>${reportTableHtml({ columns: [graph.xAxis || 'X', graph.yAxis || 'Y'], rows: points.map((point) => [point.x, point.y]), className: 'graph-values-table' })}</div></section>`;
 }
 
 function studentRecordHtml(draft = {}) {
@@ -284,7 +313,7 @@ function studentRecordHtml(draft = {}) {
     hasText(draft.observation) ? 'Student Observation Record included above' : null,
     hasText(draft.result) ? 'Student Result / Conclusion included above' : null,
   ].filter(Boolean);
-  return entries.length ? `<section><h2>Student Experiment Record</h2><ul>${entries.map((entry) => `<li>${escapeHtml(entry)}</li>`).join('')}</ul></section>` : '';
+  return entries.length ? `<section class="report-section"><div class="section-opening"><h2 class="report-heading">Student Experiment Record</h2><ul class="report-list">${entries.map((entry) => `<li>${escapeHtml(entry)}</li>`).join('')}</ul></div></section>` : '';
 }
 
 export function buildReportContentList({ manualId, experiment, draft = {}, completionDetails }) {
@@ -324,41 +353,70 @@ export function buildCompleteExperimentHtml({ user, product, manual, experiment,
     ['PDF Generation Date', now.toLocaleString()],
   ].filter(([, value]) => hasText(value));
 
-  const preTechnicalSections = PRE_TECHNICAL_SECTION_ORDER.map(([key, label]) => sectionHtml(label, sections[key], resolvedImages.manualImages)).filter(Boolean).join('');
+  const preTechnicalSections = PRE_TECHNICAL_SECTION_ORDER.map(([key, label]) => sectionHtml(label, sections[key], resolvedImages.manualImages, '', key)).filter(Boolean).join('');
   const postTechnicalSections = POST_TECHNICAL_SECTION_ORDER.map(([key, label]) => {
-    if (key === 'observation') return sectionHtml(label, sections[key], resolvedImages.manualImages, studentRecord.observation ? `<h3>Student Observation Record</h3>${structuredTextHtml(studentRecord.observation)}` : '');
-    if (key === 'result') return sectionHtml(label, sections[key], resolvedImages.manualImages, studentRecord.result ? `<h3>Student Result</h3>${structuredTextHtml(studentRecord.result)}` : '');
-    return sectionHtml(label, sections[key], resolvedImages.manualImages);
+    const studentObservation = studentRecord.observation ? `<div class="section-opening"><h3 class="report-subheading">Student Observation Record</h3>${structuredTextHtml(studentRecord.observation)}</div>` : '';
+    const studentResult = studentRecord.result ? `<div class="section-opening"><h3 class="report-subheading">Student Result</h3>${structuredTextHtml(studentRecord.result)}</div>` : '';
+    if (key === 'observation') return sectionHtml(label, sections[key], resolvedImages.manualImages, studentObservation, key);
+    if (key === 'result') return sectionHtml(label, sections[key], resolvedImages.manualImages, studentResult, key);
+    return sectionHtml(label, sections[key], resolvedImages.manualImages, '', key);
   }).filter(Boolean).join('');
-  const technicalSections = TECHNICAL_ORDER.map(([key, label]) => sectionHtml(label, sections.technicalData?.[key], resolvedImages.manualImages)).filter(Boolean).join('');
-  const technicalHtml = technicalSections ? `<section><h2>Technical Data</h2>${technicalSections}</section>` : '';
-  const warningHtml = resolvedImages.warnings?.length ? `<section><h2>Image Preparation Warnings</h2><ul>${resolvedImages.warnings.map((warning) => `<li>${escapeHtml(warning.label)} could not be included.</li>`).join('')}</ul></section>` : '';
+  const technicalSectionItems = TECHNICAL_ORDER.map(([key, label]) => sectionHtml(label, sections.technicalData?.[key], resolvedImages.manualImages, '', key)).filter(Boolean);
+  const firstTechnicalSection = technicalSectionItems.shift() || '';
+  const technicalHtml = firstTechnicalSection ? `<section class="report-section technical-section allow-break"><div class="section-opening"><h2 class="report-heading">Technical Data</h2>${firstTechnicalSection}</div>${technicalSectionItems.join('')}</section>` : '';
+  const warningHtml = resolvedImages.warnings?.length ? `<section class="report-section"><div class="section-opening"><h2 class="report-heading">Image Preparation Warnings</h2><ul class="report-list">${resolvedImages.warnings.map((warning) => `<li>${escapeHtml(warning.label)} could not be included.</li>`).join('')}</ul></div></section>` : '';
 
   return `<!doctype html><html><head><meta name="viewport" content="width=device-width, initial-scale=1.0"/><style>
-    body { font-family: Arial, sans-serif; color: #152238; padding: 24px; line-height: 1.45; }
-    h1 { color: #0B5CAD; font-size: 28px; margin-bottom: 6px; }
-    h2 { color: #152238; font-size: 20px; margin-top: 24px; border-bottom: 1px solid #D9E2EC; padding-bottom: 6px; page-break-after: avoid; }
-    h3 { color: #152238; font-size: 16px; margin-top: 16px; page-break-after: avoid; }
-    p { white-space: normal; margin: 8px 0; }
-    ol, ul { margin-top: 8px; padding-left: 28px; }
-    li { margin-bottom: 6px; padding-left: 4px; }
-    table { border-collapse: collapse; width: 100%; table-layout: fixed; margin: 10px 0 16px; page-break-inside: auto; }
-    th, td { border: 1px solid #D9E2EC; padding: 7px; text-align: left; vertical-align: top; font-size: 12px; word-wrap: break-word; }
-    th { background: #EAF2FB; font-weight: 700; }
-    thead { display: table-header-group; }
-    .report-image, figure { width: 100%; margin: 12px 0 18px; text-align: center; page-break-inside: avoid; break-inside: avoid; }
-    .report-image img { display: block; max-width: 100%; max-height: 650px; width: auto; height: auto; margin: 0 auto; object-fit: contain; border: 1px solid #D9E2EC; }
-    .image-caption, figcaption { color: #667085; font-size: 11px; text-align: center; margin-top: 6px; }
-    .image-warning { margin: 12px 0; padding: 10px 12px; border: 1px solid #FEC84B; background: #FFFAEB; color: #A15C07; font-weight: 700; page-break-inside: avoid; }
-    section { page-break-inside: auto; }
-    .cover { background: #F8FAFC; border: 1px solid #D9E2EC; padding: 16px; border-radius: 8px; }
-    .note { border-left: 4px solid #0B5CAD; background: #F8FAFC; padding: 10px 12px; margin: 10px 0; }
-    .manual-table-text { white-space: pre-wrap; border: 1px solid #D9E2EC; padding: 10px; background: #F8FAFC; font-family: Arial, sans-serif; }
-    .signoff { margin-top: 36px; display: flex; justify-content: space-between; gap: 24px; }
-    .line { border-top: 1px solid #152238; padding-top: 8px; width: 42%; }
+    @page { size: A4; margin: 16mm 14mm 16mm 14mm; }
+    * { box-sizing: border-box; }
+    body { font-family: Arial, Helvetica, sans-serif; color: #172033; font-size: 10.8pt; line-height: 1.45; margin: 0; padding: 0; }
+    h1, h2, h3, p, ul, ol, figure, table { margin: 0; }
+    h1 { color: #0B5CAD; font-size: 20pt; line-height: 1.2; margin-bottom: 6px; }
+    .report-heading { color: #172033; font-size: 14.5pt; line-height: 1.25; margin: 18px 0 8px; border-bottom: 1px solid #D9E2EC; padding-bottom: 5px; break-after: avoid; page-break-after: avoid; }
+    .report-subheading { color: #172033; font-size: 12.5pt; line-height: 1.3; margin: 12px 0 7px; break-after: avoid; page-break-after: avoid; }
+    .report-paragraph { margin: 0 0 8px; line-height: 1.48; white-space: normal; orphans: 3; widows: 3; }
+    .report-section { margin: 0 0 14px; break-inside: auto; page-break-inside: auto; }
+    .section-opening, .keep-together, .table-block, .graph-block, .graph-values-block, .signoff-block { break-inside: avoid; page-break-inside: avoid; }
+    .keep-with-next { break-after: avoid; page-break-after: avoid; }
+    .allow-break { break-inside: auto; page-break-inside: auto; }
+    .page-break-before { break-before: page; page-break-before: always; }
+    .page-break-after { break-after: page; page-break-after: always; }
+    .cover { background: #F8FAFC; border: 1px solid #D9E2EC; padding: 12px 14px; border-radius: 6px; break-inside: avoid; page-break-inside: avoid; }
+    .report-table { width: 100%; border-collapse: collapse; table-layout: fixed; margin: 9px 0 14px; break-inside: auto; page-break-inside: auto; }
+    .report-table th, .report-table td { border: 1px solid #CBD5E1; padding: 6px 7px; text-align: left; vertical-align: top; font-size: 9.8pt; overflow-wrap: anywhere; word-break: normal; }
+    .report-table th { background: #EAF2FB; font-weight: 700; }
+    .report-table thead { display: table-header-group; }
+    .report-meta-table .label-column { width: 32%; }
+    .report-meta-table .value-column { width: 68%; }
+    .completion-opening { break-inside: avoid; page-break-inside: avoid; }
+    .completion-list { list-style: none; margin: 8px 0 14px; padding: 0; }
+    .completion-list li { position: relative; padding-left: 20px; margin: 4px 0; line-height: 1.4; break-inside: avoid; page-break-inside: avoid; }
+    .completion-list li::before { content: "✓"; position: absolute; left: 0; font-weight: 700; color: #087443; }
+    .report-list { margin: 7px 0 12px; padding-left: 20px; }
+    .report-list li { margin-bottom: 5px; padding-left: 3px; line-height: 1.42; break-inside: avoid; page-break-inside: avoid; }
+    .report-numbered-list { margin: 7px 0 12px; }
+    .report-numbered-item { display: flex; align-items: flex-start; break-inside: avoid; page-break-inside: avoid; margin-bottom: 5px; }
+    .report-numbered-marker { flex: 0 0 28px; text-align: right; margin-right: 8px; font-weight: 700; }
+    .report-numbered-body { flex: 1; min-width: 0; line-height: 1.45; }
+    .pdf-image { width: 100%; margin: 10px 0 16px; text-align: center; break-inside: avoid; page-break-inside: avoid; }
+    .pdf-image img { display: block; width: auto; height: auto; object-fit: contain; margin: 0 auto; border: 1px solid #D9E2EC; }
+    .pdf-image--diagram img { max-width: 100%; max-height: 520px; }
+    .pdf-image--document-page { text-align: center; break-before: auto; page-break-before: auto; }
+    .pdf-image--document-page img { max-width: 92%; max-height: 900px; }
+    .pdf-image--photo img { max-width: 88%; max-height: 560px; }
+    .image-caption { color: #667085; font-size: 9.5pt; text-align: center; margin-top: 5px; }
+    .image-warning { margin: 10px 0 12px; padding: 8px 10px; border: 1px solid #FEC84B; background: #FFFAEB; color: #A15C07; font-weight: 700; break-inside: avoid; page-break-inside: avoid; }
+    .note { border-left: 4px solid #0B5CAD; background: #F8FAFC; padding: 8px 10px; margin: 8px 0 12px; }
+    .manual-table-text { white-space: pre-wrap; border: 1px solid #CBD5E1; padding: 8px; background: #F8FAFC; font-family: Arial, Helvetica, sans-serif; font-size: 9.8pt; }
+    .graph-block { margin-top: 4px; }
+    .graph-image { display: block; max-width: 100%; max-height: 430px; margin: 8px auto 0; object-fit: contain; }
+    .graph-values-block { margin-top: 10px; }
+    .signoff-block { break-inside: avoid; page-break-inside: avoid; margin-top: 20px; }
+    .signoff { display: flex; justify-content: space-between; gap: 24px; margin-top: 28px; }
+    .line { border-top: 1px solid #172033; padding-top: 7px; width: 42%; font-size: 10pt; }
   </style></head><body>
-    <section class="cover"><h1>Akademika Learning</h1><h2>Complete Experiment Report</h2><table>${coverRows.map(([label, value]) => `<tr><th>${escapeHtml(label)}</th><td>${escapeHtml(value)}</td></tr>`).join('')}</table></section>
-    <section><h2>Student Details</h2>${userDetailsHtml(user)}</section>
+    <section class="cover"><h1>Akademika Learning</h1><h2 class="report-heading">Complete Experiment Report</h2><table class="report-table report-meta-table"><tbody>${coverRows.map(([label, value]) => `<tr><th class="label-column">${escapeHtml(label)}</th><td class="value-column">${escapeHtml(value)}</td></tr>`).join('')}</tbody></table></section>
+    <section class="report-section"><div class="section-opening"><h2 class="report-heading">Student Details</h2>${userDetailsHtml(user)}</div></section>
     ${completionHtml(completionDetails)}
     ${warningHtml}
     ${preTechnicalSections}
@@ -368,7 +426,7 @@ export function buildCompleteExperimentHtml({ user, product, manual, experiment,
     ${capturedSignalsHtml(resolvedImages.captured)}
     ${studentTableHtml(studentRecord.table)}
     ${graphSvgHtml(studentRecord.table, studentRecord.graph)}
-    ${completionDetails?.percentage === 100 ? '<section><h2>Sign-off</h2><div class="signoff"><div class="line">Student Signature</div><div class="line">Faculty Signature</div></div></section>' : ''}
+    ${completionDetails?.percentage === 100 ? '<section class="report-section signoff-block"><h2 class="report-heading">Sign-off</h2><div class="signoff"><div class="line">Student Signature</div><div class="line">Faculty Signature</div></div></section>' : ''}
   </body></html>`;
 }
 
