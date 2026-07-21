@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const crypto = require('crypto');
 
 const root = process.cwd();
 const indexPath = path.join(root, 'src/content/manualIndex.json');
@@ -17,11 +18,16 @@ const fail = (errors) => {
   }
 };
 
+const sha256 = (filePath) => crypto.createHash('sha256').update(fs.readFileSync(filePath)).digest('hex');
+
 const findAssetPath = (manualDir, imageFile) => {
+  const parsed = path.parse(imageFile);
+  const webpPath = path.join(manualDir, parsed.dir, `${parsed.name}.webp`);
+  if (parsed.ext.toLowerCase() !== '.webp' && fs.existsSync(webpPath)) return webpPath;
+
   const directPath = path.join(manualDir, imageFile);
   if (fs.existsSync(directPath)) return directPath;
 
-  const parsed = path.parse(imageFile);
   for (const extension of assetExtensions) {
     const candidate = path.join(manualDir, parsed.dir, `${parsed.name}${extension}`);
     if (fs.existsSync(candidate)) return candidate;
@@ -29,20 +35,22 @@ const findAssetPath = (manualDir, imageFile) => {
   return directPath;
 };
 
-const collectImageFiles = (manual) => {
-  const imageFiles = new Set();
-  const addImage = (value) => {
-    if (typeof value === 'string' && value.trim()) imageFiles.add(value);
+const collectImageItems = (manual) => {
+  const imageItems = [];
+  const seen = new Set();
+  const addItem = (item) => {
+    const imageFile = typeof item === 'string' ? item : item?.imageFile;
+    if (!imageFile || seen.has(imageFile)) return;
+    seen.add(imageFile);
+    imageItems.push(typeof item === 'string' ? { imageFile } : item);
   };
   const visitBlock = (block) => {
     if (!block || typeof block !== 'object') return;
-    addImage(block.imageFile);
-    if (Array.isArray(block.imageFiles)) {
-      block.imageFiles.forEach((item) => {
-        if (typeof item === 'string') addImage(item);
-        else if (item && typeof item === 'object') addImage(item.imageFile);
-      });
+    if (Array.isArray(block.imageFiles) && block.imageFiles.length) {
+      block.imageFiles.forEach(addItem);
+      return;
     }
+    addItem(block.imageFile);
   };
 
   (manual.experiments || []).forEach((experiment) => {
@@ -55,7 +63,7 @@ const collectImageFiles = (manual) => {
       }
     });
   });
-  return [...imageFiles].sort();
+  return imageItems.sort((a, b) => a.imageFile.localeCompare(b.imageFile));
 };
 
 const errors = [];
@@ -101,15 +109,23 @@ const seenManualIds = new Set();
   if (entry.experimentCount !== (manual.experiments || []).length) errors.push(`Experiment count mismatch for ${entry.manualId}.`);
 
   const manualDir = path.dirname(contentPath);
-  collectImageFiles(manual).forEach((imageFile) => {
+  collectImageItems(manual).forEach((item) => {
+    const imageFile = item.imageFile;
     if (isUnsafe(imageFile)) errors.push(`Unsafe imageFile in ${entry.manualId}: ${imageFile}`);
+    if (item.width !== undefined && Number(item.width) <= 0) errors.push(`Invalid width for ${entry.manualId}: ${imageFile}`);
+    if (item.height !== undefined && Number(item.height) <= 0) errors.push(`Invalid height for ${entry.manualId}: ${imageFile}`);
+    if (item.byteSize !== undefined && Number(item.byteSize) <= 0) errors.push(`Invalid byteSize for ${entry.manualId}: ${imageFile}`);
     const imagePath = findAssetPath(manualDir, imageFile);
     const relativeImagePath = toPosix(path.relative(root, imagePath));
     if (!relativeImagePath.startsWith('src/content/manuals/')) errors.push(`Manual image outside permanent content folder: ${imageFile}`);
     if (!fs.existsSync(imagePath)) {
       errors.push(`Missing manual image: ${relativeImagePath}`);
-    } else if (stripImageExtension(toPosix(path.relative(manualDir, imagePath))) !== stripImageExtension(imageFile)) {
-      errors.push(`Manual image extension fallback points to an unexpected file: ${imageFile}`);
+    } else {
+      if (stripImageExtension(toPosix(path.relative(manualDir, imagePath))) !== stripImageExtension(imageFile)) {
+        errors.push(`Manual image extension fallback points to an unexpected file: ${imageFile}`);
+      }
+      if (item.sha256 && sha256(imagePath) !== item.sha256) errors.push(`SHA-256 mismatch for ${entry.manualId}: ${imageFile}`);
+      if (item.byteSize && fs.statSync(imagePath).size !== Number(item.byteSize)) errors.push(`byteSize mismatch for ${entry.manualId}: ${imageFile}`);
     }
   });
 });

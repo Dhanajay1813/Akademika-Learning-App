@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const crypto = require('crypto');
 
 const root = process.cwd();
 const toPosix = (value) => value.split(path.sep).join('/');
@@ -10,6 +11,7 @@ const fail = (errors) => {
     process.exit(1);
   }
 };
+const sha256 = (filePath) => crypto.createHash('sha256').update(fs.readFileSync(filePath)).digest('hex');
 const isUnsafe = (value) => path.isAbsolute(value || '') || (value || '').split('/').includes('..') || (value || '').startsWith('data:') || (value || '').includes('base64,');
 
 const productsSource = fs.readFileSync(path.join(root, 'src/data/products.js'), 'utf8');
@@ -53,9 +55,16 @@ Object.entries(catalogs).forEach(([catalogId, entry]) => {
     if (pageNumbers.has(page.pageNumber)) errors.push(`Duplicate page number ${page.pageNumber} in ${catalogId}.`);
     pageNumbers.add(page.pageNumber);
     if (isUnsafe(page.imageFile)) errors.push(`Unsafe imageFile in ${catalogId}: ${page.imageFile}`);
+    if (page.width !== undefined && Number(page.width) <= 0) errors.push(`Invalid page width in ${catalogId}: ${page.imageFile}`);
+    if (page.height !== undefined && Number(page.height) <= 0) errors.push(`Invalid page height in ${catalogId}: ${page.imageFile}`);
+    if (page.byteSize !== undefined && Number(page.byteSize) <= 0) errors.push(`Invalid page byteSize in ${catalogId}: ${page.imageFile}`);
     const imagePath = path.join(path.dirname(contentPath), page.imageFile || '');
     if (!toPosix(path.relative(root, imagePath)).startsWith('src/content/catalogs/')) errors.push(`Image outside catalog folder: ${page.imageFile}`);
     if (!fs.existsSync(imagePath)) errors.push(`Missing page image: ${toPosix(path.relative(root, imagePath))}`);
+    else {
+      if (page.sha256 && sha256(imagePath) !== page.sha256) errors.push(`SHA-256 mismatch for catalog image: ${page.imageFile}`);
+      if (page.byteSize && fs.statSync(imagePath).size !== Number(page.byteSize)) errors.push(`byteSize mismatch for catalog image: ${page.imageFile}`);
+    }
   });
   if (content.coverImage) {
     if (isUnsafe(content.coverImage)) errors.push(`Unsafe cover image path in ${catalogId}.`);

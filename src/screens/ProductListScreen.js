@@ -1,9 +1,10 @@
-import { Image, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import ScreenContainer from '../components/ScreenContainer';
 import AppCard from '../components/AppCard';
 import AppButton from '../components/AppButton';
 import { colors } from '../constants/colors';
 import { getProductCategoryById, getProductsByCategory } from '../data/products';
+import OptimizedContentImage from '../components/OptimizedContentImage';
 
 export default function ProductListScreen({ route, navigation }) {
   const category = getProductCategoryById(route.params.categoryId);
@@ -14,7 +15,7 @@ export default function ProductListScreen({ route, navigation }) {
       {categoryProducts.map((product) => (
         <AppCard key={product.id} title={product.name}>
           {product.image ? (
-            <Image source={product.image} style={styles.image} resizeMode="contain" />
+            <OptimizedContentImage source={product.image} width="100%" height={180} style={styles.image} accessibilityLabel={product.name} recyclingKey={`product:${product.id}`} />
           ) : (
             <View style={styles.placeholder}>
               <Text style={styles.placeholderText}>Product image coming soon</Text>

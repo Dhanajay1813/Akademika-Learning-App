@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { Image, ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
+import { FlatList, Image as RNImage, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 import ScreenContainer from '../components/ScreenContainer';
 import ZoomableImage from '../components/ZoomableImage';
 import { ManualTextRenderer } from '../components/ContentBlockRenderer';
@@ -8,21 +8,22 @@ import { getProductById } from '../data/products';
 import { getCatalogContent } from '../services/catalogContentService';
 import { getCatalogImageSource } from '../services/catalogAssetService';
 
-function CatalogImage({ productId, imageFile, label, width, maxHeight }) {
+function CatalogImage({ productId, imageFile, label, width, maxHeight, metadata }) {
   const [failed, setFailed] = useState(false);
   const source = getCatalogImageSource(productId, imageFile);
   const height = useMemo(() => {
-    const resolved = source ? Image.resolveAssetSource(source) : null;
-    const sourceWidth = resolved?.width || 0;
-    const sourceHeight = resolved?.height || 0;
+    const resolved = source ? RNImage.resolveAssetSource(source) : null;
+    const sourceWidth = metadata?.width || resolved?.width || 0;
+    const sourceHeight = metadata?.height || resolved?.height || 0;
     const ratio = sourceWidth > 0 && sourceHeight > 0 ? sourceHeight / sourceWidth : 1.414;
     return Math.min(Math.max(width * ratio, 180), maxHeight);
-  }, [maxHeight, source, width]);
+  }, [maxHeight, metadata?.height, metadata?.width, source, width]);
+  const cacheKey = metadata?.sha256 ? `${productId}:${imageFile}:${metadata.sha256}` : `${productId}:${imageFile}`;
 
   return (
     <View style={styles.pageWrap}>
       {failed || !source ? (
-        <View style={[styles.image, styles.placeholder, { width, height }]}>
+        <View style={[styles.image, styles.placeholder, { width, height }]}> 
           <Text style={styles.placeholderText}>Catalog image missing.</Text>
         </View>
       ) : (
@@ -34,6 +35,8 @@ function CatalogImage({ productId, imageFile, label, width, maxHeight }) {
           imageStyle={styles.image}
           placeholderText="Catalog image missing."
           onError={() => setFailed(true)}
+          recyclingKey={`${productId}:${imageFile}`}
+          cacheKey={cacheKey}
         />
       )}
       {label ? <Text style={styles.pageLabel}>{label}</Text> : null}
@@ -49,6 +52,18 @@ export default function CatalogScreen({ route }) {
   const imageWidth = Math.max(180, windowWidth - 36);
   const imageMaxHeight = Math.max(240, windowHeight * 0.78);
 
+  const pageItems = useMemo(() => {
+    if (!catalog) return [];
+    const items = [];
+    if (catalog.coverImage) {
+      items.push({ key: 'cover', imageFile: catalog.coverImage, label: 'Cover', width: catalog.coverWidth, height: catalog.coverHeight, sha256: catalog.coverSha256 });
+    }
+    (catalog.pages || []).forEach((page) => {
+      items.push({ ...page, key: page.imageFile, label: `Page ${page.pageNumber}` });
+    });
+    return items;
+  }, [catalog]);
+
   if (!catalog) {
     return (
       <ScreenContainer title="Catalog">
@@ -59,39 +74,51 @@ export default function CatalogScreen({ route }) {
     );
   }
 
+  const header = (
+    <View style={styles.header}>
+      <Text style={styles.product}>{product?.name || catalog.productName}</Text>
+      <Text style={styles.title}>{catalog.title}</Text>
+      {catalog.version ? <Text style={styles.meta}>Version: {catalog.version}</Text> : null}
+      {catalog.revisionDate ? <Text style={styles.meta}>Revision: {catalog.revisionDate}</Text> : null}
+      {catalog.description ? (
+        <View style={styles.description}>
+          <ManualTextRenderer text={catalog.description} />
+        </View>
+      ) : null}
+      <Text style={styles.meta}>Pages: {catalog.pageCount}</Text>
+    </View>
+  );
+
   return (
     <ScreenContainer title="Catalog" scroll={false}>
-      <ScrollView contentContainerStyle={styles.scroll}>
-        <Text style={styles.product}>{product?.name || catalog.productName}</Text>
-        <Text style={styles.title}>{catalog.title}</Text>
-        {catalog.version ? <Text style={styles.meta}>Version: {catalog.version}</Text> : null}
-        {catalog.revisionDate ? <Text style={styles.meta}>Revision: {catalog.revisionDate}</Text> : null}
-        {catalog.description ? (
-          <View style={styles.description}>
-            <ManualTextRenderer text={catalog.description} />
-          </View>
-        ) : null}
-        <Text style={styles.meta}>Pages: {catalog.pageCount}</Text>
-        {catalog.coverImage ? (
-          <CatalogImage productId={productId} imageFile={catalog.coverImage} label="Cover" width={imageWidth} maxHeight={imageMaxHeight} />
-        ) : null}
-        {catalog.pages.map((page) => (
+      <FlatList
+        data={pageItems}
+        keyExtractor={(item) => item.key}
+        ListHeaderComponent={header}
+        renderItem={({ item }) => (
           <CatalogImage
-            key={page.imageFile}
             productId={productId}
-            imageFile={page.imageFile}
-            label={`Page ${page.pageNumber}`}
+            imageFile={item.imageFile}
+            label={item.label}
             width={imageWidth}
             maxHeight={imageMaxHeight}
+            metadata={item}
           />
-        ))}
-      </ScrollView>
+        )}
+        initialNumToRender={2}
+        maxToRenderPerBatch={2}
+        updateCellsBatchingPeriod={80}
+        windowSize={5}
+        removeClippedSubviews={false}
+        contentContainerStyle={styles.list}
+      />
     </ScreenContainer>
   );
 }
 
 const styles = StyleSheet.create({
-  scroll: { paddingBottom: 18 },
+  list: { paddingBottom: 18 },
+  header: { paddingBottom: 4 },
   product: { color: colors.muted, fontSize: 14, fontWeight: '700', marginBottom: 4 },
   title: { color: colors.text, fontSize: 22, fontWeight: '900', marginBottom: 8 },
   meta: { color: colors.muted, fontSize: 14, marginBottom: 4 },

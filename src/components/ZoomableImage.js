@@ -1,6 +1,7 @@
 import { useMemo, useRef, useState } from 'react';
-import { Image, Modal, PanResponder, Pressable, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
+import { Image as RNImage, Modal, PanResponder, Pressable, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 import { colors } from '../constants/colors';
+import OptimizedContentImage from './OptimizedContentImage';
 
 const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
 
@@ -19,7 +20,7 @@ function ZoomSurface({ source, label }) {
   const gesture = useRef({ distance: 0, scale: 1, pan: { x: 0, y: 0 } });
 
   const imageSize = useMemo(() => {
-    const resolved = source ? Image.resolveAssetSource(source) : null;
+    const resolved = source ? RNImage.resolveAssetSource(source) : null;
     const sourceWidth = resolved?.width || width;
     const sourceHeight = resolved?.height || height;
     const ratio = sourceHeight / sourceWidth;
@@ -71,14 +72,13 @@ function ZoomSurface({ source, label }) {
 
   return (
     <View style={styles.zoomBody} {...panResponder.panHandlers}>
-      <Image
+      <OptimizedContentImage
         source={source}
-        resizeMode="contain"
-        style={[
-          styles.zoomImage,
-          imageSize,
-          { transform: [{ translateX: pan.x }, { translateY: pan.y }, { scale }] },
-        ]}
+        width={imageSize.width}
+        height={imageSize.height}
+        style={[styles.zoomImage, { transform: [{ translateX: pan.x }, { translateY: pan.y }, { scale }] }]}
+        accessibilityLabel={label || 'Zoomed content image'}
+        recyclingKey={`zoom:${label || 'image'}`}
       />
       {label ? <Text style={styles.zoomLabel}>{label}</Text> : null}
       <Pressable style={styles.resetButton} onPress={reset} accessibilityRole="button">
@@ -88,7 +88,7 @@ function ZoomSurface({ source, label }) {
   );
 }
 
-export default function ZoomableImage({ source, label, width, height, imageStyle, placeholderText = 'Image not found.', onError }) {
+export default function ZoomableImage({ source, label, width, height, imageStyle, placeholderText = 'Image not found.', onError, recyclingKey, cacheKey }) {
   const [visible, setVisible] = useState(false);
 
   if (!source) {
@@ -102,7 +102,17 @@ export default function ZoomableImage({ source, label, width, height, imageStyle
   return (
     <>
       <Pressable onPress={() => setVisible(true)} accessibilityRole="imagebutton">
-        <Image source={source} style={[styles.image, { width, height }, imageStyle]} resizeMode="contain" onError={onError} />
+        <OptimizedContentImage
+          source={source}
+          width={width}
+          height={height}
+          style={imageStyle}
+          placeholderText={placeholderText}
+          accessibilityLabel={label || 'Content image'}
+          recyclingKey={recyclingKey || label}
+          cacheKey={cacheKey}
+          onError={onError}
+        />
       </Pressable>
       <Modal visible={visible} transparent animationType="fade" onRequestClose={() => setVisible(false)}>
         <View style={styles.modal}>

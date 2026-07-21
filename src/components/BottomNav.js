@@ -1,15 +1,17 @@
 import { useState } from 'react';
-import { Linking, Modal, Pressable, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Alert, Linking, Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { colors } from '../constants/colors';
 import { isGuestUser } from '../auth/userRole';
+import { clearImageCache } from '../services/imageCacheService';
 
-const CAREERS_URL = 'https://www.akademika.in/careers';
+const CAREERS_URL = 'https://akademika.in/careers';
 
 export default function BottomNav({ currentUser }) {
   const navigation = useNavigation();
   const route = useRoute();
   const [otherOpen, setOtherOpen] = useState(false);
+  const [clearingImageCache, setClearingImageCache] = useState(false);
   const guest = isGuestUser(currentUser);
 
   const go = (screen) => {
@@ -20,6 +22,34 @@ export default function BottomNav({ currentUser }) {
   const openCareers = async () => {
     setOtherOpen(false);
     await Linking.openURL(CAREERS_URL);
+  };
+
+  const confirmClearImageCache = () => {
+    Alert.alert(
+      'Clear Image Cache',
+      'This clears only temporary image cache. Login, profiles, workbook data, autosave records, manuals, and catalogs are not deleted.',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Clear Image Cache',
+          style: 'destructive',
+          onPress: async () => {
+            setClearingImageCache(true);
+            const result = await clearImageCache();
+            setClearingImageCache(false);
+            if (result.ok) {
+              Alert.alert('Image cache cleared', 'Temporary image cache was cleared. Bundled manuals and catalogs were not deleted.');
+            } else {
+              const failures = [
+                result.memory.ok ? null : `memory: ${result.memory.error || 'failed'}`,
+                result.disk.ok ? null : `disk: ${result.disk.error || 'failed'}`,
+              ].filter(Boolean).join('\\n');
+              Alert.alert('Could not clear all image cache', failures || 'Unknown cache clearing error.');
+            }
+          },
+        },
+      ],
+    );
   };
 
   return (
@@ -36,10 +66,14 @@ export default function BottomNav({ currentUser }) {
             <Text style={styles.menuTitle}>About</Text>
             <Text style={styles.aboutText}>Akademika Learning helps students access product catalogs, experiment material, and workbook records in one app.</Text>
             <Pressable style={styles.menuItem} onPress={() => go('Internships')}>
-              <Text style={styles.menuItemText}>Internships?</Text>
+              <Text style={styles.menuItemText}>Internships</Text>
             </Pressable>
             <Pressable style={styles.menuItem} onPress={openCareers}>
               <Text style={styles.menuItemText}>Careers</Text>
+            </Pressable>
+            <Pressable style={styles.menuItem} onPress={confirmClearImageCache} disabled={clearingImageCache}>
+              <Text style={styles.menuItemText}>Clear Image Cache</Text>
+              {clearingImageCache ? <ActivityIndicator color={colors.primary} /> : null}
             </Pressable>
           </Pressable>
         </Pressable>

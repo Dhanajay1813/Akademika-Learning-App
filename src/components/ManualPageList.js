@@ -1,23 +1,24 @@
 import { useEffect, useMemo, useState } from 'react';
-import { FlatList, Image, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
+import { FlatList, Image as RNImage, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 import { colors } from '../constants/colors';
 import { getManualBlockImageSource, getManualPageSource } from '../data/manualData';
 import ContentBlockRenderer, { useResponsiveManualTypography } from './ContentBlockRenderer';
 import ZoomableImage from './ZoomableImage';
+import { prefetchRemoteImages } from '../services/imageCacheService';
 
 function isContentBlock(item) {
   return item && typeof item === 'object' && item.type;
 }
 
-function ManualImage({ source, label, width, maxHeight, fallbackHeightRatio = 1.414 }) {
+function ManualImage({ source, label, width, maxHeight, fallbackHeightRatio = 1.414, metadata, cacheKey }) {
   const [failed, setFailed] = useState(false);
   const fittedHeight = useMemo(() => {
-    const resolved = source ? Image.resolveAssetSource(source) : null;
-    const sourceWidth = resolved?.width || 0;
-    const sourceHeight = resolved?.height || 0;
+    const resolved = source ? RNImage.resolveAssetSource(source) : null;
+    const sourceWidth = metadata?.width || resolved?.width || 0;
+    const sourceHeight = metadata?.height || resolved?.height || 0;
     const ratio = sourceWidth > 0 && sourceHeight > 0 ? sourceHeight / sourceWidth : fallbackHeightRatio;
     return Math.min(Math.max(width * ratio, 160), maxHeight);
-  }, [fallbackHeightRatio, maxHeight, source, width]);
+  }, [fallbackHeightRatio, maxHeight, metadata?.height, metadata?.width, source, width]);
 
   return (
     <View style={styles.page}>
@@ -33,6 +34,8 @@ function ManualImage({ source, label, width, maxHeight, fallbackHeightRatio = 1.
           height={fittedHeight}
           imageStyle={styles.image}
           onError={() => setFailed(true)}
+          recyclingKey={cacheKey || label}
+          cacheKey={metadata?.sha256 ? `${cacheKey || label}:${metadata.sha256}` : cacheKey}
         />
       )}
       {label ? <Text style={styles.pageLabel}>{label}</Text> : null}
@@ -41,7 +44,7 @@ function ManualImage({ source, label, width, maxHeight, fallbackHeightRatio = 1.
 }
 
 function ManualPage({ manualId, pageFile, width, maxHeight }) {
-  return <ManualImage source={getManualPageSource(manualId, pageFile)} label={pageFile} width={width} maxHeight={maxHeight} />;
+  return <ManualImage source={getManualPageSource(manualId, pageFile)} label={pageFile} width={width} maxHeight={maxHeight} cacheKey={`${manualId}:${pageFile}`} />;
 }
 
 function getBlockImageItems(block) {
@@ -52,7 +55,7 @@ function getBlockImageItems(block) {
         return { imageFile: item, caption: block.caption || '' };
       }
       if (item && typeof item === 'object' && item.imageFile) {
-        return { imageFile: item.imageFile, caption: item.caption || block.caption || '' };
+        return { ...item, caption: item.caption || block.caption || '' };
       }
       return null;
     })
@@ -132,7 +135,7 @@ const getPrefetchSources = (manualId, items) => {
     }
   }
   return sources
-    .map((source) => source?.uri)
+    .map((source, index) => source?.uri ? { uri: source.uri, cacheKey: `${manualId}:prefetch:${index}` } : null)
     .filter(Boolean);
 };
 
@@ -142,8 +145,8 @@ export default function ManualPageList({ manualId, pageFiles }) {
   const imageMaxHeight = Math.max(220, windowHeight * 0.72);
 
   useEffect(() => {
-    const uris = getPrefetchSources(manualId, pageFiles).slice(0, 8);
-    uris.forEach((uri) => Image.prefetch(uri));
+    const uris = getPrefetchSources(manualId, pageFiles).slice(0, 2);
+    prefetchRemoteImages(uris, 2);
   }, [manualId, pageFiles]);
 
   if (!pageFiles?.length) {
@@ -168,7 +171,7 @@ export default function ManualPageList({ manualId, pageFiles }) {
       maxToRenderPerBatch={2}
       updateCellsBatchingPeriod={80}
       windowSize={3}
-      removeClippedSubviews
+      removeClippedSubviews={false}
       contentContainerStyle={styles.list}
     />
   );
