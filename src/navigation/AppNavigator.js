@@ -26,6 +26,8 @@ import GeneratePDFScreen from '../screens/GeneratePDFScreen';
 import WorkbookScreen from '../screens/WorkbookScreen';
 import InternshipsScreen from '../screens/InternshipsScreen';
 import InternshipApplicationScreen from '../screens/InternshipApplicationScreen';
+import HelpAndAppTourScreen from '../screens/HelpAndAppTourScreen';
+import AppTutorialScreen from '../screens/tutorial/AppTutorialScreen';
 import { colors } from '../constants/colors';
 import { AppRefreshProvider } from '../context/AppRefreshContext';
 
@@ -70,6 +72,8 @@ export default function AppNavigator() {
           <Stack.Screen name="Workbook" component={WorkbookScreen} />
           <Stack.Screen name="Internships" component={InternshipsScreen} />
           <Stack.Screen name="InternshipApplication" component={InternshipApplicationScreen} options={{ title: 'Application' }} />
+          <Stack.Screen name="HelpAndAppTour" component={HelpAndAppTourScreen} options={{ title: 'Help & App Tour' }} />
+          <Stack.Screen name="AppTutorial" component={AppTutorialScreen} options={{ headerShown: false }} />
         </Stack.Navigator>
         </NavigationContainer>
       </AppRefreshProvider>

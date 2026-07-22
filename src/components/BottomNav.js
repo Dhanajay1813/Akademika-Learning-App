@@ -83,6 +83,10 @@ export default function BottomNav({ currentUser }) {
             <Pressable style={styles.menuItem} onPress={() => go('Internships')}>
               <Text style={styles.menuItemText}>Internships</Text>
             </Pressable>
+            <Pressable style={styles.menuItem} accessibilityRole="button" accessibilityLabel="Open Help and App Tour" onPress={() => go('HelpAndAppTour')}>
+              <Text style={styles.menuItemText}>Help & App Tour</Text>
+              <Text style={styles.menuItemDescription}>Learn how to use products, experiments, reports and saved work.</Text>
+            </Pressable>
             <Pressable style={styles.menuItem} onPress={openCareers}>
               <Text style={styles.menuItemText}>Careers</Text>
             </Pressable>
@@ -126,6 +130,7 @@ const styles = StyleSheet.create({
   menu: { backgroundColor: colors.surface, padding: 18, paddingBottom: 88, borderTopLeftRadius: 8, borderTopRightRadius: 8 },
   menuTitle: { color: colors.text, fontSize: 18, fontWeight: '800', marginBottom: 6 },
   aboutText: { color: colors.muted, fontSize: 14, lineHeight: 20, marginBottom: 12 },
-  menuItem: { minHeight: 46, justifyContent: 'center', borderTopWidth: 1, borderTopColor: colors.border },
+  menuItem: { minHeight: 46, justifyContent: 'center', borderTopWidth: 1, borderTopColor: colors.border, paddingVertical: 8 },
   menuItemText: { color: colors.primary, fontSize: 16, fontWeight: '800' },
+  menuItemDescription: { color: colors.muted, fontSize: 12, lineHeight: 17, marginTop: 2 },
 });

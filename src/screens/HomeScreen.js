@@ -8,24 +8,32 @@ import { clearCurrentUser, getCurrentUser } from '../storage/storage';
 import { isGuestUser } from '../auth/userRole';
 import { Ionicons } from '@expo/vector-icons';
 import { useAppRefresh } from '../context/AppRefreshContext';
+import FirstTimeTutorialPrompt from '../components/tutorial/FirstTimeTutorialPrompt';
+import WhatsNewPrompt from '../components/tutorial/WhatsNewPrompt';
 
 export default function HomeScreen({ navigation }) {
   const [guest, setGuest] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
   const { refreshVersion, isRefreshing, refreshAppData } = useAppRefresh();
+
+  const applyUser = useCallback((user) => {
+    setCurrentUser(user);
+    setGuest(isGuestUser(user));
+  }, []);
 
   const loadProfile = useCallback(async () => {
     const user = await getCurrentUser();
-    setGuest(isGuestUser(user));
-  }, []);
+    applyUser(user);
+  }, [applyUser]);
 
   useFocusEffect(useCallback(() => {
     let active = true;
     (async () => {
       const user = await getCurrentUser();
-      if (active) setGuest(isGuestUser(user));
+      if (active) applyUser(user);
     })();
     return () => { active = false; };
-  }, []));
+  }, [applyUser]));
 
   useEffect(() => {
     if (refreshVersion > 0) loadProfile();
@@ -75,6 +83,8 @@ export default function HomeScreen({ navigation }) {
       <AppCard title="Products" subtitle="Open trainer products and experiments." onPress={() => navigation.navigate('Products')} />
       {!guest ? <AppCard title="Workbook" subtitle="Resume drafts and completed PDFs." onPress={() => navigation.navigate('Workbook')} /> : null}
       <AppCard title="Internships" subtitle="View internship options." onPress={() => navigation.navigate('Internships')} />
+      <FirstTimeTutorialPrompt user={currentUser} />
+      <WhatsNewPrompt user={currentUser} />
     </ScreenContainer>
   );
 }
