@@ -1,12 +1,12 @@
 import { useCallback, useState } from 'react';
-import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { KeyboardAvoidingView, Platform, RefreshControl, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { colors } from '../constants/colors';
 import { getCurrentUser } from '../storage/storage';
 import BottomNav, { getBottomNavHeight } from './BottomNav';
 
-function Inner({ title, children, keyboard = false, scroll = true, bottomNav = true }) {
+function Inner({ title, children, keyboard = false, scroll = true, bottomNav = true, refreshing = false, onRefresh }) {
   const [currentUser, setCurrentUser] = useState(null);
   const insets = useSafeAreaInsets();
 
@@ -22,7 +22,7 @@ function Inner({ title, children, keyboard = false, scroll = true, bottomNav = t
   const showBottomNav = bottomNav && Boolean(currentUser);
   const navHeight = showBottomNav ? getBottomNavHeight(insets) : 0;
   const contentPaddingBottom = keyboard ? insets.bottom + 32 : Math.max(insets.bottom + 24, 34);
-  const finalPaddingBottom = showBottomNav ? navHeight + 24 : contentPaddingBottom;
+  const finalPaddingBottom = showBottomNav ? navHeight + 12 : contentPaddingBottom;
 
   const body = scroll ? (
     <ScrollView
@@ -31,6 +31,7 @@ function Inner({ title, children, keyboard = false, scroll = true, bottomNav = t
       keyboardShouldPersistTaps="handled"
       keyboardDismissMode={Platform.OS === 'ios' ? 'interactive' : 'on-drag'}
       showsVerticalScrollIndicator={false}
+      refreshControl={onRefresh ? <RefreshControl refreshing={refreshing} onRefresh={onRefresh} /> : undefined}
     >
       {title ? <Text style={styles.title}>{title}</Text> : null}
       {children}

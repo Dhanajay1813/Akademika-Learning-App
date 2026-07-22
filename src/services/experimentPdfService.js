@@ -87,8 +87,9 @@ function imageVariantForSection(sectionKey, item = {}, block = {}) {
   return classifyImage({ sectionKey, item, block });
 }
 
-function getPdfDocumentPageDimensions({ imageWidth, imageHeight, isFirstPageInSection = false } = {}) {
-  const maxHeightMm = isFirstPageInSection ? 218 : 235;
+function getPdfDocumentPageDimensions({ imageWidth, imageHeight, isFirstPageInSection = false, hasCaption = false } = {}) {
+  const reservedCaptionMm = hasCaption ? 9 : 0;
+  const maxHeightMm = (isFirstPageInSection ? 218 : 235) - reservedCaptionMm;
   const maxHeightPx = Math.round(maxHeightMm * CSS_PX_PER_MM);
   const width = numericDimension(imageWidth);
   const height = numericDimension(imageHeight);
@@ -96,7 +97,7 @@ function getPdfDocumentPageDimensions({ imageWidth, imageHeight, isFirstPageInSe
   if (!width || !height) {
     return {
       width: DOCUMENT_PAGE_MAX_WIDTH_PX,
-      height: Math.round((isFirstPageInSection ? 210 : 226) * CSS_PX_PER_MM),
+      height: Math.round(((isFirstPageInSection ? 208 : 224) - reservedCaptionMm) * CSS_PX_PER_MM),
     };
   }
 
@@ -114,6 +115,7 @@ function documentPageImageHtml(item, title, isFirstPageInSection = false) {
     imageWidth: item?.dimensions?.width,
     imageHeight: item?.dimensions?.height,
     isFirstPageInSection,
+    hasCaption: hasText(caption),
   });
   const headingHtml = isFirstPageInSection ? `<h2 class="report-section-title">${escapeHtml(title)}</h2>` : "";
   const captionHtml = hasText(caption) ? `<div class="image-caption">${escapeHtml(caption)}</div>` : "";
@@ -206,13 +208,18 @@ function isContentLabel(line) {
 
 function isFormulaLine(line) {
   const trimmed = String(line || "").trim();
-  if (/^\d+[.)]\s+/.test(trimmed)) return false;
-  if (/^(VOUT|VIN|VREF|VLSB|LSB|Resolution|Calculated Value|Observed Resolution)\s*=/i.test(trimmed)) return true;
-  if (/^(VOUT|VIN|VREF|VLSB|LSB)\s*[=:]/i.test(trimmed)) return true;
-  if (/^[A-Z][A-Z0-9_()/-]{0,12}\s*=\s*[^=]+$/i.test(trimmed) && /[+\-*\/^×÷]|[0-9]/.test(trimmed)) return true;
-  const nonMath = trimmed.replace(/[0-9A-Za-z\s.=+\-*\/^×÷()%[\]{}:,]/g, "");
+  if (!trimmed || /^\d+[.)]\s+/.test(trimmed)) return false;
+  if (/^(VOUT|VOUT\(ANALOG\)|VOUT\(DIGITAL\)|VIN|VREF|VLSB|LSB)\s*=\s*\S+/i.test(trimmed)) return true;
+  if (/^(Resolution|Calculated Value|Observed Resolution)\s*=\s*\S+/i.test(trimmed)) return true;
+  if (/^(VOUT|VIN|VREF|VLSB|LSB)\s*[=:]\s*\S+/i.test(trimmed)) return true;
+
+  const recognizedVariableFormula = /^(R|I|V|P|F|T|N|D|Q|A|B|C|X|Y|Z)(?:[A-Z0-9_()/-]{0,8})?\s*=\s*[^=]+$/i;
+  if (recognizedVariableFormula.test(trimmed) && /[+\-*\/^×÷]/.test(trimmed)) return true;
+
+  const words = trimmed.match(/[A-Za-z]{3,}/g) || [];
   const mathSymbols = (trimmed.match(/[=+\-*\/^×÷]/g) || []).length;
-  return trimmed.includes("=") && mathSymbols >= 2 && trimmed.length <= 120 && nonMath.length === 0;
+  const allowedMathOnly = /^[0-9A-Za-z\s.=+\-*\/^×÷()%[\]{}:,]+$/.test(trimmed);
+  return trimmed.includes("=") && mathSymbols >= 2 && trimmed.length <= 90 && words.length <= 2 && allowedMathOnly;
 }
 
 function structuredTextItems(text) {
@@ -607,13 +614,15 @@ export function buildCompleteExperimentHtml({ user, product, manual, experiment,
     .pdf-image--wide-diagram img { max-width: 100%; max-height: 100mm; }
     .observation-section { break-before: page; page-break-before: always; }
     .document-page { break-inside: avoid; page-break-inside: avoid; overflow: hidden; width: 100%; text-align: center; }
+    .document-page .report-section-title { margin-top: 0; margin-bottom: 5px; }
     .document-page--first { break-inside: avoid; page-break-inside: avoid; }
     .document-page--continuation { break-before: page; page-break-before: always; }
-    .pdf-image--document-page { text-align: center; margin: 4px 0 6px; break-inside: avoid; page-break-inside: avoid; }
+    .pdf-image--document-page { text-align: center; margin: 0; break-inside: avoid; page-break-inside: avoid; overflow: hidden; }
     .pdf-image--document-page img { display: block; max-width: 100%; width: auto; height: auto; object-fit: contain; margin: 0 auto; }
-    .pdf-image--photo, .pdf-image--signal, .pdf-image--signal-wide, .pdf-image--wide-photo { text-align: center; margin: 8px 0 14px; break-inside: avoid; page-break-inside: avoid; }
-    .pdf-image--photo img { max-width: 78%; max-height: 125mm; }
-    .pdf-image--wide-photo img { max-width: 88%; max-height: 110mm; }
+    .pdf-image--document-page .image-caption { margin-top: 3px; }
+    .pdf-image--photo, .pdf-image--signal, .pdf-image--signal-wide, .pdf-image--wide-photo { text-align: center; margin: 8px 0 12px; break-inside: avoid; page-break-inside: avoid; }
+    .pdf-image--photo img { max-width: 70%; max-height: 108mm; }
+    .pdf-image--wide-photo img { max-width: 88%; max-height: 100mm; }
     .pdf-image--signal img { max-width: 68%; max-height: 108mm; }
     .pdf-image--signal-wide img { max-width: 90%; max-height: 95mm; }
     .image-caption { margin-top: 5px; font-size: 8.5pt; line-height: 1.3; color: #64748B; text-align: center; break-inside: avoid; page-break-inside: avoid; }
@@ -624,7 +633,7 @@ export function buildCompleteExperimentHtml({ user, product, manual, experiment,
     .table--small { break-inside: avoid; page-break-inside: avoid; }
     .table--wide .report-table th, .table--wide .report-table td, .table--long .report-table th, .table--long .report-table td { font-size: 9pt; padding: 5px 6px; }
     .graph-block { margin-top: 8px; break-inside: avoid; page-break-inside: avoid; }
-    .graph-image, .graph-container { display: block; max-width: 92%; max-height: 88mm; width: auto; height: auto; margin: 7px auto 0; }
+    .graph-image, .graph-container { display: block; max-width: 92%; max-height: 88mm; width: 92%; height: auto; margin: 7px auto 0; }
     .graph-values-block { margin-top: 10px; break-inside: auto; page-break-inside: auto; }
     .signoff-block { margin-top: 18px; break-inside: avoid; page-break-inside: avoid; }
     .signature-row { display: flex; gap: 28px; margin-top: 24px; }

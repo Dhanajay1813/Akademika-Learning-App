@@ -27,13 +27,15 @@ import WorkbookScreen from '../screens/WorkbookScreen';
 import InternshipsScreen from '../screens/InternshipsScreen';
 import InternshipApplicationScreen from '../screens/InternshipApplicationScreen';
 import { colors } from '../constants/colors';
+import { AppRefreshProvider } from '../context/AppRefreshContext';
 
 const Stack = createNativeStackNavigator();
 
 export default function AppNavigator() {
   return (
     <SafeAreaProvider>
-      <NavigationContainer>
+      <AppRefreshProvider>
+        <NavigationContainer>
         <Stack.Navigator
           initialRouteName="Splash"
           screenOptions={{
@@ -69,7 +71,8 @@ export default function AppNavigator() {
           <Stack.Screen name="Internships" component={InternshipsScreen} />
           <Stack.Screen name="InternshipApplication" component={InternshipApplicationScreen} options={{ title: 'Application' }} />
         </Stack.Navigator>
-      </NavigationContainer>
+        </NavigationContainer>
+      </AppRefreshProvider>
     </SafeAreaProvider>
   );
 }

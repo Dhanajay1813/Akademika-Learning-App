@@ -1,5 +1,5 @@
 import { useFocusEffect } from '@react-navigation/native';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Alert, StyleSheet, Text, View } from 'react-native';
 import ScreenContainer from '../components/ScreenContainer';
 import AppCard from '../components/AppCard';
@@ -10,31 +10,39 @@ import { getProductById } from '../data/products';
 import { getCurrentUser, getDrafts } from '../storage/storage';
 import { getDraftOwnerId, isGuestUser } from '../auth/userRole';
 import { applyProgressToDraft } from '../services/experimentProgressService';
+import { useAppRefresh } from '../context/AppRefreshContext';
 
 export default function WorkbookScreen({ navigation }) {
   const [tab, setTab] = useState('progress');
   const [drafts, setDrafts] = useState([]);
+  const { refreshVersion, isRefreshing, refreshAppData } = useAppRefresh();
+
+  const loadWorkbook = useCallback(async () => {
+    const user = await getCurrentUser();
+    if (isGuestUser(user)) {
+      navigation.replace('Home');
+      return;
+    }
+    const userId = getDraftOwnerId(user);
+    const all = await getDrafts();
+    const visibleDrafts = all
+      .filter((draft) => !draft.userId || draft.userId === userId)
+      .map(applyProgressToDraft);
+    setDrafts(visibleDrafts);
+  }, [navigation]);
 
   useFocusEffect(useCallback(() => {
-    (async () => {
-      const user = await getCurrentUser();
-      if (isGuestUser(user)) {
-        navigation.replace('Home');
-        return;
-      }
-      const userId = getDraftOwnerId(user);
-      const all = await getDrafts();
-      const visibleDrafts = all
-        .filter((draft) => !draft.userId || draft.userId === userId)
-        .map(applyProgressToDraft);
-      setDrafts(visibleDrafts);
-    })();
-  }, [navigation]));
+    loadWorkbook();
+  }, [loadWorkbook]));
+
+  useEffect(() => {
+    if (refreshVersion > 0) loadWorkbook();
+  }, [loadWorkbook, refreshVersion]);
 
   const shown = drafts.filter((draft) => (tab === 'completed' ? draft.pdfGenerated : !draft.pdfGenerated));
 
   return (
-    <ScreenContainer title="Workbook">
+    <ScreenContainer title="Workbook" refreshing={isRefreshing} onRefresh={refreshAppData}>
       <View style={styles.tabs}>
         <View style={styles.tab}>
           <AppButton title="In Progress" onPress={() => setTab('progress')} variant={tab === 'progress' ? 'primary' : 'secondary'} />

@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 import { Modal, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import ScreenContainer from '../components/ScreenContainer';
@@ -11,6 +11,7 @@ import { getCurrentUser, getDrafts } from '../storage/storage';
 import { getDraftOwnerId, isGuestUser } from '../auth/userRole';
 import { calculateExperimentProgress, hasValidContent } from '../services/experimentProgressService';
 import { buildReportContentList } from '../services/experimentPdfService';
+import { useAppRefresh } from '../context/AppRefreshContext';
 
 const standardSections = [
   ['objective', 'Objective'],
@@ -46,6 +47,7 @@ export default function ExperimentMenuScreen({ route, navigation }) {
   const [currentDraft, setCurrentDraft] = useState(null);
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [reportPreviewOpen, setReportPreviewOpen] = useState(false);
+  const { refreshVersion } = useAppRefresh();
   const experiment = getMappedExperiment(manualId, experimentId) || getExperimentById(experimentId);
   const isMappedExperiment = Boolean(manualId && experiment?.sections);
   const visibleStandardSections = isMappedExperiment
@@ -75,6 +77,10 @@ export default function ExperimentMenuScreen({ route, navigation }) {
     })();
     return () => { active = false; };
   }, [allowGuestWorkbookAccess, refreshProgress]));
+
+  useEffect(() => {
+    if (refreshVersion > 0 && loadedUser) refreshProgress();
+  }, [loadedUser, refreshProgress, refreshVersion]);
 
   const open = async (sectionKey, title, technical = false) => {
     if (guestBlocked) return;
