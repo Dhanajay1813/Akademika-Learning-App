@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Alert, Linking, StyleSheet, Text, View } from 'react-native';
+import { Alert, StyleSheet, Text, View } from 'react-native';
 import ScreenContainer from '../components/ScreenContainer';
 import AppButton from '../components/AppButton';
 import AutoSaveStatus from '../components/AutoSaveStatus';
@@ -10,6 +10,7 @@ import { getProductById } from '../data/products';
 import { getCurrentUser, getDrafts } from '../storage/storage';
 import { saveDraftPatch } from '../storage/autosave';
 import { buildReportContentList, generateCompleteExperimentPdf, sharePdf } from '../services/experimentPdfService';
+import { openPdfFile } from '../services/pdfOpenService';
 import { calculateExperimentProgress } from '../services/experimentProgressService';
 
 const sameDraft = (item, productId, manualId, experimentId) => (
@@ -26,6 +27,7 @@ export default function GeneratePDFScreen({ route, navigation }) {
   const [completion, setCompletion] = useState(null);
   const [journalId, setJournalId] = useState('');
   const [generating, setGenerating] = useState(false);
+  const [openingPdf, setOpeningPdf] = useState(false);
   const [lastError, setLastError] = useState('');
   const [imageWarnings, setImageWarnings] = useState([]);
 
@@ -75,6 +77,22 @@ export default function GeneratePDFScreen({ route, navigation }) {
     }
   };
 
+  const openGeneratedPdf = async () => {
+    if (openingPdf) return;
+    if (!draft?.pdfUri) {
+      Alert.alert('PDF unavailable', 'Generated PDF file is missing.');
+      return;
+    }
+    try {
+      setOpeningPdf(true);
+      await openPdfFile(draft.pdfUri);
+    } catch (error) {
+      Alert.alert('Open PDF', error?.message || 'Unable to open the generated PDF.');
+    } finally {
+      setOpeningPdf(false);
+    }
+  };
+
   const reportItems = buildReportContentList({ manualId: manual?.manualId || manualId, experiment, draft: draft || {}, completionDetails: completion });
   const complete = completion?.percentage === 100;
   const displayedImageWarnings = imageWarnings.length ? imageWarnings : draft?.pdfImageWarnings || [];
@@ -90,7 +108,7 @@ export default function GeneratePDFScreen({ route, navigation }) {
             {displayedImageWarnings.map((warning, index) => <Text key={`${warning.label}-${index}`} style={styles.warningText}>{warning.label} could not be included.</Text>)}
           </View>
         ) : null}
-        <AppButton title="Open PDF" accessibilityLabel="Open generated experiment PDF" onPress={() => draft.pdfUri ? Linking.openURL(draft.pdfUri) : null} />
+        <AppButton title={openingPdf ? 'Opening PDF...' : 'Open PDF'} accessibilityLabel="Open generated experiment PDF" onPress={openGeneratedPdf} disabled={openingPdf} />
         <AppButton title="Share PDF" accessibilityLabel="Share generated experiment PDF" onPress={() => sharePdf(draft.pdfUri)} variant="secondary" />
         <AppButton title="Generate Again" onPress={generate} variant="secondary" disabled={generating || !complete} />
         <AppButton title="Go to Workbook" onPress={() => navigation.navigate('Workbook')} />

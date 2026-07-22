@@ -1,15 +1,28 @@
 import { useState } from 'react';
-import { ActivityIndicator, Alert, Linking, Modal, Pressable, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Alert, Linking, Modal, Platform, Pressable, StyleSheet, Text, View } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { colors } from '../constants/colors';
 import { isGuestUser } from '../auth/userRole';
 import { clearImageCache } from '../services/imageCacheService';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const CAREERS_URL = 'https://akademika.in/careers';
+const BASE_BOTTOM_NAV_HEIGHT = 66;
+
+export function getBottomNavInset(insets) {
+  return Math.max(insets?.bottom || 0, Platform.OS === 'android' ? 8 : 0);
+}
+
+export function getBottomNavHeight(insets) {
+  return BASE_BOTTOM_NAV_HEIGHT + getBottomNavInset(insets);
+}
 
 export default function BottomNav({ currentUser }) {
   const navigation = useNavigation();
   const route = useRoute();
+  const insets = useSafeAreaInsets();
+  const bottomInset = getBottomNavInset(insets);
+  const barHeight = getBottomNavHeight(insets);
   const [otherOpen, setOtherOpen] = useState(false);
   const [clearingImageCache, setClearingImageCache] = useState(false);
   const guest = isGuestUser(currentUser);
@@ -54,7 +67,7 @@ export default function BottomNav({ currentUser }) {
 
   return (
     <>
-      <View style={styles.bar}>
+      <View style={[styles.bar, { height: barHeight, paddingBottom: bottomInset }]}>
         <NavItem label="Home" active={route.name === 'Home'} onPress={() => go('Home')} />
         <NavItem label="Products" active={route.name === 'Products'} onPress={() => go('Products')} />
         {!guest ? <NavItem label="Workbook" active={route.name === 'Workbook'} onPress={() => go('Workbook')} /> : null}
@@ -62,7 +75,7 @@ export default function BottomNav({ currentUser }) {
       </View>
       <Modal transparent visible={otherOpen} animationType="fade" onRequestClose={() => setOtherOpen(false)}>
         <Pressable style={styles.overlay} onPress={() => setOtherOpen(false)}>
-          <Pressable style={styles.menu} onPress={() => {}}>
+          <Pressable style={[styles.menu, { paddingBottom: barHeight + 22 }]} onPress={() => {}}>
             <Text style={styles.menuTitle}>About</Text>
             <Text style={styles.aboutText}>Akademika Learning helps students access product catalogs, experiment material, and workbook records in one app.</Text>
             <Pressable style={styles.menuItem} onPress={() => go('Internships')}>

@@ -15,6 +15,7 @@ function safeAspectRatio(width, height, fallback) {
 export default function ZoomableImage({
   source,
   label,
+  accessibilityLabel,
   width,
   height,
   imageStyle,
@@ -53,7 +54,7 @@ export default function ZoomableImage({
       cacheKey={cacheKey}
       aspectRatio={aspectRatio || safeAspectRatio(width, height)}
       fullscreenCaption={label}
-      accessibilityLabel={label || 'Content image'}
+      accessibilityLabel={accessibilityLabel || label || 'Content image'}
       enableInlineZoom={enableInlineZoom}
       enableFullscreen={enableFullscreen}
       onZoomStateChange={onZoomStateChange}

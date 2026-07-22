@@ -31,6 +31,7 @@ function CatalogImage({ productId, imageFile, label, width, maxHeight, metadata,
         <ZoomableImage
           source={source}
           label={label}
+          accessibilityLabel="Zoom catalog page"
           width={width}
           height={height}
           imageStyle={styles.image}

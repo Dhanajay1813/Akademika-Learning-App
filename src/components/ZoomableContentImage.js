@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Modal, Pressable, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
-import { Gesture, GestureDetector } from 'react-native-gesture-handler';
+import { Gesture, GestureDetector, GestureHandlerRootView } from 'react-native-gesture-handler';
 import Animated, { runOnJS, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import OptimizedContentImage from './OptimizedContentImage';
 import { colors } from '../constants/colors';
 
@@ -223,7 +224,7 @@ function ZoomSurface({
       {showScale && isZoomed ? <Text style={styles.scaleBadge}>{scaleLabel}</Text> : null}
       {showReset && isZoomed ? (
         <Pressable style={styles.resetButton} onPress={resetZoom} accessibilityRole="button" accessibilityLabel="Reset image zoom">
-          <Text style={styles.resetText}>Reset</Text>
+          <Text style={styles.resetText}>Reset Zoom</Text>
         </Pressable>
       ) : null}
     </View>
@@ -243,17 +244,22 @@ export function FullscreenZoomImage({
   maximumScale = DEFAULT_MAX_SCALE,
 }) {
   const { width, height } = useWindowDimensions();
+  const insets = useSafeAreaInsets();
   const safeAspectRatio = safeNumber(aspectRatio, 4 / 3);
-  const usableWidth = Math.max(1, width);
-  const usableHeight = Math.max(1, height - 96);
+  const horizontalPadding = 12;
+  const topPadding = Math.max(insets.top, 24) + 56;
+  const bottomPadding = Math.max(insets.bottom, 16) + 54;
+  const usableWidth = Math.max(1, width - horizontalPadding * 2);
+  const usableHeight = Math.max(1, height - topPadding - bottomPadding);
   const fittedHeight = Math.min(usableHeight, usableWidth / safeAspectRatio);
 
   if (!visible) return null;
 
   return (
     <Modal visible transparent animationType="fade" onRequestClose={onClose} statusBarTranslucent>
-      <View style={styles.modalRoot}>
-        <Pressable style={styles.closeButton} onPress={onClose} accessibilityRole="button" accessibilityLabel="Close image">
+      <GestureHandlerRootView style={styles.modalGestureRoot}>
+        <View style={[styles.modalRoot, { paddingTop: topPadding, paddingBottom: bottomPadding, paddingHorizontal: horizontalPadding }]}>
+        <Pressable style={[styles.closeButton, { top: Math.max(insets.top, 24) }]} onPress={onClose} accessibilityRole="button" accessibilityLabel="Close image">
           <Text style={styles.closeText}>Close</Text>
         </Pressable>
         <ZoomSurface
@@ -270,7 +276,8 @@ export function FullscreenZoomImage({
           showReset
         />
         {caption ? <Text style={styles.fullscreenCaption}>{caption}</Text> : null}
-      </View>
+        </View>
+      </GestureHandlerRootView>
     </Modal>
   );
 }
@@ -417,13 +424,15 @@ const styles = StyleSheet.create({
     lineHeight: 18,
     textAlign: 'center',
   },
+  modalGestureRoot: {
+    flex: 1,
+  },
   modalRoot: {
     flex: 1,
     backgroundColor: '#050505',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingTop: 44,
-    paddingBottom: 24,
+
   },
   closeButton: {
     position: 'absolute',
