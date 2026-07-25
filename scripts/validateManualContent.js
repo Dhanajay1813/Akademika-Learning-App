@@ -79,16 +79,18 @@ const categories = new Map(categoryMatches.map((item) => [item.id, item]));
 const products = new Map(productMatches.map((item) => [item.id, item]));
 const index = readJson(indexPath);
 const seenManualIds = new Set();
+const seenPdfFiles = new Set();
 
 (index.manuals || []).forEach((entry) => {
   if (seenManualIds.has(entry.manualId)) errors.push(`Duplicate manualId: ${entry.manualId}`);
   seenManualIds.add(entry.manualId);
-  if (isUnsafe(entry.path)) errors.push(`Unsafe manual path: ${entry.path}`);
-  const contentPath = path.join(root, entry.path || '');
+  if (isUnsafe(entry.contentFile || entry.path)) errors.push(`Unsafe manual path: ${entry.contentFile || entry.path}`);
+  if (entry.pdfFile && isUnsafe(entry.pdfFile)) errors.push(`Unsafe manual PDF path: ${entry.pdfFile}`);
+  const contentPath = path.join(root, entry.contentFile || entry.path || '');
   const relativeContentPath = toPosix(path.relative(root, contentPath));
-  if (!relativeContentPath.startsWith('src/content/manuals/')) errors.push(`Manual path outside permanent content folder: ${entry.path}`);
+  if (!relativeContentPath.startsWith('src/content/manuals/')) errors.push(`Manual path outside permanent content folder: ${entry.contentFile || entry.path}`);
   if (!fs.existsSync(contentPath)) {
-    errors.push(`Missing manual content file: ${entry.path}`);
+    errors.push(`Missing manual content file: ${entry.contentFile || entry.path}`);
     return;
   }
 
@@ -107,6 +109,38 @@ const seenManualIds = new Set();
   if (manual.productId !== entry.productId) errors.push(`productId mismatch for ${entry.manualId}.`);
   if (manual.categoryId !== entry.categoryId) errors.push(`categoryId mismatch for ${entry.manualId}.`);
   if (entry.experimentCount !== (manual.experiments || []).length) errors.push(`Experiment count mismatch for ${entry.manualId}.`);
+
+  if (entry.contentMode === 'pdfPageMapping' || manual.contentMode === 'pdfPageMapping') {
+    if (manual.contentMode !== 'pdfPageMapping') errors.push(`PDF manual contentMode mismatch for ${entry.manualId}.`);
+    if (manual.pdfFile !== 'manual.pdf') errors.push(`PDF manual must reference manual.pdf: ${entry.manualId}.`);
+    const pdfFile = entry.pdfFile || `src/content/manuals/${entry.manualId}/manual.pdf`;
+    if (seenPdfFiles.has(pdfFile)) errors.push(`Duplicate manual PDF entry: ${pdfFile}`);
+    seenPdfFiles.add(pdfFile);
+    const pdfPath = path.join(root, pdfFile);
+    const relativePdfPath = toPosix(path.relative(root, pdfPath));
+    if (!relativePdfPath.startsWith('src/content/manuals/')) errors.push(`Manual PDF outside permanent content folder: ${relativePdfPath}`);
+    if (!fs.existsSync(pdfPath)) errors.push(`Missing manual PDF: ${relativePdfPath}`);
+    const totalPages = Number(manual.totalPages || 0);
+    if (totalPages <= 0) errors.push(`Invalid totalPages for ${entry.manualId}.`);
+    if (!manual.sha256) errors.push(`Missing PDF SHA-256 for ${entry.manualId}.`);
+    if (!manual.compressedByteSize) errors.push(`Missing compressedByteSize for ${entry.manualId}.`);
+    (manual.experiments || []).forEach((experiment) => {
+      const sections = experiment.sections || {};
+      const checkPages = (label, value) => {
+        const pages = Array.isArray(value?.pages) ? value.pages : [];
+        const seen = new Set();
+        pages.forEach((page) => {
+          if (!Number.isInteger(page) || page <= 0) errors.push(`${entry.manualId}.${experiment.id}.${label} has invalid page ${page}.`);
+          if (totalPages && page > totalPages) errors.push(`${entry.manualId}.${experiment.id}.${label} page ${page} exceeds ${totalPages}.`);
+          if (seen.has(page)) errors.push(`${entry.manualId}.${experiment.id}.${label} duplicates page ${page}.`);
+          seen.add(page);
+        });
+      };
+      ['objective','theory','functionalBlock','procedure','observation','equipments','result','conclusion','references'].forEach((key) => checkPages(key, sections[key]));
+      ['datasheet','blockDiagram','circuitDiagram','referenceSignal'].forEach((key) => checkPages(`technicalData.${key}`, sections.technicalData?.[key]));
+    });
+    return;
+  }
 
   const manualDir = path.dirname(contentPath);
   collectImageItems(manual).forEach((item) => {

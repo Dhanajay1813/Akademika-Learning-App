@@ -23,6 +23,7 @@ import TableScreen from '../screens/TableScreen';
 import GraphScreen from '../screens/GraphScreen';
 import ObservationResultScreen from '../screens/ObservationResultScreen';
 import GeneratePDFScreen from '../screens/GeneratePDFScreen';
+import CompleteManualScreen from '../screens/CompleteManualScreen';
 import WorkbookScreen from '../screens/WorkbookScreen';
 import InternshipsScreen from '../screens/InternshipsScreen';
 import InternshipApplicationScreen from '../screens/InternshipApplicationScreen';
@@ -69,6 +70,7 @@ export default function AppNavigator() {
           <Stack.Screen name="Graph" component={GraphScreen} />
           <Stack.Screen name="ObservationResult" component={ObservationResultScreen} options={{ title: 'Observation and Result' }} />
           <Stack.Screen name="GeneratePDF" component={GeneratePDFScreen} options={{ title: 'Generate PDF' }} />
+          <Stack.Screen name="CompleteManual" component={CompleteManualScreen} options={{ title: 'Complete Manual' }} />
           <Stack.Screen name="Workbook" component={WorkbookScreen} />
           <Stack.Screen name="Internships" component={InternshipsScreen} />
           <Stack.Screen name="InternshipApplication" component={InternshipApplicationScreen} options={{ title: 'Application' }} />

@@ -36,6 +36,7 @@ export function hasValidContent(value) {
   if (hasText(value)) return true;
   if (Array.isArray(value)) return value.some(hasValidContent);
   if (typeof value !== 'object') return false;
+  if (Array.isArray(value.pages) && value.pages.some((page) => Number(page) > 0)) return true;
   if (hasText(value.text) || hasText(value.tableData) || hasText(value.imageFile)) return true;
   if (Array.isArray(value.imageFiles) && value.imageFiles.some((item) => (typeof item === 'string' ? hasText(item) : hasText(item?.imageFile)))) return true;
   if (hasValidTableRows(value.rows)) return true;
@@ -78,35 +79,6 @@ export function getExperimentCompletionItems({ manualId, experimentId, draft } =
     const item = makeSectionItem(sectionKey, sections.technicalData?.[sectionKey], true);
     if (item) items.push(item);
   });
-
-  if (hasProcedureContent(sections)) {
-    items.push(
-      {
-        key: 'activity:capture',
-        type: 'activity',
-        activityKey: 'capture',
-        label: 'Capture Signal / Your Signal',
-        completeLabel: 'Capture Signal / Your Signal saved',
-        pendingLabel: 'Capture or add Your Signal',
-      },
-      {
-        key: 'activity:table',
-        type: 'activity',
-        activityKey: 'table',
-        label: 'Observation Table',
-        completeLabel: 'Observation Table completed',
-        pendingLabel: 'Complete the Observation Table',
-      },
-      {
-        key: 'activity:graph',
-        type: 'activity',
-        activityKey: 'graph',
-        label: 'Graph',
-        completeLabel: 'Graph generated',
-        pendingLabel: 'Generate the Graph',
-      },
-    );
-  }
 
   return items.map((item) => ({ ...item, completed: isCompletionItemComplete(item, draft) }));
 }

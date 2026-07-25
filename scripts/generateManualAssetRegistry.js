@@ -4,6 +4,7 @@ const path = require('path');
 const root = process.cwd();
 const indexPath = path.join(root, 'src/content/manualIndex.json');
 const outputPath = path.join(root, 'src/content/contentRegistry.js');
+const pdfOutputPath = path.join(root, 'src/content/manualPdfAssets.generated.js');
 
 const toPosix = (value) => value.split(path.sep).join('/');
 const readJson = (filePath) => JSON.parse(fs.readFileSync(filePath, 'utf8'));
@@ -62,7 +63,7 @@ const manualEntries = [];
 const assetEntries = [];
 
 manuals.slice().sort((a, b) => a.manualId.localeCompare(b.manualId)).forEach((entry) => {
-  const contentPath = path.join(root, entry.path);
+  const contentPath = path.join(root, entry.contentFile || entry.path);
   if (!fs.existsSync(contentPath)) {
     throw new Error(`Missing manual content file: ${entry.path}`);
   }
@@ -77,6 +78,8 @@ manuals.slice().sort((a, b) => a.manualId.localeCompare(b.manualId)).forEach((en
   const contentImportPath = `./${toPosix(path.relative(path.join(root, 'src/content'), contentPath))}`;
   contentImports.push(`import ${varName} from '${contentImportPath}';`);
   manualEntries.push(`  '${entry.manualId}': ${varName}.manuals['${entry.manualId}'],`);
+
+  if (entry.contentMode === 'pdfPageMapping' || manual.contentMode === 'pdfPageMapping') return;
 
   const manualDir = path.dirname(contentPath);
   const lines = collectImageFiles(manual).map((imageFile) => {
@@ -116,4 +119,25 @@ lines.push('  submittedManualAssets[`${manualId}/${imageFile}`] || null');
 lines.push(');');
 lines.push('');
 fs.writeFileSync(outputPath, `${lines.join('\n')}\n`);
+
+const pdfLines = [];
+pdfLines.push('export const manualPdfAssets = {');
+manuals.slice().sort((a, b) => a.manualId.localeCompare(b.manualId)).forEach((entry) => {
+  const contentPath = path.join(root, entry.contentFile || entry.path);
+  if (!fs.existsSync(contentPath)) return;
+  const content = readJson(contentPath);
+  const manual = content.manuals?.[entry.manualId];
+  if (entry.contentMode !== 'pdfPageMapping' && manual?.contentMode !== 'pdfPageMapping') return;
+  const pdfFile = entry.pdfFile || `src/content/manuals/${entry.manualId}/${manual?.pdfFile || 'manual.pdf'}`;
+  const pdfPath = path.join(root, pdfFile);
+  if (!fs.existsSync(pdfPath)) {
+    throw new Error(`Missing manual PDF: ${pdfFile}`);
+  }
+  const requirePath = `./${toPosix(path.relative(path.join(root, 'src/content'), pdfPath))}`;
+  pdfLines.push(`  '${entry.manualId}': require('${requirePath}'),`);
+});
+pdfLines.push('};');
+pdfLines.push('');
+fs.writeFileSync(pdfOutputPath, `${pdfLines.join('\n')}\n`);
 console.log(`Generated ${toPosix(path.relative(root, outputPath))}`);
+console.log(`Generated ${toPosix(path.relative(root, pdfOutputPath))}`);

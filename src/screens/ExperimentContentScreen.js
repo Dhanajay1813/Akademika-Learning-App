@@ -5,9 +5,10 @@ import ScreenContainer from '../components/ScreenContainer';
 import AppButton from '../components/AppButton';
 import AutoSaveStatus from '../components/AutoSaveStatus';
 import ManualPageList from '../components/ManualPageList';
+import ManualPdfSectionViewer from '../components/ManualPdfSectionViewer';
 import { colors } from '../constants/colors';
 import { getExperimentById } from '../data/experiments';
-import { getMappedSectionPages } from '../data/manualData';
+import { getMappedSectionPages, isPdfPageMappedManual } from '../data/manualData';
 import { getCurrentUser, getDrafts } from '../storage/storage';
 import { hasPlottableTable } from '../utils/graphUtils';
 import { getDraftOwnerId, isGuestUser } from '../auth/userRole';
@@ -33,6 +34,7 @@ export default function ExperimentContentScreen({ route, navigation }) {
   const pageFiles = manualId
     ? getMappedSectionPages(manualId, experimentId, sectionKey, technical)
     : [];
+  const pdfMapped = isPdfPageMappedManual(manualId);
   const isProcedure = sectionKey === 'procedure' && !technical;
   const sectionItemKey = technical ? `section:technical:${sectionKey}` : `section:${sectionKey}`;
 
@@ -110,9 +112,14 @@ export default function ExperimentContentScreen({ route, navigation }) {
   }
 
   if (manualId) {
+    const footer = <>{completionControls}<AutoSaveStatus />{recordTools}</>;
     return (
       <ScreenContainer title={title} scroll={false}>
-        <ManualPageList manualId={manualId} pageFiles={pageFiles} ListFooterComponent={<>{completionControls}<AutoSaveStatus />{recordTools}</>} />
+        {pdfMapped ? (
+          <ManualPdfSectionViewer manualId={manualId} pages={pageFiles} title={title} ListFooterComponent={footer} />
+        ) : (
+          <ManualPageList manualId={manualId} pageFiles={pageFiles} ListFooterComponent={footer} />
+        )}
       </ScreenContainer>
     );
   }

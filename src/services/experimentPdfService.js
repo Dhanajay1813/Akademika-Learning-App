@@ -2,7 +2,8 @@ import * as FileSystem from 'expo-file-system/legacy';
 import * as Print from 'expo-print';
 import * as Sharing from 'expo-sharing';
 import { getSubmittedManualImageSource } from '../content/contentRegistry';
-import { getMappedExperiment, getMappedManual } from '../data/manualData';
+import { resolveManualPdfUri } from './manualPdfAssetService';
+import { getMappedExperiment, getMappedManual, isPdfPageMappedManual } from '../data/manualData';
 import { getExperimentById } from '../data/experiments';
 import { getProductCategoryById } from '../data/products';
 import { calculateExperimentProgress } from './experimentProgressService';
@@ -365,6 +366,7 @@ function blockItemsHtml(blocks, manualImages = {}, sectionKey = '') {
 }
 
 function hasRenderableBlocks(blocks) {
+  if (Array.isArray(blocks?.pages) && blocks.pages.some((page) => Number(page) > 0)) return true;
   if (hasText(blocks)) return true;
   if (!Array.isArray(blocks)) return false;
   return blocks.some((block) => {
@@ -525,7 +527,7 @@ export function buildReportContentList({ manualId, experiment, draft = {}, compl
   const sections = experiment?.sections || {};
   const items = ['Cover and experiment details', 'Student details', 'Completion summary'];
   PRE_TECHNICAL_SECTION_ORDER.forEach(([key, label]) => {
-    if (hasRenderableBlocks(sections[key])) items.push(label);
+    if (hasRenderableBlocks(sections[key])) items.push(Array.isArray(sections[key]?.pages) ? `${label} mapped manual pages` : label);
   });
   const technical = TECHNICAL_ORDER.filter(([key]) => hasRenderableBlocks(sections.technicalData?.[key])).map(([, label]) => label);
   if (technical.length) items.push(`Technical Data: ${technical.join(', ')}`);
@@ -655,6 +657,47 @@ export function buildCompleteExperimentHtml({ user, product, manual, experiment,
   </body></html>`;
 }
 
+
+
+function collectMappedManualPagesForExperiment(experiment = {}) {
+  const sections = experiment.sections || {};
+  const ordered = [];
+  const addPages = (value) => {
+    const pages = Array.isArray(value?.pages) ? value.pages : [];
+    pages.forEach((page) => {
+      const number = Number(page);
+      if (Number.isInteger(number) && number > 0) ordered.push(number);
+    });
+  };
+  PRE_TECHNICAL_SECTION_ORDER.forEach(([key]) => addPages(sections[key]));
+  TECHNICAL_ORDER.forEach(([key]) => addPages(sections.technicalData?.[key]));
+  POST_TECHNICAL_SECTION_ORDER.forEach(([key]) => addPages(sections[key]));
+  addPages(sections.references);
+  return ordered;
+}
+
+async function mergeMappedManualPages({ reportUri, manualId, experiment }) {
+  const mappedPages = collectMappedManualPagesForExperiment(experiment);
+  if (!mappedPages.length) return reportUri;
+  const { PDFDocument } = await import('pdf-lib');
+  const manualUri = await resolveManualPdfUri(manualId);
+  const [reportBase64, manualBase64] = await Promise.all([
+    FileSystem.readAsStringAsync(reportUri, { encoding: FileSystem.EncodingType.Base64 }),
+    FileSystem.readAsStringAsync(manualUri, { encoding: FileSystem.EncodingType.Base64 }),
+  ]);
+  const reportDoc = await PDFDocument.load(reportBase64);
+  const manualDoc = await PDFDocument.load(manualBase64);
+  const pageIndexes = mappedPages
+    .map((page) => page - 1)
+    .filter((index) => index >= 0 && index < manualDoc.getPageCount());
+  const copiedPages = await reportDoc.copyPages(manualDoc, pageIndexes);
+  copiedPages.forEach((page) => reportDoc.addPage(page));
+  const mergedBase64 = await reportDoc.saveAsBase64();
+  const mergedUri = `${FileSystem.cacheDirectory}akademika-complete-${Date.now()}.pdf`;
+  await FileSystem.writeAsStringAsync(mergedUri, mergedBase64, { encoding: FileSystem.EncodingType.Base64 });
+  return mergedUri;
+}
+
 async function cleanupTemporaryImages(uris = []) {
   for (const uri of uris) {
     if (!uri || !String(uri).startsWith(FileSystem.cacheDirectory)) continue;
@@ -676,7 +719,9 @@ export async function generateCompleteExperimentPdf({ user, product, manual, exp
   try {
     const result = await Print.printToFileAsync({ html });
     return {
-      uri: result.uri,
+      uri: isPdfPageMappedManual(selectedManual?.manualId || studentRecord.manualId || product?.manualId)
+        ? await mergeMappedManualPages({ reportUri: result.uri, manualId: selectedManual?.manualId || studentRecord.manualId || product?.manualId, experiment: selectedExperiment })
+        : result.uri,
       filename: `Akademika_${safeFilePart(product?.id || studentRecord.productId)}_${safeFilePart(selectedExperiment?.experimentNumber || selectedExperiment?.id || studentRecord.experimentId)}_${safeFilePart(user?.fullName || 'student')}_${new Date().toISOString().slice(0, 10)}.pdf`,
       warnings: resolvedImages.warnings || [],
     };
