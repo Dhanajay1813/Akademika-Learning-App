@@ -4,11 +4,11 @@ import { Alert, StyleSheet, Text, View } from 'react-native';
 import ScreenContainer from '../components/ScreenContainer';
 import AppButton from '../components/AppButton';
 import AutoSaveStatus from '../components/AutoSaveStatus';
-import ManualPageList from '../components/ManualPageList';
+import ManualPageList, { ManualBlockList } from '../components/ManualPageList';
 import ManualPdfSectionViewer from '../components/ManualPdfSectionViewer';
 import { colors } from '../constants/colors';
 import { getExperimentById } from '../data/experiments';
-import { getMappedSectionPages, isPdfPageMappedManual } from '../data/manualData';
+import { getMappedSectionBlocks, getMappedSectionPages, isPdfPageMappedManual } from '../data/manualData';
 import { getCurrentUser, getDrafts } from '../storage/storage';
 import { hasPlottableTable } from '../utils/graphUtils';
 import { getDraftOwnerId, isGuestUser } from '../auth/userRole';
@@ -33,6 +33,9 @@ export default function ExperimentContentScreen({ route, navigation }) {
     : legacyExperiment?.sections[sectionKey];
   const pageFiles = manualId
     ? getMappedSectionPages(manualId, experimentId, sectionKey, technical)
+    : [];
+  const customBlocks = manualId
+    ? getMappedSectionBlocks(manualId, experimentId, sectionKey, technical)
     : [];
   const pdfMapped = isPdfPageMappedManual(manualId);
   const isProcedure = sectionKey === 'procedure' && !technical;
@@ -112,13 +115,15 @@ export default function ExperimentContentScreen({ route, navigation }) {
   }
 
   if (manualId) {
-    const footer = <>{completionControls}<AutoSaveStatus />{recordTools}</>;
+    const customBlockContent = customBlocks.length ? <ManualBlockList manualId={manualId} blocks={customBlocks} /> : null;
+    const footer = <>{customBlockContent}{completionControls}<AutoSaveStatus />{recordTools}</>;
+    const sectionItems = pdfMapped ? customBlocks : pageFiles;
     return (
       <ScreenContainer title={title} scroll={false}>
-        {pdfMapped ? (
+        {pdfMapped && pageFiles.length ? (
           <ManualPdfSectionViewer manualId={manualId} pages={pageFiles} title={title} ListFooterComponent={footer} />
         ) : (
-          <ManualPageList manualId={manualId} pageFiles={pageFiles} ListFooterComponent={footer} />
+          <ManualPageList manualId={manualId} pageFiles={sectionItems} ListFooterComponent={<>{completionControls}<AutoSaveStatus />{recordTools}</>} />
         )}
       </ScreenContainer>
     );

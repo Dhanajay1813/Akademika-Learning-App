@@ -37,6 +37,7 @@ export function hasValidContent(value) {
   if (Array.isArray(value)) return value.some(hasValidContent);
   if (typeof value !== 'object') return false;
   if (Array.isArray(value.pages) && value.pages.some((page) => Number(page) > 0)) return true;
+  if (Array.isArray(value.blocks) && value.blocks.some(hasValidContent)) return true;
   if (hasText(value.text) || hasText(value.tableData) || hasText(value.imageFile)) return true;
   if (Array.isArray(value.imageFiles) && value.imageFiles.some((item) => (typeof item === 'string' ? hasText(item) : hasText(item?.imageFile)))) return true;
   if (hasValidTableRows(value.rows)) return true;

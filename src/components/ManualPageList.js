@@ -81,7 +81,7 @@ function getBlockImageItems(block) {
   return block.imageFile ? [{ imageFile: block.imageFile, caption: block.caption || '' }] : [];
 }
 
-function ManualBlock({ manualId, block, width, maxHeight, activeZoomKey, setActiveZoomKey }) {
+export function ManualBlock({ manualId, block, width, maxHeight, activeZoomKey, setActiveZoomKey }) {
   const typography = useResponsiveManualTypography();
   const contentBlockStyle = [styles.block, styles.contentBlock, { padding: typography.cardPadding }];
   if (block.type === 'image') {
@@ -138,6 +138,32 @@ function ManualBlock({ manualId, block, width, maxHeight, activeZoomKey, setActi
   return (
     <View style={contentBlockStyle}>
       <ContentBlockRenderer block={block} />
+    </View>
+  );
+}
+
+
+export function ManualBlockList({ manualId, blocks = [] }) {
+  const { height: windowHeight, width: windowWidth } = useWindowDimensions();
+  const [activeZoomKey, setActiveZoomKey] = useState(null);
+  const imageWidth = Math.max(180, windowWidth - 36);
+  const imageMaxHeight = Math.max(220, windowHeight * 0.72);
+
+  if (!blocks.length) return null;
+
+  return (
+    <View style={styles.blockList}>
+      {blocks.map((block, index) => (
+        <ManualBlock
+          key={`${block.id || block.type || 'block'}-${index}`}
+          manualId={manualId}
+          block={block}
+          width={imageWidth}
+          maxHeight={imageMaxHeight}
+          activeZoomKey={activeZoomKey}
+          setActiveZoomKey={setActiveZoomKey}
+        />
+      ))}
     </View>
   );
 }
@@ -205,6 +231,7 @@ export default function ManualPageList({ manualId, pageFiles, ListFooterComponen
 const styles = StyleSheet.create({
   flatList: { flex: 1 },
   list: { paddingBottom: 12 },
+  blockList: { paddingTop: 12 },
   page: { alignItems: 'center', marginBottom: 18 },
   imageGroup: { width: '100%', alignItems: 'center' },
   image: { backgroundColor: colors.surface, borderRadius: 6 },

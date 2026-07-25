@@ -152,11 +152,16 @@ function allSectionGroups(sections = {}) {
   ];
 }
 
+function sectionCustomBlocks(value) {
+  if (Array.isArray(value?.blocks)) return value.blocks;
+  if (Array.isArray(value)) return value;
+  return [];
+}
+
 function collectManualImageItems(sections = {}) {
   const images = [];
   allSectionGroups(sections).forEach((section) => {
-    if (!Array.isArray(section.blocks)) return;
-    section.blocks.forEach((block) => {
+    sectionCustomBlocks(section.blocks).forEach((block) => {
       if (block?.type !== 'image') return;
       imageItemsFromBlock(block).forEach((item) => {
         images.push({ ...item, sectionLabel: section.label });
@@ -361,15 +366,18 @@ function blockHtmlItems(block, manualImages = {}, sectionKey = '') {
 }
 
 function blockItemsHtml(blocks, manualImages = {}, sectionKey = '') {
-  if (!Array.isArray(blocks)) return structuredTextItems(blocks);
-  return blocks.flatMap((block) => blockHtmlItems(block, manualImages, sectionKey)).filter((item) => renderItem(item));
+  const customBlocks = sectionCustomBlocks(blocks);
+  if (!customBlocks.length && !Array.isArray(blocks) && !Array.isArray(blocks?.blocks)) return structuredTextItems(blocks);
+  return customBlocks.flatMap((block) => blockHtmlItems(block, manualImages, sectionKey)).filter((item) => renderItem(item));
 }
 
 function hasRenderableBlocks(blocks) {
   if (Array.isArray(blocks?.pages) && blocks.pages.some((page) => Number(page) > 0)) return true;
+  if (Array.isArray(blocks?.blocks) && blocks.blocks.some(hasRenderableBlocks)) return true;
   if (hasText(blocks)) return true;
-  if (!Array.isArray(blocks)) return false;
-  return blocks.some((block) => {
+  const customBlocks = sectionCustomBlocks(blocks);
+  if (!customBlocks.length) return false;
+  return customBlocks.some((block) => {
     if (!block) return false;
     if (block.type === 'image') return imageItemsFromBlock(block).length > 0;
     if (block.type === 'table') return Boolean(manualTableHtml(block));
