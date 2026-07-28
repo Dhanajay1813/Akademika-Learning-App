@@ -86,9 +86,9 @@ export default function GeneratePDFScreen({ route, navigation }) {
     }
     try {
       setOpeningPdf(true);
-      await openOrSavePdf(draft.pdfUri, { title: 'Open or Save PDF', message: 'Choose Files or another compatible application to open or save this PDF.' });
+      await openOrSavePdf(draft.pdfUri, { title: 'Open PDF', message: 'Choose Files or another compatible application to open this PDF.' });
     } catch (error) {
-      Alert.alert('Open or Save PDF', error?.message || 'This device could not open the system file menu.');
+      Alert.alert('Open PDF', error?.message || 'This device could not open the PDF.');
     } finally {
       setOpeningPdf(false);
     }
@@ -102,9 +102,9 @@ export default function GeneratePDFScreen({ route, navigation }) {
     }
     try {
       setSharingPdf(true);
-      await sharePdf(draft.pdfUri, { title: 'Open or Save PDF', message: 'Choose Files or another compatible application to open or save this PDF.' });
+      await sharePdf(draft.pdfUri, { title: 'Open PDF', message: 'Choose Files or another compatible application to open this PDF.' });
     } catch (error) {
-      Alert.alert('Open or Save PDF', error?.message || 'This device could not open the system file menu.');
+      Alert.alert('Open PDF', error?.message || 'This device could not open the PDF.');
     } finally {
       setSharingPdf(false);
     }
@@ -125,8 +125,8 @@ export default function GeneratePDFScreen({ route, navigation }) {
             {displayedImageWarnings.map((warning, index) => <Text key={`${warning.label}-${index}`} style={styles.warningText}>{warning.label} could not be included.</Text>)}
           </View>
         ) : null}
-        <AppButton title={openingPdf ? 'Opening system file menu...' : 'Open / Save PDF'} accessibilityLabel="Open or save generated experiment PDF" onPress={openGeneratedPdf} disabled={openingPdf || sharingPdf} />
-        <AppButton title={sharingPdf ? 'Opening system file menu...' : 'Share PDF'} accessibilityLabel="Share generated experiment PDF" onPress={shareGeneratedPdf} variant="secondary" disabled={openingPdf || sharingPdf} />
+        <AppButton title={openingPdf ? 'Opening PDF...' : 'Open PDF'} accessibilityLabel="Open generated experiment PDF" onPress={openGeneratedPdf} disabled={openingPdf || sharingPdf} />
+        <AppButton title={sharingPdf ? 'Sharing PDF...' : 'Share PDF'} accessibilityLabel="Share generated experiment PDF" onPress={shareGeneratedPdf} variant="secondary" disabled={openingPdf || sharingPdf} />
         <AppButton title="Generate Again" onPress={generate} variant="secondary" disabled={generating || !complete} />
         <AppButton title="Go to Workbook" onPress={() => navigation.navigate('Workbook')} />
         <AutoSaveStatus />

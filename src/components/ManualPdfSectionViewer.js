@@ -1,6 +1,5 @@
 import { useMemo, useState } from 'react';
 import { Alert, StyleSheet, Text, View } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
 import AppButton from './AppButton';
 import { colors } from '../constants/colors';
 import { resolveManualPdfUri } from '../services/manualPdfAssetService';
@@ -8,13 +7,13 @@ import { prepareManualSectionPdf } from '../services/manualSectionPdfService';
 import { openOrSavePdf, sharePdf } from '../services/systemPdfService';
 
 const sectionPdfOptions = {
-  title: 'Open Manual Pages',
-  message: 'Choose Files or another compatible application to view or save these manual pages.',
+  title: 'Open PDF',
+  message: 'These mapped manual pages will open as a PDF.',
 };
 
 const completeManualOptions = {
-  title: 'Open or Save PDF',
-  message: 'Choose Files or another compatible application to open or save this PDF.',
+  title: 'Open PDF',
+  message: 'The complete manual will open as a PDF.',
 };
 
 const uniquePages = (pages = []) => {
@@ -43,14 +42,13 @@ export default function ManualPdfSectionViewer({
   isCompleteManual = false,
   ListFooterComponent,
 }) {
-  const navigation = useNavigation();
   const mappedPages = useMemo(() => uniquePages(pages), [pages]);
   const [busyAction, setBusyAction] = useState('');
   const hasMappedPages = mappedPages.length > 0;
   const actionOptions = isCompleteManual ? completeManualOptions : sectionPdfOptions;
-  const heading = isCompleteManual ? 'Open or Save PDF' : 'Open Manual Pages';
+  const heading = isCompleteManual ? 'Complete Manual PDF' : 'Manual Pages PDF';
   const message = isCompleteManual ? completeManualOptions.message : sectionPdfOptions.message;
-  const primaryLabel = isCompleteManual ? 'Open / Save Complete Manual' : 'Open / Save Section Pages';
+  const primaryLabel = 'Open PDF';
 
   const resolvePdfForAction = async () => {
     if (isCompleteManual) return resolveManualPdfUri(manualId);
@@ -93,11 +91,10 @@ export default function ManualPdfSectionViewer({
           <Text style={styles.detail}>{mappedPages.length} mapped page{mappedPages.length === 1 ? '' : 's'} will be prepared for {title}.</Text>
         ) : null}
         {busyAction === 'open' || busyAction === 'share' ? <Text style={styles.status}>Preparing PDF...</Text> : null}
-        {busyAction === 'opening-menu' || busyAction === 'sharing' ? <Text style={styles.status}>Opening system file menu...</Text> : null}
+        {busyAction === 'opening-menu' || busyAction === 'sharing' ? <Text style={styles.status}>Opening PDF...</Text> : null}
         <View style={styles.actions}>
           <AppButton title={primaryLabel} onPress={() => runPdfAction('open')} disabled={Boolean(busyAction)} />
           <AppButton title="Share PDF" onPress={() => runPdfAction('share')} variant="secondary" disabled={Boolean(busyAction)} />
-          <AppButton title="Back" onPress={() => navigation.goBack()} variant="secondary" disabled={Boolean(busyAction)} />
         </View>
       </View>
       {ListFooterComponent}

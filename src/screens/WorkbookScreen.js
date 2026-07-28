@@ -50,14 +50,14 @@ export default function WorkbookScreen({ navigation }) {
     }
     setBusyPdfDraftId(`${action}:${draft.id}`);
     try {
-      const options = { title: 'Open or Save PDF', message: 'Choose Files or another compatible application to open or save this PDF.' };
+      const options = { title: 'Open PDF', message: 'Choose Files or another compatible application to open this PDF.' };
       if (action === 'open') {
         await openOrSavePdf(draft.pdfUri, options);
       } else {
         await sharePdf(draft.pdfUri, options);
       }
     } catch (error) {
-      Alert.alert('Open or Save PDF', error?.message || 'This device could not open the system file menu.');
+      Alert.alert('Open PDF', error?.message || 'This device could not open the PDF.');
     } finally {
       setBusyPdfDraftId('');
     }
@@ -87,8 +87,8 @@ export default function WorkbookScreen({ navigation }) {
             {tab === 'completed' ? (
               <>
                 <Text style={styles.status}>PDF status: Generated</Text>
-                <AppButton title={busyPdfDraftId === `open:${draft.id}` ? 'Opening system file menu...' : 'Open / Save PDF'} onPress={() => runWorkbookPdfAction(draft, 'open')} disabled={Boolean(busyPdfDraftId)} />
-                <AppButton title={busyPdfDraftId === `share:${draft.id}` ? 'Opening system file menu...' : 'Share PDF'} onPress={() => runWorkbookPdfAction(draft, 'share')} variant="secondary" disabled={Boolean(busyPdfDraftId)} />
+                <AppButton title={busyPdfDraftId === `open:${draft.id}` ? 'Opening PDF...' : 'Open PDF'} onPress={() => runWorkbookPdfAction(draft, 'open')} disabled={Boolean(busyPdfDraftId)} />
+                <AppButton title={busyPdfDraftId === `share:${draft.id}` ? 'Sharing PDF...' : 'Share PDF'} onPress={() => runWorkbookPdfAction(draft, 'share')} variant="secondary" disabled={Boolean(busyPdfDraftId)} />
                 <AppButton title="View Details" onPress={() => navigation.navigate('GeneratePDF', { productId: draft.productId, experimentId: draft.experimentId, manualId: draft.manualId || product?.manualId, allowGuestWorkbookAccess: true })} variant="secondary" />
               </>
             ) : (

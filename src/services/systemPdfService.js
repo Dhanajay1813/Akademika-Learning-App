@@ -1,4 +1,4 @@
-import { Alert, Platform } from 'react-native';
+import { Alert, Linking, Platform } from 'react-native';
 import { File } from 'expo-file-system';
 import * as LegacyFileSystem from 'expo-file-system/legacy';
 import * as IntentLauncher from 'expo-intent-launcher';
@@ -8,8 +8,8 @@ const PDF_MIME_TYPE = 'application/pdf';
 const PDF_UTI = 'com.adobe.pdf';
 const ANDROID_ACTION_VIEW = 'android.intent.action.VIEW';
 const FLAG_GRANT_READ_URI_PERMISSION = 1;
-const DEFAULT_TITLE = 'Open or Save PDF';
-const DEFAULT_MESSAGE = 'Choose Files or another compatible application to open or save this PDF.';
+const DEFAULT_TITLE = 'Open PDF';
+const DEFAULT_MESSAGE = 'Choose Files or another compatible application to open this PDF.';
 const SHARING_UNAVAILABLE_MESSAGE = 'This device could not open the system file menu.';
 const MISSING_FILE_MESSAGE = 'The PDF file could not be found. Please generate or download it again.';
 
@@ -75,9 +75,23 @@ async function openOrSavePdfOnAndroid(file, options = {}) {
   }
 }
 
+async function openPdfOnIos(file, options = {}) {
+  try {
+    const canOpen = await Linking.canOpenURL(file.uri);
+    if (canOpen) {
+      await Linking.openURL(file.uri);
+      return;
+    }
+  } catch (error) {
+    // Fall through to the system sheet when direct preview is unavailable.
+  }
+  await shareWithSystemSheet(file, options);
+}
+
 export async function openOrSavePdf(pdfSource, options = {}) {
   const file = resolvePdfFile(pdfSource);
   if (Platform.OS === 'android') return openOrSavePdfOnAndroid(file, options);
+  if (Platform.OS === 'ios') return openPdfOnIos(file, options);
   await shareWithSystemSheet(file, options);
 }
 
