@@ -1,10 +1,12 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
-import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import Pdf from 'react-native-pdf';
+import { Component, useMemo, useState } from 'react';
+import { Alert, StyleSheet, Text, View } from 'react-native';
+import Constants from 'expo-constants';
+import { useNavigation } from '@react-navigation/native';
 import AppButton from './AppButton';
 import { colors } from '../constants/colors';
 import { resolveManualPdfUri } from '../services/manualPdfAssetService';
+import { openPdfFile } from '../services/pdfOpenService';
+import { sharePdf } from '../services/experimentPdfService';
 
 const uniquePages = (pages = []) => {
   const seen = new Set();
@@ -18,47 +20,62 @@ const uniquePages = (pages = []) => {
     });
 };
 
-export default function ManualPdfSectionViewer({ manualId, pages = [], title = 'Manual Pages', ListFooterComponent }) {
-  const insets = useSafeAreaInsets();
-  const pdfRef = useRef(null);
+// appOwnership is deprecated for general environment detection, but it remains
+// the narrow compatibility check we need here: identifying Expo Go specifically.
+const isExpoGo = Constants.appOwnership === 'expo';
+
+let NativeManualPdfViewer = null;
+let nativeViewerLoadFailed = false;
+
+if (!isExpoGo) {
+  try {
+    NativeManualPdfViewer = require('./pdf/NativeManualPdfViewer').default;
+  } catch (error) {
+    nativeViewerLoadFailed = true;
+  }
+}
+
+class ManualPdfErrorBoundary extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { failed: false };
+  }
+
+  static getDerivedStateFromError() {
+    return { failed: true };
+  }
+
+  componentDidCatch() {}
+
+  render() {
+    if (this.state.failed) {
+      return this.props.fallback;
+    }
+    return this.props.children;
+  }
+}
+
+function ManualPdfFallback({ manualId, pages = [], title = 'Manual Pages', ListFooterComponent, reason }) {
+  const navigation = useNavigation();
   const mappedPages = useMemo(() => uniquePages(pages), [pages]);
-  const [pdfUri, setPdfUri] = useState('');
-  const [mappedIndex, setMappedIndex] = useState(0);
-  const [loading, setLoading] = useState(Boolean(mappedPages.length));
-  const [error, setError] = useState('');
-  const currentPage = mappedPages[mappedIndex] || 0;
+  const [busyAction, setBusyAction] = useState('');
+  const hasMappedPages = mappedPages.length > 0;
 
-  useEffect(() => {
-    let active = true;
-    setError('');
-    if (!manualId || !mappedPages.length) {
-      setLoading(false);
-      return () => { active = false; };
+  const runPdfAction = async (action) => {
+    if (busyAction) return;
+    setBusyAction(action);
+    try {
+      const uri = await resolveManualPdfUri(manualId);
+      if (action === 'open') {
+        await openPdfFile(uri);
+      } else {
+        await sharePdf(uri);
+      }
+    } catch (error) {
+      Alert.alert('PDF is not available', 'The manual PDF could not be opened from this app. Please try again from the Akademika development or installed app.');
+    } finally {
+      setBusyAction('');
     }
-    setLoading(true);
-    resolveManualPdfUri(manualId)
-      .then((uri) => {
-        if (!active) return;
-        setPdfUri(uri);
-        setLoading(false);
-      })
-      .catch((nextError) => {
-        if (!active) return;
-        setError(nextError?.message || 'Manual PDF could not be opened.');
-        setLoading(false);
-      });
-    return () => { active = false; };
-  }, [manualId, mappedPages.length]);
-
-  useEffect(() => {
-    if (pdfRef.current && currentPage) {
-      pdfRef.current.setPage(currentPage);
-    }
-  }, [currentPage, pdfUri]);
-
-  const goToMappedIndex = (nextIndex) => {
-    const bounded = Math.max(0, Math.min(mappedPages.length - 1, nextIndex));
-    setMappedIndex(bounded);
   };
 
   if (!mappedPages.length) {
@@ -70,86 +87,61 @@ export default function ManualPdfSectionViewer({ manualId, pages = [], title = '
     );
   }
 
-  if (loading) {
-    return (
-      <View style={styles.messageBox} accessibilityLabel={`Loading ${title}`}>
-        <ActivityIndicator color={colors.primary} />
-        <Text style={styles.messageText}>Loading manual PDF...</Text>
-      </View>
-    );
-  }
-
-  if (error) {
-    return (
-      <View style={styles.messageBox}>
-        <Text style={styles.errorText}>{error}</Text>
-        {ListFooterComponent}
-      </View>
-    );
-  }
-
   return (
-    <View style={[styles.root, { paddingBottom: Math.max(insets.bottom, 10) }]}>
-      <View style={styles.viewerHeader}>
-        <Text style={styles.pageStatus}>
-          Mapped page {mappedIndex + 1} of {mappedPages.length} - Manual page {currentPage}
+    <View style={styles.fallbackRoot}>
+      <View style={styles.fallbackCard}>
+        <Text style={styles.fallbackTitle}>PDF Preview Requires the Akademika Development App</Text>
+        <Text style={styles.fallbackText}>
+          This manual is stored as a PDF. The in-app PDF viewer requires the Akademika development or installed app and is not available inside Expo Go.
         </Text>
+        <Text style={styles.fallbackText}>
+          Mapped in-app viewing is available in the Akademika development or production build. Opening externally will show the complete PDF, not only the mapped pages for {title}.
+        </Text>
+        {reason ? <Text style={styles.fallbackNote}>{reason}</Text> : null}
+        <View style={styles.fallbackActions}>
+          <AppButton title={busyAction === 'open' ? 'Opening PDF...' : 'Open PDF'} onPress={() => runPdfAction('open')} disabled={!hasMappedPages || Boolean(busyAction)} />
+          <AppButton title={busyAction === 'share' ? 'Sharing PDF...' : 'Share PDF'} onPress={() => runPdfAction('share')} variant="secondary" disabled={!hasMappedPages || Boolean(busyAction)} />
+          <AppButton title="Back" onPress={() => navigation.goBack()} variant="secondary" />
+        </View>
       </View>
-      <View style={styles.pdfFrame}>
-        <Pdf
-          ref={pdfRef}
-          source={{ uri: pdfUri }}
-          page={currentPage}
-          singlePage
-          enablePaging={false}
-          enableDoubleTapZoom
-          fitPolicy={0}
-          minScale={1}
-          maxScale={5}
-          spacing={0}
-          trustAllCerts={false}
-          onPageChanged={(page) => {
-            if (page !== currentPage && pdfRef.current) pdfRef.current.setPage(currentPage);
-          }}
-          onError={(nextError) => setError(nextError?.message || 'Manual PDF could not be displayed.')}
-          style={styles.pdf}
-        />
-      </View>
-      <View style={styles.controls}>
-        <AppButton title="Previous" onPress={() => goToMappedIndex(mappedIndex - 1)} variant="secondary" disabled={mappedIndex === 0} />
-        <AppButton title="Next" onPress={() => goToMappedIndex(mappedIndex + 1)} variant="secondary" disabled={mappedIndex >= mappedPages.length - 1} />
-      </View>
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.pageStrip}>
-        {mappedPages.map((page, index) => (
-          <Pressable
-            key={`${page}-${index}`}
-            onPress={() => goToMappedIndex(index)}
-            accessibilityRole="button"
-            accessibilityLabel={`Open mapped page ${index + 1}, manual page ${page}`}
-            style={[styles.pageChip, index === mappedIndex && styles.pageChipActive]}
-          >
-            <Text style={[styles.pageChipText, index === mappedIndex && styles.pageChipTextActive]}>{page}</Text>
-          </Pressable>
-        ))}
-      </ScrollView>
       {ListFooterComponent}
     </View>
   );
 }
 
+export default function ManualPdfSectionViewer(props) {
+  const nativeFailureMessage = 'The in-app PDF preview could not be loaded. You can still open or share the manual PDF.';
+  const fallback = (
+    <ManualPdfFallback
+      {...props}
+      reason={nativeViewerLoadFailed ? nativeFailureMessage : ''}
+    />
+  );
+  const runtimeFailureFallback = (
+    <ManualPdfFallback
+      {...props}
+      reason={nativeFailureMessage}
+    />
+  );
+
+  if (isExpoGo || !NativeManualPdfViewer) {
+    return fallback;
+  }
+
+  return (
+    <ManualPdfErrorBoundary fallback={runtimeFailureFallback}>
+      <NativeManualPdfViewer {...props} />
+    </ManualPdfErrorBoundary>
+  );
+}
+
 const styles = StyleSheet.create({
-  root: { flex: 1, minHeight: 0 },
-  viewerHeader: { paddingHorizontal: 4, paddingBottom: 8 },
-  pageStatus: { color: colors.text, fontSize: 14, fontWeight: '800' },
-  pdfFrame: { flex: 1, minHeight: 360, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.border, borderRadius: 8, overflow: 'hidden' },
-  pdf: { flex: 1, width: '100%', height: '100%', backgroundColor: colors.surface },
-  controls: { paddingTop: 8 },
-  pageStrip: { gap: 8, paddingVertical: 8 },
-  pageChip: { minWidth: 42, minHeight: 36, borderRadius: 8, borderWidth: 1, borderColor: colors.border, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 10 },
-  pageChipActive: { borderColor: colors.primary, backgroundColor: colors.primary },
-  pageChipText: { color: colors.text, fontSize: 14, fontWeight: '800' },
-  pageChipTextActive: { color: '#FFFFFF' },
+  fallbackRoot: { flex: 1, minHeight: 0 },
+  fallbackCard: { backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.border, borderRadius: 8, padding: 18 },
+  fallbackTitle: { color: colors.text, fontSize: 18, fontWeight: '900', lineHeight: 24, marginBottom: 10 },
+  fallbackText: { color: colors.text, fontSize: 15, lineHeight: 22, marginBottom: 10 },
+  fallbackNote: { color: colors.muted, fontSize: 14, lineHeight: 20, marginBottom: 10 },
+  fallbackActions: { marginTop: 6 },
   messageBox: { minHeight: 220, alignItems: 'center', justifyContent: 'center', padding: 18, backgroundColor: colors.surface, borderRadius: 8, borderWidth: 1, borderColor: colors.border },
   messageText: { color: colors.muted, fontSize: 15, lineHeight: 22, marginTop: 8, textAlign: 'center' },
-  errorText: { color: colors.danger || '#B42318', fontSize: 15, lineHeight: 22, textAlign: 'center' },
 });
