@@ -10,7 +10,7 @@ import { getProductById } from '../data/products';
 import { getCurrentUser, getDrafts } from '../storage/storage';
 import { getDraftOwnerId, isGuestUser } from '../auth/userRole';
 import { applyProgressToDraft } from '../services/experimentProgressService';
-import { openOrSavePdf, sharePdf } from '../services/systemPdfService';
+import { resolvePdfFile, shareOrSavePdf } from '../services/systemPdfService';
 import { useAppRefresh } from '../context/AppRefreshContext';
 
 export default function WorkbookScreen({ navigation }) {
@@ -50,14 +50,15 @@ export default function WorkbookScreen({ navigation }) {
     }
     setBusyPdfDraftId(`${action}:${draft.id}`);
     try {
-      const options = { title: 'Open PDF', message: 'Choose Files or another compatible application to open this PDF.' };
+      const options = { title: 'Open PDF', fileName: draft.pdfFilename || `Akademika_Experiment_Report_${draft.journalId || draft.id}.pdf` };
+      const file = await resolvePdfFile(draft.pdfUri, options);
       if (action === 'open') {
-        await openOrSavePdf(draft.pdfUri, options);
+        navigation.navigate('PdfPreview', { pdfUri: file.uri, title: draft.pdfFilename || 'Complete Experiment Report', fileName: draft.pdfFilename });
       } else {
-        await sharePdf(draft.pdfUri, options);
+        await shareOrSavePdf(file.uri, { ...options, dialogTitle: 'Share or save PDF' });
       }
     } catch (error) {
-      Alert.alert('Open PDF', error?.message || 'This device could not open the PDF.');
+      Alert.alert(action === 'open' ? 'Open PDF' : 'Share / Save', error?.message || (action === 'open' ? 'The PDF file could not be found. Please generate it again.' : 'This device could not open the system file menu.'));
     } finally {
       setBusyPdfDraftId('');
     }
@@ -88,7 +89,7 @@ export default function WorkbookScreen({ navigation }) {
               <>
                 <Text style={styles.status}>PDF status: Generated</Text>
                 <AppButton title={busyPdfDraftId === `open:${draft.id}` ? 'Opening PDF...' : 'Open PDF'} onPress={() => runWorkbookPdfAction(draft, 'open')} disabled={Boolean(busyPdfDraftId)} />
-                <AppButton title={busyPdfDraftId === `share:${draft.id}` ? 'Sharing PDF...' : 'Share PDF'} onPress={() => runWorkbookPdfAction(draft, 'share')} variant="secondary" disabled={Boolean(busyPdfDraftId)} />
+                <AppButton title={busyPdfDraftId === `share:${draft.id}` ? 'Sharing PDF...' : 'Share / Save'} onPress={() => runWorkbookPdfAction(draft, 'share')} variant="secondary" disabled={Boolean(busyPdfDraftId)} />
                 <AppButton title="View Details" onPress={() => navigation.navigate('GeneratePDF', { productId: draft.productId, experimentId: draft.experimentId, manualId: draft.manualId || product?.manualId, allowGuestWorkbookAccess: true })} variant="secondary" />
               </>
             ) : (

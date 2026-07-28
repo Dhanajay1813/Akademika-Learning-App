@@ -1,10 +1,11 @@
 import { useMemo, useState } from 'react';
 import { Alert, StyleSheet, Text, View } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import AppButton from './AppButton';
 import { colors } from '../constants/colors';
 import { resolveManualPdfUri } from '../services/manualPdfAssetService';
 import { prepareManualSectionPdf } from '../services/manualSectionPdfService';
-import { openOrSavePdf, sharePdf } from '../services/systemPdfService';
+import { resolvePdfFile, shareOrSavePdf } from '../services/systemPdfService';
 
 const sectionPdfOptions = {
   title: 'Open PDF',
@@ -42,13 +43,15 @@ export default function ManualPdfSectionViewer({
   isCompleteManual = false,
   ListFooterComponent,
 }) {
+  const navigation = useNavigation();
   const mappedPages = useMemo(() => uniquePages(pages), [pages]);
   const [busyAction, setBusyAction] = useState('');
   const hasMappedPages = mappedPages.length > 0;
   const actionOptions = isCompleteManual ? completeManualOptions : sectionPdfOptions;
   const heading = isCompleteManual ? 'Complete Manual PDF' : 'Manual Pages PDF';
   const message = isCompleteManual ? completeManualOptions.message : sectionPdfOptions.message;
-  const primaryLabel = 'Open PDF';
+  const primaryLabel = isCompleteManual ? 'Open Complete Manual' : 'Open Section PDF';
+  const shareLabel = isCompleteManual ? 'Share / Save Manual' : 'Share / Save Section';
 
   const resolvePdfForAction = async () => {
     if (isCompleteManual) return resolveManualPdfUri(manualId);
@@ -61,10 +64,11 @@ export default function ManualPdfSectionViewer({
     try {
       const uri = await resolvePdfForAction();
       setBusyAction(action === 'open' ? 'opening-menu' : 'sharing');
+      const file = await resolvePdfFile(uri, { title, fileName: isCompleteManual ? `${manualId || 'manual'}.pdf` : `${manualId || 'manual'}_${sectionKey || title}.pdf` });
       if (action === 'open') {
-        await openOrSavePdf(uri, actionOptions);
+        navigation.navigate('PdfPreview', { pdfUri: file.uri, title: isCompleteManual ? (title || 'Complete Manual') : `${title || 'Section'} PDF`, fileName: file.uri.split('/').pop() });
       } else {
-        await sharePdf(uri, actionOptions);
+        await shareOrSavePdf(file.uri, actionOptions);
       }
     } catch (error) {
       Alert.alert(actionOptions.title, error?.message || friendlyPdfError(action === 'open' && !isCompleteManual ? 'prepare' : action));
@@ -91,10 +95,11 @@ export default function ManualPdfSectionViewer({
           <Text style={styles.detail}>{mappedPages.length} mapped page{mappedPages.length === 1 ? '' : 's'} will be prepared for {title}.</Text>
         ) : null}
         {busyAction === 'open' || busyAction === 'share' ? <Text style={styles.status}>Preparing PDF...</Text> : null}
-        {busyAction === 'opening-menu' || busyAction === 'sharing' ? <Text style={styles.status}>Opening PDF...</Text> : null}
+        {busyAction === 'opening-menu' ? <Text style={styles.status}>Opening PDF...</Text> : null}
+        {busyAction === 'sharing' ? <Text style={styles.status}>Sharing PDF...</Text> : null}
         <View style={styles.actions}>
           <AppButton title={primaryLabel} onPress={() => runPdfAction('open')} disabled={Boolean(busyAction)} />
-          <AppButton title="Share PDF" onPress={() => runPdfAction('share')} variant="secondary" disabled={Boolean(busyAction)} />
+          <AppButton title={shareLabel} onPress={() => runPdfAction('share')} variant="secondary" disabled={Boolean(busyAction)} />
         </View>
       </View>
       {ListFooterComponent}

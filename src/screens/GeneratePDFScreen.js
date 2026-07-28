@@ -10,7 +10,7 @@ import { getProductById } from '../data/products';
 import { getCurrentUser, getDrafts } from '../storage/storage';
 import { saveDraftPatch } from '../storage/autosave';
 import { buildReportContentList, generateCompleteExperimentPdf } from '../services/experimentPdfService';
-import { openOrSavePdf, sharePdf } from '../services/systemPdfService';
+import { resolvePdfFile, shareOrSavePdf } from '../services/systemPdfService';
 import { calculateExperimentProgress } from '../services/experimentProgressService';
 
 const sameDraft = (item, productId, manualId, experimentId) => (
@@ -86,9 +86,10 @@ export default function GeneratePDFScreen({ route, navigation }) {
     }
     try {
       setOpeningPdf(true);
-      await openOrSavePdf(draft.pdfUri, { title: 'Open PDF', message: 'Choose Files or another compatible application to open this PDF.' });
+      const file = await resolvePdfFile(draft.pdfUri, { title: draft.pdfFilename || 'Complete Experiment Report', fileName: draft.pdfFilename || `Akademika_Experiment_Report_${draft.journalId || journalId || Date.now()}.pdf` });
+      navigation.navigate('PdfPreview', { pdfUri: file.uri, title: draft.pdfFilename || 'Complete Experiment Report', fileName: draft.pdfFilename });
     } catch (error) {
-      Alert.alert('Open PDF', error?.message || 'This device could not open the PDF.');
+      Alert.alert('Open PDF', error?.message || 'The PDF file could not be found. Please generate it again.');
     } finally {
       setOpeningPdf(false);
     }
@@ -102,9 +103,9 @@ export default function GeneratePDFScreen({ route, navigation }) {
     }
     try {
       setSharingPdf(true);
-      await sharePdf(draft.pdfUri, { title: 'Open PDF', message: 'Choose Files or another compatible application to open this PDF.' });
+      await shareOrSavePdf(draft.pdfUri, { title: draft.pdfFilename || 'Complete Experiment Report', fileName: draft.pdfFilename, dialogTitle: 'Share or save PDF' });
     } catch (error) {
-      Alert.alert('Open PDF', error?.message || 'This device could not open the PDF.');
+      Alert.alert('Share / Save', error?.message || 'This device could not open the system file menu.');
     } finally {
       setSharingPdf(false);
     }
@@ -126,7 +127,7 @@ export default function GeneratePDFScreen({ route, navigation }) {
           </View>
         ) : null}
         <AppButton title={openingPdf ? 'Opening PDF...' : 'Open PDF'} accessibilityLabel="Open generated experiment PDF" onPress={openGeneratedPdf} disabled={openingPdf || sharingPdf} />
-        <AppButton title={sharingPdf ? 'Sharing PDF...' : 'Share PDF'} accessibilityLabel="Share generated experiment PDF" onPress={shareGeneratedPdf} variant="secondary" disabled={openingPdf || sharingPdf} />
+        <AppButton title={sharingPdf ? 'Sharing PDF...' : 'Share / Save'} accessibilityLabel="Share or save generated experiment PDF" onPress={shareGeneratedPdf} variant="secondary" disabled={openingPdf || sharingPdf} />
         <AppButton title="Generate Again" onPress={generate} variant="secondary" disabled={generating || !complete} />
         <AppButton title="Go to Workbook" onPress={() => navigation.navigate('Workbook')} />
         <AutoSaveStatus />
