@@ -1,12 +1,21 @@
-import { Component, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Alert, StyleSheet, Text, View } from 'react-native';
-import Constants from 'expo-constants';
 import { useNavigation } from '@react-navigation/native';
 import AppButton from './AppButton';
 import { colors } from '../constants/colors';
 import { resolveManualPdfUri } from '../services/manualPdfAssetService';
-import { openPdfFile } from '../services/pdfOpenService';
-import { sharePdf } from '../services/experimentPdfService';
+import { prepareManualSectionPdf } from '../services/manualSectionPdfService';
+import { openOrSavePdf, sharePdf } from '../services/systemPdfService';
+
+const sectionPdfOptions = {
+  title: 'Open Manual Pages',
+  message: 'Choose Files or another compatible application to view or save these manual pages.',
+};
+
+const completeManualOptions = {
+  title: 'Open or Save PDF',
+  message: 'Choose Files or another compatible application to open or save this PDF.',
+};
 
 const uniquePages = (pages = []) => {
   const seen = new Set();
@@ -20,65 +29,53 @@ const uniquePages = (pages = []) => {
     });
 };
 
-// appOwnership is deprecated for general environment detection, but it remains
-// the narrow compatibility check we need here: identifying Expo Go specifically.
-const isExpoGo = Constants.appOwnership === 'expo';
-
-let NativeManualPdfViewer = null;
-let nativeViewerLoadFailed = false;
-
-if (!isExpoGo) {
-  try {
-    NativeManualPdfViewer = require('./pdf/NativeManualPdfViewer').default;
-  } catch (error) {
-    nativeViewerLoadFailed = true;
-  }
+function friendlyPdfError(action) {
+  if (action === 'prepare') return 'The selected manual pages could not be prepared.';
+  return 'This device could not open the system file menu.';
 }
 
-class ManualPdfErrorBoundary extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { failed: false };
-  }
-
-  static getDerivedStateFromError() {
-    return { failed: true };
-  }
-
-  componentDidCatch() {}
-
-  render() {
-    if (this.state.failed) {
-      return this.props.fallback;
-    }
-    return this.props.children;
-  }
-}
-
-function ManualPdfFallback({ manualId, pages = [], title = 'Manual Pages', ListFooterComponent, reason }) {
+export default function ManualPdfSectionViewer({
+  manualId,
+  experimentId,
+  sectionKey,
+  pages = [],
+  title = 'Manual Pages',
+  isCompleteManual = false,
+  ListFooterComponent,
+}) {
   const navigation = useNavigation();
   const mappedPages = useMemo(() => uniquePages(pages), [pages]);
   const [busyAction, setBusyAction] = useState('');
   const hasMappedPages = mappedPages.length > 0;
+  const actionOptions = isCompleteManual ? completeManualOptions : sectionPdfOptions;
+  const heading = isCompleteManual ? 'Open or Save PDF' : 'Open Manual Pages';
+  const message = isCompleteManual ? completeManualOptions.message : sectionPdfOptions.message;
+  const primaryLabel = isCompleteManual ? 'Open / Save Complete Manual' : 'Open / Save Section Pages';
+
+  const resolvePdfForAction = async () => {
+    if (isCompleteManual) return resolveManualPdfUri(manualId);
+    return prepareManualSectionPdf({ manualId, experimentId, sectionKey: sectionKey || title, pages: mappedPages });
+  };
 
   const runPdfAction = async (action) => {
     if (busyAction) return;
-    setBusyAction(action);
+    setBusyAction(action === 'open' ? 'open' : 'share');
     try {
-      const uri = await resolveManualPdfUri(manualId);
+      const uri = await resolvePdfForAction();
+      setBusyAction(action === 'open' ? 'opening-menu' : 'sharing');
       if (action === 'open') {
-        await openPdfFile(uri);
+        await openOrSavePdf(uri, actionOptions);
       } else {
-        await sharePdf(uri);
+        await sharePdf(uri, actionOptions);
       }
     } catch (error) {
-      Alert.alert('PDF is not available', 'The manual PDF could not be opened from this app. Please try again from the Akademika development or installed app.');
+      Alert.alert(actionOptions.title, error?.message || friendlyPdfError(action === 'open' && !isCompleteManual ? 'prepare' : action));
     } finally {
       setBusyAction('');
     }
   };
 
-  if (!mappedPages.length) {
+  if (!hasMappedPages) {
     return (
       <View style={styles.messageBox}>
         <Text style={styles.messageText}>Manual content not added yet.</Text>
@@ -88,20 +85,19 @@ function ManualPdfFallback({ manualId, pages = [], title = 'Manual Pages', ListF
   }
 
   return (
-    <View style={styles.fallbackRoot}>
-      <View style={styles.fallbackCard}>
-        <Text style={styles.fallbackTitle}>PDF Preview Requires the Akademika Development App</Text>
-        <Text style={styles.fallbackText}>
-          This manual is stored as a PDF. The in-app PDF viewer requires the Akademika development or installed app and is not available inside Expo Go.
-        </Text>
-        <Text style={styles.fallbackText}>
-          Mapped in-app viewing is available in the Akademika development or production build. Opening externally will show the complete PDF, not only the mapped pages for {title}.
-        </Text>
-        {reason ? <Text style={styles.fallbackNote}>{reason}</Text> : null}
-        <View style={styles.fallbackActions}>
-          <AppButton title={busyAction === 'open' ? 'Opening PDF...' : 'Open PDF'} onPress={() => runPdfAction('open')} disabled={!hasMappedPages || Boolean(busyAction)} />
-          <AppButton title={busyAction === 'share' ? 'Sharing PDF...' : 'Share PDF'} onPress={() => runPdfAction('share')} variant="secondary" disabled={!hasMappedPages || Boolean(busyAction)} />
-          <AppButton title="Back" onPress={() => navigation.goBack()} variant="secondary" />
+    <View style={styles.root}>
+      <View style={styles.card}>
+        <Text style={styles.title}>{heading}</Text>
+        <Text style={styles.message}>{message}</Text>
+        {!isCompleteManual ? (
+          <Text style={styles.detail}>{mappedPages.length} mapped page{mappedPages.length === 1 ? '' : 's'} will be prepared for {title}.</Text>
+        ) : null}
+        {busyAction === 'open' || busyAction === 'share' ? <Text style={styles.status}>Preparing PDF...</Text> : null}
+        {busyAction === 'opening-menu' || busyAction === 'sharing' ? <Text style={styles.status}>Opening system file menu...</Text> : null}
+        <View style={styles.actions}>
+          <AppButton title={primaryLabel} onPress={() => runPdfAction('open')} disabled={Boolean(busyAction)} />
+          <AppButton title="Share PDF" onPress={() => runPdfAction('share')} variant="secondary" disabled={Boolean(busyAction)} />
+          <AppButton title="Back" onPress={() => navigation.goBack()} variant="secondary" disabled={Boolean(busyAction)} />
         </View>
       </View>
       {ListFooterComponent}
@@ -109,39 +105,14 @@ function ManualPdfFallback({ manualId, pages = [], title = 'Manual Pages', ListF
   );
 }
 
-export default function ManualPdfSectionViewer(props) {
-  const nativeFailureMessage = 'The in-app PDF preview could not be loaded. You can still open or share the manual PDF.';
-  const fallback = (
-    <ManualPdfFallback
-      {...props}
-      reason={nativeViewerLoadFailed ? nativeFailureMessage : ''}
-    />
-  );
-  const runtimeFailureFallback = (
-    <ManualPdfFallback
-      {...props}
-      reason={nativeFailureMessage}
-    />
-  );
-
-  if (isExpoGo || !NativeManualPdfViewer) {
-    return fallback;
-  }
-
-  return (
-    <ManualPdfErrorBoundary fallback={runtimeFailureFallback}>
-      <NativeManualPdfViewer {...props} />
-    </ManualPdfErrorBoundary>
-  );
-}
-
 const styles = StyleSheet.create({
-  fallbackRoot: { flex: 1, minHeight: 0 },
-  fallbackCard: { backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.border, borderRadius: 8, padding: 18 },
-  fallbackTitle: { color: colors.text, fontSize: 18, fontWeight: '900', lineHeight: 24, marginBottom: 10 },
-  fallbackText: { color: colors.text, fontSize: 15, lineHeight: 22, marginBottom: 10 },
-  fallbackNote: { color: colors.muted, fontSize: 14, lineHeight: 20, marginBottom: 10 },
-  fallbackActions: { marginTop: 6 },
+  root: { flex: 1, minHeight: 0 },
+  card: { backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.border, borderRadius: 8, padding: 18 },
+  title: { color: colors.text, fontSize: 18, fontWeight: '900', lineHeight: 24, marginBottom: 10 },
+  message: { color: colors.text, fontSize: 15, lineHeight: 22, marginBottom: 10 },
+  detail: { color: colors.muted, fontSize: 14, lineHeight: 20, marginBottom: 10 },
+  status: { color: colors.primary, fontSize: 14, fontWeight: '800', lineHeight: 20, marginBottom: 8 },
+  actions: { marginTop: 6 },
   messageBox: { minHeight: 220, alignItems: 'center', justifyContent: 'center', padding: 18, backgroundColor: colors.surface, borderRadius: 8, borderWidth: 1, borderColor: colors.border },
   messageText: { color: colors.muted, fontSize: 15, lineHeight: 22, marginTop: 8, textAlign: 'center' },
 });

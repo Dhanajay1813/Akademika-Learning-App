@@ -1,6 +1,6 @@
 import * as FileSystem from 'expo-file-system/legacy';
 import * as Print from 'expo-print';
-import * as Sharing from 'expo-sharing';
+import { sharePdf as shareSystemPdf } from './systemPdfService';
 import { getSubmittedManualImageSource } from '../content/contentRegistry';
 import { resolveManualPdfUri } from './manualPdfAssetService';
 import { getMappedExperiment, getMappedManual, isPdfPageMappedManual } from '../data/manualData';
@@ -750,6 +750,4 @@ export const generateWorkbookPdf = async (payload) => {
   return result.uri;
 };
 
-export const sharePdf = async (uri) => {
-  if (uri && await Sharing.isAvailableAsync()) await Sharing.shareAsync(uri);
-};
+export const sharePdf = shareSystemPdf;

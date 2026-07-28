@@ -9,8 +9,8 @@ import { getMappedExperiment, getMappedManual } from '../data/manualData';
 import { getProductById } from '../data/products';
 import { getCurrentUser, getDrafts } from '../storage/storage';
 import { saveDraftPatch } from '../storage/autosave';
-import { buildReportContentList, generateCompleteExperimentPdf, sharePdf } from '../services/experimentPdfService';
-import { openPdfFile } from '../services/pdfOpenService';
+import { buildReportContentList, generateCompleteExperimentPdf } from '../services/experimentPdfService';
+import { openOrSavePdf, sharePdf } from '../services/systemPdfService';
 import { calculateExperimentProgress } from '../services/experimentProgressService';
 
 const sameDraft = (item, productId, manualId, experimentId) => (
@@ -28,6 +28,7 @@ export default function GeneratePDFScreen({ route, navigation }) {
   const [journalId, setJournalId] = useState('');
   const [generating, setGenerating] = useState(false);
   const [openingPdf, setOpeningPdf] = useState(false);
+  const [sharingPdf, setSharingPdf] = useState(false);
   const [lastError, setLastError] = useState('');
   const [imageWarnings, setImageWarnings] = useState([]);
 
@@ -85,11 +86,27 @@ export default function GeneratePDFScreen({ route, navigation }) {
     }
     try {
       setOpeningPdf(true);
-      await openPdfFile(draft.pdfUri);
+      await openOrSavePdf(draft.pdfUri, { title: 'Open or Save PDF', message: 'Choose Files or another compatible application to open or save this PDF.' });
     } catch (error) {
-      Alert.alert('Open PDF', error?.message || 'Unable to open the generated PDF.');
+      Alert.alert('Open or Save PDF', error?.message || 'This device could not open the system file menu.');
     } finally {
       setOpeningPdf(false);
+    }
+  };
+
+  const shareGeneratedPdf = async () => {
+    if (sharingPdf) return;
+    if (!draft?.pdfUri) {
+      Alert.alert('PDF unavailable', 'Generated PDF file is missing.');
+      return;
+    }
+    try {
+      setSharingPdf(true);
+      await sharePdf(draft.pdfUri, { title: 'Open or Save PDF', message: 'Choose Files or another compatible application to open or save this PDF.' });
+    } catch (error) {
+      Alert.alert('Open or Save PDF', error?.message || 'This device could not open the system file menu.');
+    } finally {
+      setSharingPdf(false);
     }
   };
 
@@ -108,8 +125,8 @@ export default function GeneratePDFScreen({ route, navigation }) {
             {displayedImageWarnings.map((warning, index) => <Text key={`${warning.label}-${index}`} style={styles.warningText}>{warning.label} could not be included.</Text>)}
           </View>
         ) : null}
-        <AppButton title={openingPdf ? 'Opening PDF...' : 'Open PDF'} accessibilityLabel="Open generated experiment PDF" onPress={openGeneratedPdf} disabled={openingPdf} />
-        <AppButton title="Share PDF" accessibilityLabel="Share generated experiment PDF" onPress={() => sharePdf(draft.pdfUri)} variant="secondary" />
+        <AppButton title={openingPdf ? 'Opening system file menu...' : 'Open / Save PDF'} accessibilityLabel="Open or save generated experiment PDF" onPress={openGeneratedPdf} disabled={openingPdf || sharingPdf} />
+        <AppButton title={sharingPdf ? 'Opening system file menu...' : 'Share PDF'} accessibilityLabel="Share generated experiment PDF" onPress={shareGeneratedPdf} variant="secondary" disabled={openingPdf || sharingPdf} />
         <AppButton title="Generate Again" onPress={generate} variant="secondary" disabled={generating || !complete} />
         <AppButton title="Go to Workbook" onPress={() => navigation.navigate('Workbook')} />
         <AutoSaveStatus />

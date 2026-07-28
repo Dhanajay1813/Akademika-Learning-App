@@ -3,5 +3,5 @@ export {
   buildReportContentList,
   generateCompleteExperimentPdf,
   generateWorkbookPdf,
-  sharePdf,
 } from '../services/experimentPdfService';
+export { sharePdf } from '../services/systemPdfService';

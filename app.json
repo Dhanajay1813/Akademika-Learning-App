@@ -24,7 +24,14 @@
     "plugins": [
       "expo-web-browser",
       "expo-secure-store",
-      "expo-asset"
+      "expo-asset",
+      [
+        "expo-file-system",
+        {
+          "supportsOpeningDocumentsInPlace": true,
+          "enableFileSharing": true
+        }
+      ]
     ],
     "scheme": "akademikalearning"
   }

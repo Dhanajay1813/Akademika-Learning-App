@@ -13,7 +13,7 @@ export default function CompleteManualScreen({ route }) {
 
   return (
     <ScreenContainer title="Complete Manual" scroll={false}>
-      <ManualPdfSectionViewer manualId={selectedManualId} pages={pages} title={manual?.productName || product?.name || 'Complete Manual'} />
+      <ManualPdfSectionViewer manualId={selectedManualId} pages={pages} title={manual?.productName || product?.name || 'Complete Manual'} isCompleteManual />
     </ScreenContainer>
   );
 }

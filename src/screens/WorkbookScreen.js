@@ -10,11 +10,13 @@ import { getProductById } from '../data/products';
 import { getCurrentUser, getDrafts } from '../storage/storage';
 import { getDraftOwnerId, isGuestUser } from '../auth/userRole';
 import { applyProgressToDraft } from '../services/experimentProgressService';
+import { openOrSavePdf, sharePdf } from '../services/systemPdfService';
 import { useAppRefresh } from '../context/AppRefreshContext';
 
 export default function WorkbookScreen({ navigation }) {
   const [tab, setTab] = useState('progress');
   const [drafts, setDrafts] = useState([]);
+  const [busyPdfDraftId, setBusyPdfDraftId] = useState('');
   const { refreshVersion, isRefreshing, refreshAppData } = useAppRefresh();
 
   const loadWorkbook = useCallback(async () => {
@@ -38,6 +40,28 @@ export default function WorkbookScreen({ navigation }) {
   useEffect(() => {
     if (refreshVersion > 0) loadWorkbook();
   }, [loadWorkbook, refreshVersion]);
+
+
+  const runWorkbookPdfAction = async (draft, action) => {
+    if (busyPdfDraftId) return;
+    if (!draft?.pdfUri) {
+      Alert.alert('PDF unavailable', 'Generated PDF file is missing.');
+      return;
+    }
+    setBusyPdfDraftId(`${action}:${draft.id}`);
+    try {
+      const options = { title: 'Open or Save PDF', message: 'Choose Files or another compatible application to open or save this PDF.' };
+      if (action === 'open') {
+        await openOrSavePdf(draft.pdfUri, options);
+      } else {
+        await sharePdf(draft.pdfUri, options);
+      }
+    } catch (error) {
+      Alert.alert('Open or Save PDF', error?.message || 'This device could not open the system file menu.');
+    } finally {
+      setBusyPdfDraftId('');
+    }
+  };
 
   const shown = drafts.filter((draft) => (tab === 'completed' ? draft.pdfGenerated : !draft.pdfGenerated));
 
@@ -63,8 +87,9 @@ export default function WorkbookScreen({ navigation }) {
             {tab === 'completed' ? (
               <>
                 <Text style={styles.status}>PDF status: Generated</Text>
-                <AppButton title="View PDF" onPress={() => navigation.navigate('GeneratePDF', { productId: draft.productId, experimentId: draft.experimentId, manualId: draft.manualId || product?.manualId, allowGuestWorkbookAccess: true })} />
-                <AppButton title="Share" onPress={() => Alert.alert('Share', 'Open generated PDF screen to share.')} variant="secondary" />
+                <AppButton title={busyPdfDraftId === `open:${draft.id}` ? 'Opening system file menu...' : 'Open / Save PDF'} onPress={() => runWorkbookPdfAction(draft, 'open')} disabled={Boolean(busyPdfDraftId)} />
+                <AppButton title={busyPdfDraftId === `share:${draft.id}` ? 'Opening system file menu...' : 'Share PDF'} onPress={() => runWorkbookPdfAction(draft, 'share')} variant="secondary" disabled={Boolean(busyPdfDraftId)} />
+                <AppButton title="View Details" onPress={() => navigation.navigate('GeneratePDF', { productId: draft.productId, experimentId: draft.experimentId, manualId: draft.manualId || product?.manualId, allowGuestWorkbookAccess: true })} variant="secondary" />
               </>
             ) : (
               <AppButton title="Resume" onPress={() => navigation.navigate('ExperimentMenu', { productId: draft.productId, experimentId: draft.experimentId, manualId: draft.manualId || product?.manualId, allowGuestWorkbookAccess: true })} />

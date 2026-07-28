@@ -121,7 +121,7 @@ export default function ExperimentContentScreen({ route, navigation }) {
     return (
       <ScreenContainer title={title} scroll={false}>
         {pdfMapped && pageFiles.length ? (
-          <ManualPdfSectionViewer manualId={manualId} pages={pageFiles} title={title} ListFooterComponent={footer} />
+          <ManualPdfSectionViewer manualId={manualId} experimentId={experimentId} sectionKey={sectionKey} pages={pageFiles} title={title} ListFooterComponent={footer} />
         ) : (
           <ManualPageList manualId={manualId} pageFiles={sectionItems} ListFooterComponent={<>{completionControls}<AutoSaveStatus />{recordTools}</>} />
         )}
