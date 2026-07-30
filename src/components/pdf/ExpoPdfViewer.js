@@ -1,68 +1,39 @@
 import { useEffect, useMemo, useRef } from 'react';
-import { ActivityIndicator, Platform, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import { WebView } from 'react-native-webview';
-import { buildAndroidPdfJsHtml, buildIosPdfObjectHtml } from '../../services/pdfViewerHtmlService';
+import { buildIosPdfObjectHtml } from '../../services/pdfViewerHtmlService';
 
-const CHUNK_SIZE = 384 * 1024;
-
-export default function ExpoPdfViewer({ pdfBase64, title, reloadKey, onViewerMessage, onError }) {
-  const webViewRef = useRef(null);
-  const readyRef = useRef(false);
-  const sentKeyRef = useRef('');
-  const android = Platform.OS === 'android';
+export default function ExpoPdfViewer({ pdfUri, pdfBase64, title, reloadKey, onViewerMessage, onError }) {
+  const onViewerMessageRef = useRef(onViewerMessage);
   const html = useMemo(
-    () => (android ? buildAndroidPdfJsHtml({ title }) : buildIosPdfObjectHtml({ pdfBase64, title })),
-    [android, android ? null : pdfBase64, title, reloadKey]
+    () => buildIosPdfObjectHtml({ pdfBase64, title }),
+    [pdfBase64, title, reloadKey]
   );
+  const source = pdfUri ? { uri: pdfUri } : { html };
 
-  const sendMessage = (message) => {
-    const script = `window.dispatchEvent(new MessageEvent('message', { data: ${JSON.stringify(JSON.stringify(message))} })); true;`;
-    webViewRef.current?.injectJavaScript(script);
-  };
+  useEffect(() => {
+    onViewerMessageRef.current = onViewerMessage;
+  }, [onViewerMessage]);
 
-  const sendPdfChunks = () => {
-    if (!android || !readyRef.current || !pdfBase64) return;
-    const sendKey = `${reloadKey}:${pdfBase64.length}`;
-    if (sentKeyRef.current === sendKey) return;
-    sentKeyRef.current = sendKey;
-    const totalChunks = Math.ceil(pdfBase64.length / CHUNK_SIZE);
-    sendMessage({ type: 'PDF_START', totalChunks, fileName: title || 'PDF' });
-    for (let index = 0; index < totalChunks; index += 1) {
-      sendMessage({ type: 'PDF_CHUNK', index, data: pdfBase64.slice(index * CHUNK_SIZE, (index + 1) * CHUNK_SIZE) });
+  useEffect(() => {
+    if (pdfBase64) {
+      onViewerMessageRef.current?.({ type: 'PDF_LOADED', totalPages: 1 });
+      onViewerMessageRef.current?.({ type: 'PAGE_RENDERED', pageNumber: 1 });
     }
-    sendMessage({ type: 'PDF_COMPLETE' });
-  };
-
-  useEffect(() => {
-    readyRef.current = false;
-    sentKeyRef.current = '';
-  }, [reloadKey]);
-
-  useEffect(() => {
-    sendPdfChunks();
   }, [pdfBase64, reloadKey]);
 
-  const handleMessage = (event) => {
-    let message = null;
-    try {
-      message = JSON.parse(event.nativeEvent.data);
-    } catch (error) {
-      return;
-    }
-    if (message?.type === 'VIEWER_READY') {
-      readyRef.current = true;
-      sendPdfChunks();
-    }
-    onViewerMessage?.(message);
+  const notifyLoaded = () => {
+    if (!pdfUri) return;
+    onViewerMessageRef.current?.({ type: 'PDF_LOADED', totalPages: 1 });
+    onViewerMessageRef.current?.({ type: 'PAGE_RENDERED', pageNumber: 1 });
   };
 
   return (
     <View style={styles.root}>
       <WebView
         key={reloadKey}
-        ref={webViewRef}
         originWhitelist={['*']}
-        source={{ html }}
+        source={source}
         javaScriptEnabled
         domStorageEnabled={false}
         startInLoadingState
@@ -74,14 +45,14 @@ export default function ExpoPdfViewer({ pdfBase64, title, reloadKey, onViewerMes
         )}
         renderError={() => (
           <View style={styles.centerState}>
-            <Text style={styles.stateText}>Unable to display this PDF.</Text>
+            <Text style={styles.stateText}>Unable to Display PDF</Text>
           </View>
         )}
-        allowFileAccess={false}
-        allowFileAccessFromFileURLs={false}
+        allowFileAccess
+        allowFileAccessFromFileURLs
         allowUniversalAccessFromFileURLs={false}
         scalesPageToFit
-        onMessage={handleMessage}
+        onLoadEnd={notifyLoaded}
         onError={onError}
         onHttpError={onError}
         style={styles.webview}
@@ -91,8 +62,8 @@ export default function ExpoPdfViewer({ pdfBase64, title, reloadKey, onViewerMes
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, minHeight: 0, backgroundColor: '#6B7280' },
-  webview: { flex: 1, backgroundColor: '#6B7280' },
+  root: { flex: 1, minHeight: 1, width: '100%', backgroundColor: '#6B7280' },
+  webview: { flex: 1, minHeight: 1, width: '100%', backgroundColor: '#6B7280' },
   centerState: { flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#6B7280' },
   stateText: { marginTop: 10, color: '#FFFFFF', fontSize: 14, fontWeight: '800' },
 });

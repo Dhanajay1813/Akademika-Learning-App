@@ -1,5 +1,5 @@
 import * as FileSystem from 'expo-file-system/legacy';
-import { File } from 'expo-file-system';
+import { Directory, File, Paths } from 'expo-file-system';
 import { PDFDocument } from 'pdf-lib';
 import { resolveManualPdfUri } from './manualPdfAssetService';
 
@@ -37,12 +37,14 @@ function buildCacheKey({ manualId, experimentId, sectionKey, pages, sourceUri })
   return [manualId, experimentId || 'complete', sectionKey || 'manual', pages.join(','), sourceUri].join('|');
 }
 
-function buildOutputUri({ manualId, experimentId, sectionKey, cacheKey }) {
+function buildOutputFile({ manualId, experimentId, sectionKey, cacheKey }) {
   const filename = [manualId, experimentId, sectionKey]
     .filter(Boolean)
     .map(safeFilePart)
     .join('_') || 'manual_pages';
-  return `${FileSystem.cacheDirectory}${filename}_${stableHash(cacheKey)}.pdf`;
+  const directory = new Directory(Paths.cache, 'manual-sections');
+  directory.create({ intermediates: true, idempotent: true });
+  return new File(directory, `${filename}_${stableHash(cacheKey)}.pdf`);
 }
 
 function fileExists(uri) {
@@ -59,10 +61,10 @@ export async function prepareManualSectionPdf({ manualId, experimentId, sectionK
     const cachedUri = preparedSections.get(cacheKey);
     if (fileExists(cachedUri)) return cachedUri;
 
-    const outputUri = buildOutputUri({ manualId, experimentId, sectionKey, cacheKey });
-    if (fileExists(outputUri)) {
-      preparedSections.set(cacheKey, outputUri);
-      return outputUri;
+    const outputFile = buildOutputFile({ manualId, experimentId, sectionKey, cacheKey });
+    if (fileExists(outputFile.uri)) {
+      preparedSections.set(cacheKey, outputFile.uri);
+      return outputFile.uri;
     }
 
     const sourceBase64 = await FileSystem.readAsStringAsync(sourceUri, { encoding: FileSystem.EncodingType.Base64 });
@@ -76,10 +78,13 @@ export async function prepareManualSectionPdf({ manualId, experimentId, sectionK
 
     const copiedPages = await outputDoc.copyPages(sourceDoc, pageIndexes);
     copiedPages.forEach((page) => outputDoc.addPage(page));
-    const outputBase64 = await outputDoc.saveAsBase64();
-    await FileSystem.writeAsStringAsync(outputUri, outputBase64, { encoding: FileSystem.EncodingType.Base64 });
-    preparedSections.set(cacheKey, outputUri);
-    return outputUri;
+    const outputBytes = await outputDoc.save();
+    if (outputFile.exists) outputFile.delete();
+    outputFile.create();
+    outputFile.write(outputBytes);
+    if (!outputFile.exists || !Number(outputFile.size || 0) || outputFile.extension !== '.pdf') throw new Error(GENERIC_ERROR);
+    preparedSections.set(cacheKey, outputFile.uri);
+    return outputFile.uri;
   } catch (error) {
     throw new Error(GENERIC_ERROR);
   }

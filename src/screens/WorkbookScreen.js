@@ -10,7 +10,8 @@ import { getProductById } from '../data/products';
 import { getCurrentUser, getDrafts } from '../storage/storage';
 import { getDraftOwnerId, isGuestUser } from '../auth/userRole';
 import { applyProgressToDraft } from '../services/experimentProgressService';
-import { resolvePdfFile, shareOrSavePdf } from '../services/systemPdfService';
+import { sharePdf } from '../services/pdfOpenService';
+import { openPdfInsideApp } from '../services/pdfNavigationService';
 import { useAppRefresh } from '../context/AppRefreshContext';
 
 export default function WorkbookScreen({ navigation }) {
@@ -45,20 +46,19 @@ export default function WorkbookScreen({ navigation }) {
   const runWorkbookPdfAction = async (draft, action) => {
     if (busyPdfDraftId) return;
     if (!draft?.pdfUri) {
-      Alert.alert('PDF unavailable', 'Generated PDF file is missing.');
+      Alert.alert('PDF Not Available', 'The PDF file could not be found. Please generate it again.');
       return;
     }
     setBusyPdfDraftId(`${action}:${draft.id}`);
     try {
-      const options = { title: 'Open PDF', fileName: draft.pdfFilename || `Akademika_Experiment_Report_${draft.journalId || draft.id}.pdf` };
-      const file = await resolvePdfFile(draft.pdfUri, options);
+      const options = { title: draft.pdfFilename || 'Complete Experiment Report', fileName: draft.pdfFilename || `Akademika_Experiment_Report_${draft.journalId || draft.id}.pdf` };
       if (action === 'open') {
-        navigation.navigate('PdfPreview', { pdfUri: file.uri, title: draft.pdfFilename || 'Complete Experiment Report', fileName: draft.pdfFilename });
+        await openPdfInsideApp(navigation, draft.pdfUri, options);
       } else {
-        await shareOrSavePdf(file.uri, { ...options, dialogTitle: 'Share or save PDF' });
+        await sharePdf(draft.pdfUri, { ...options, dialogTitle: 'Share or save PDF' });
       }
     } catch (error) {
-      Alert.alert(action === 'open' ? 'Open PDF' : 'Share / Save', error?.message || (action === 'open' ? 'The PDF file could not be found. Please generate it again.' : 'This device could not open the system file menu.'));
+      Alert.alert(action === 'open' ? 'PDF Not Available' : 'Share / Save', error?.message || (action === 'open' ? 'The PDF file could not be found. Please generate it again.' : 'This device could not open the system file menu.'));
     } finally {
       setBusyPdfDraftId('');
     }

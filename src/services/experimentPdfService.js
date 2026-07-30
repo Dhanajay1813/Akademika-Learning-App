@@ -32,6 +32,58 @@ const TECHNICAL_ORDER = [
   ['referenceSignal', 'Reference Signal'],
 ];
 
+function pdfBase64Bytes(base64, maxBytes = 12) {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
+  const input = String(base64 || '').replace(/^data:application\/pdf;base64,/i, '').replace(/\s/g, '').slice(0, Math.ceil(maxBytes / 3) * 4);
+  const bytes = [];
+  for (let index = 0; index < input.length && bytes.length < maxBytes; index += 4) {
+    const enc1 = chars.indexOf(input.charAt(index));
+    const enc2 = chars.indexOf(input.charAt(index + 1));
+    const enc3 = chars.indexOf(input.charAt(index + 2));
+    const enc4 = chars.indexOf(input.charAt(index + 3));
+    if (enc1 < 0 || enc2 < 0) break;
+    bytes.push((enc1 << 2) | (enc2 >> 4));
+    if (enc3 >= 0 && enc3 !== 64 && bytes.length < maxBytes) bytes.push(((enc2 & 15) << 4) | (enc3 >> 2));
+    if (enc4 >= 0 && enc4 !== 64 && bytes.length < maxBytes) bytes.push(((enc3 & 3) << 6) | enc4);
+  }
+  return bytes;
+}
+
+function pdfBase64HeaderDiagnostic(base64) {
+  const bytes = pdfBase64Bytes(base64, 12);
+  return {
+    byteHeader: bytes.slice(0, 8),
+    asciiHeader: bytes.map((byte) => (byte >= 32 && byte <= 126 ? String.fromCharCode(byte) : '.')).join(''),
+    startsPdf: bytes[0] === 37 && bytes[1] === 80 && bytes[2] === 68 && bytes[3] === 70 && bytes[4] === 45,
+    base64Length: String(base64 || '').length,
+  };
+}
+
+function uriScheme(uri) {
+  const match = String(uri || '').match(/^([A-Za-z][A-Za-z0-9+.-]*):/);
+  return match ? match[1] : '';
+}
+
+async function logGeneratedPdfHeader(stage, uri) {
+  if (!__DEV__) return;
+  try {
+    const base64 = await FileSystem.readAsStringAsync(uri, { encoding: FileSystem.EncodingType.Base64 });
+    console.warn('[PDF Generate FS]', {
+      stage,
+      uriScheme: uriScheme(uri),
+      hasUri: Boolean(uri),
+      ...pdfBase64HeaderDiagnostic(base64),
+    });
+  } catch (error) {
+    console.warn('[PDF Generate FS]', {
+      stage,
+      uriScheme: uriScheme(uri),
+      hasUri: Boolean(uri),
+      readError: error?.message || String(error),
+    });
+  }
+}
+
 
 const CSS_PX_PER_MM = 3.78;
 const PRINTABLE_WIDTH_MM = 184;
@@ -701,8 +753,10 @@ async function mergeMappedManualPages({ reportUri, manualId, experiment }) {
   const copiedPages = await reportDoc.copyPages(manualDoc, pageIndexes);
   copiedPages.forEach((page) => reportDoc.addPage(page));
   const mergedBase64 = await reportDoc.saveAsBase64();
+  if (__DEV__) console.warn('[PDF Generate FS]', { stage: 'MERGED_BASE64_READY', ...pdfBase64HeaderDiagnostic(mergedBase64) });
   const mergedUri = `${FileSystem.cacheDirectory}akademika-complete-${Date.now()}.pdf`;
   await FileSystem.writeAsStringAsync(mergedUri, mergedBase64, { encoding: FileSystem.EncodingType.Base64 });
+  await logGeneratedPdfHeader('MERGED_FILE_WRITTEN', mergedUri);
   return mergedUri;
 }
 
@@ -726,10 +780,13 @@ export async function generateCompleteExperimentPdf({ user, product, manual, exp
   const html = buildCompleteExperimentHtml({ user, product, manual: selectedManual, experiment: selectedExperiment, studentRecord, completionDetails: selectedCompletion, resolvedImages });
   try {
     const result = await Print.printToFileAsync({ html });
+    await logGeneratedPdfHeader('PRINT_OUTPUT', result.uri);
+    const outputUri = isPdfPageMappedManual(selectedManual?.manualId || studentRecord.manualId || product?.manualId)
+      ? await mergeMappedManualPages({ reportUri: result.uri, manualId: selectedManual?.manualId || studentRecord.manualId || product?.manualId, experiment: selectedExperiment })
+      : result.uri;
+    await logGeneratedPdfHeader('FINAL_OUTPUT', outputUri);
     return {
-      uri: isPdfPageMappedManual(selectedManual?.manualId || studentRecord.manualId || product?.manualId)
-        ? await mergeMappedManualPages({ reportUri: result.uri, manualId: selectedManual?.manualId || studentRecord.manualId || product?.manualId, experiment: selectedExperiment })
-        : result.uri,
+      uri: outputUri,
       filename: `Akademika_${safeFilePart(product?.id || studentRecord.productId)}_${safeFilePart(selectedExperiment?.experimentNumber || selectedExperiment?.id || studentRecord.experimentId)}_${safeFilePart(user?.fullName || 'student')}_${new Date().toISOString().slice(0, 10)}.pdf`,
       warnings: resolvedImages.warnings || [],
     };

@@ -10,7 +10,8 @@ import { getProductById } from '../data/products';
 import { getCurrentUser, getDrafts } from '../storage/storage';
 import { saveDraftPatch } from '../storage/autosave';
 import { buildReportContentList, generateCompleteExperimentPdf } from '../services/experimentPdfService';
-import { resolvePdfFile, shareOrSavePdf } from '../services/systemPdfService';
+import { sharePdf } from '../services/pdfOpenService';
+import { openPdfInsideApp } from '../services/pdfNavigationService';
 import { calculateExperimentProgress } from '../services/experimentProgressService';
 
 const sameDraft = (item, productId, manualId, experimentId) => (
@@ -81,15 +82,14 @@ export default function GeneratePDFScreen({ route, navigation }) {
   const openGeneratedPdf = async () => {
     if (openingPdf) return;
     if (!draft?.pdfUri) {
-      Alert.alert('PDF unavailable', 'Generated PDF file is missing.');
+      Alert.alert('PDF Not Available', 'The PDF file could not be found. Please generate it again.');
       return;
     }
     try {
       setOpeningPdf(true);
-      const file = await resolvePdfFile(draft.pdfUri, { title: draft.pdfFilename || 'Complete Experiment Report', fileName: draft.pdfFilename || `Akademika_Experiment_Report_${draft.journalId || journalId || Date.now()}.pdf` });
-      navigation.navigate('PdfPreview', { pdfUri: file.uri, title: draft.pdfFilename || 'Complete Experiment Report', fileName: draft.pdfFilename });
+      await openPdfInsideApp(navigation, draft.pdfUri, { title: draft.pdfFilename || 'Complete Experiment Report', fileName: draft.pdfFilename || `Akademika_Experiment_Report_${draft.journalId || journalId || Date.now()}.pdf` });
     } catch (error) {
-      Alert.alert('Open PDF', error?.message || 'The PDF file could not be found. Please generate it again.');
+      Alert.alert('PDF Not Available', error?.message || 'The PDF file could not be found. Please generate it again.');
     } finally {
       setOpeningPdf(false);
     }
@@ -98,12 +98,12 @@ export default function GeneratePDFScreen({ route, navigation }) {
   const shareGeneratedPdf = async () => {
     if (sharingPdf) return;
     if (!draft?.pdfUri) {
-      Alert.alert('PDF unavailable', 'Generated PDF file is missing.');
+      Alert.alert('PDF Not Available', 'The PDF file could not be found. Please generate it again.');
       return;
     }
     try {
       setSharingPdf(true);
-      await shareOrSavePdf(draft.pdfUri, { title: draft.pdfFilename || 'Complete Experiment Report', fileName: draft.pdfFilename, dialogTitle: 'Share or save PDF' });
+      await sharePdf(draft.pdfUri, { title: draft.pdfFilename || 'Complete Experiment Report', fileName: draft.pdfFilename, dialogTitle: 'Share or save PDF' });
     } catch (error) {
       Alert.alert('Share / Save', error?.message || 'This device could not open the system file menu.');
     } finally {

@@ -5,7 +5,8 @@ import AppButton from './AppButton';
 import { colors } from '../constants/colors';
 import { resolveManualPdfUri } from '../services/manualPdfAssetService';
 import { prepareManualSectionPdf } from '../services/manualSectionPdfService';
-import { resolvePdfFile, shareOrSavePdf } from '../services/systemPdfService';
+import { sharePdf } from '../services/pdfOpenService';
+import { openPdfInsideApp } from '../services/pdfNavigationService';
 
 const sectionPdfOptions = {
   title: 'Open PDF',
@@ -64,11 +65,11 @@ export default function ManualPdfSectionViewer({
     try {
       const uri = await resolvePdfForAction();
       setBusyAction(action === 'open' ? 'opening-menu' : 'sharing');
-      const file = await resolvePdfFile(uri, { title, fileName: isCompleteManual ? `${manualId || 'manual'}.pdf` : `${manualId || 'manual'}_${sectionKey || title}.pdf` });
+      const options = { title, fileName: isCompleteManual ? `${manualId || 'manual'}.pdf` : `${manualId || 'manual'}_${sectionKey || title}.pdf` };
       if (action === 'open') {
-        navigation.navigate('PdfPreview', { pdfUri: file.uri, title: isCompleteManual ? (title || 'Complete Manual') : `${title || 'Section'} PDF`, fileName: file.uri.split('/').pop() });
+        await openPdfInsideApp(navigation, uri, { ...options, title: isCompleteManual ? (title || 'Complete Manual') : `${title || 'Section'} PDF` });
       } else {
-        await shareOrSavePdf(file.uri, actionOptions);
+        await sharePdf(uri, actionOptions);
       }
     } catch (error) {
       Alert.alert(actionOptions.title, error?.message || friendlyPdfError(action === 'open' && !isCompleteManual ? 'prepare' : action));
