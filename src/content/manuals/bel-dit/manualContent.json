@@ -1,0 +1,117 @@
+{
+  "manuals": {
+    "bel-dit": {
+      "schemaVersion": 3,
+      "contentMode": "pdfPageMapping",
+      "manualId": "bel-dit",
+      "productId": "bel-dit",
+      "categoryId": "basic-electronics",
+      "productName": "BEL-DIT: Digital IC Trainer",
+      "categoryName": "Basic Electronics",
+      "pdfFile": "manual.pdf",
+      "originalFilename": "BEL-DIT-VER 19.0.pdf",
+      "totalPages": 112,
+      "compressedByteSize": 3015454,
+      "sha256": "701409343065310a2b936af036f46e50fa0db9da7968a818475fa35bdae3d5af",
+      "experiments": [
+        {
+          "id": "exp1",
+          "experimentNumber": "Experiment 1",
+          "title": "Study of Logic Gates",
+          "displayOrder": 1,
+          "sections": {
+            "objective": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "objective_001",
+                  "type": "text",
+                  "order": 1,
+                  "text": "To study about logic gates and verify their truth tables.\n"
+                }
+              ]
+            },
+            "theory": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "theory_001",
+                  "type": "text",
+                  "order": 1,
+                  "text": "Circuit that takes the logical decision and the process are called logic gates. Each gate \nhas one or more input and only one output. OR, AND and NOT are basic gates. NAND, \nNOR and X-OR are known as universal gates. Basic gates form these gates. \n\nAND Gate \nThe AND gate performs a logical multiplication commonly known as AND function. The \noutput is high when both the inputs are high. The output is low level when any one of the \ninputs is low. \n\nOR Gate \nThe OR gate performs a logical addition commonly known as OR function. The output is \nhigh when any one of the inputs is high. The output is low level when both the inputs are \nlow. \n\nNOT Gate \nThe NOT gate is called an inverter. The output is high when the input is low. The output is \nlow when the input is high. \n\nNAND Gate \nThe NAND gate is a contraction of AND-NOT. The output is high when both inputs are low \nand any one of the input is low .The output is low level when both inputs are high. \n\nNOR Gate \nThe NOR gate is a contraction of OR-NOT. The output is high when both inputs are low. \nThe output is low when one or both inputs are high. \n\nX-OR Gate \nThe output is high when any one of the inputs is high. The output is low when both the \ninputs are low and both the inputs are high."
+                }
+              ]
+            },
+            "functionalBlock": {
+              "pages": [
+                9
+              ],
+              "blocks": []
+            },
+            "procedure": {
+              "pages": [
+                13,
+                14,
+                15,
+                16
+              ],
+              "blocks": []
+            },
+            "observation": {
+              "pages": [],
+              "blocks": []
+            },
+            "equipments": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "equipments_001",
+                  "type": "text",
+                  "order": 1,
+                  "text": "1.  BEL-DIT Board  \n2. Power supply"
+                }
+              ]
+            },
+            "result": {
+              "pages": [],
+              "blocks": []
+            },
+            "conclusion": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "conclusion_001",
+                  "type": "text",
+                  "order": 1,
+                  "text": "The truth tables for various logic gates like AND, OR, NAND, NOT, EX-OR, NOR are \nverified "
+                }
+              ]
+            },
+            "references": {
+              "pages": [],
+              "blocks": []
+            },
+            "technicalData": {
+              "datasheet": {
+                "pages": [],
+                "blocks": []
+              },
+              "blockDiagram": {
+                "pages": [],
+                "blocks": []
+              },
+              "circuitDiagram": {
+                "pages": [],
+                "blocks": []
+              },
+              "referenceSignal": {
+                "pages": [],
+                "blocks": []
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}
