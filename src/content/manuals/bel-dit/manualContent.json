@@ -110,6 +110,655 @@
               }
             }
           }
+        },
+        {
+          "id": "exp2",
+          "experimentNumber": "Experiment 2",
+          "title": "Study of Universal Gates",
+          "displayOrder": 3,
+          "sections": {
+            "objective": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "objective_001",
+                  "type": "text",
+                  "order": 1,
+                  "text": "To study NAND and NOR gates as Universal Logic Gates. "
+                }
+              ]
+            },
+            "theory": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "theory_002",
+                  "type": "text",
+                  "order": 2,
+                  "text": ""
+                }
+              ]
+            },
+            "functionalBlock": {
+              "pages": [
+                9
+              ],
+              "blocks": []
+            },
+            "procedure": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "procedure_001",
+                  "type": "text",
+                  "order": 1,
+                  "text": "1) Do the connections as per circuit shown below \n2) Apply logic inputs from INPUT SWITCHES section to the input of the NOR gate. \n3) Connect  output of gate under test to any of the led from OUTPUT LED section \n4) Verify the truth table as per schematic and Gate which is constructed. \n\n"
+                },
+                {
+                  "id": "procedure_002",
+                  "type": "image",
+                  "order": 2,
+                  "imageFile": "images/exp2/procedure/01_1_realization_of_all_basic_gates_using_nor_gate.webp",
+                  "imageFiles": [
+                    {
+                      "imageFile": "images/exp2/procedure/01_1_realization_of_all_basic_gates_using_nor_gate.webp",
+                      "width": 679,
+                      "height": 419,
+                      "byteSize": 9418,
+                      "sha256": "24c239c5d84f83f3c8ed8335f95216797073e73d0b9fb5e5a6e880169507bfcb"
+                    },
+                    {
+                      "imageFile": "images/exp2/procedure/02_image_-_2.webp",
+                      "width": 663,
+                      "height": 427,
+                      "byteSize": 9494,
+                      "sha256": "b0f23e00e9d037d09757ed2f2cfcce6cec2dfe6bde8f0d9f4fe1533951cbf1bf"
+                    },
+                    {
+                      "imageFile": "images/exp2/procedure/03_2_realization_of_all_basic_gates_using_nand_gate.webp",
+                      "width": 640,
+                      "height": 392,
+                      "byteSize": 8998,
+                      "sha256": "f76bac294572f4c4d8215012e483da522dc26715ff2339ceea635e631c5eff17"
+                    },
+                    {
+                      "imageFile": "images/exp2/procedure/04_image_-4.webp",
+                      "width": 629,
+                      "height": 385,
+                      "byteSize": 8700,
+                      "sha256": "00e5f2c88b159399ffb4f1f26163b7ec23eabaa2ba6808c879d93f886dd3ba0b"
+                    },
+                    {
+                      "imageFile": "images/exp2/procedure/05_3_realization_of_basic_exor_gate_using_and_nor_gate.webp",
+                      "width": 654,
+                      "height": 306,
+                      "byteSize": 10856,
+                      "sha256": "765baa39ae034dfc2c4f8c2364b4759db37e63c97143600f3db520a85811cdff"
+                    }
+                  ],
+                  "caption": ""
+                }
+              ]
+            },
+            "observation": {
+              "pages": [],
+              "blocks": []
+            },
+            "equipments": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "equipments_001",
+                  "type": "text",
+                  "order": 1,
+                  "text": "* BEL-DIT Board \n* Power supply\n"
+                }
+              ]
+            },
+            "result": {
+              "pages": [],
+              "blocks": []
+            },
+            "conclusion": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "conclusion_001",
+                  "type": "text",
+                  "order": 1,
+                  "text": "The truth tables for various digital gates like AND, OR, NAND, NOT, EX-OR, NOR are verified  USING Universal gates."
+                }
+              ]
+            },
+            "references": {
+              "pages": [],
+              "blocks": []
+            },
+            "technicalData": {
+              "datasheet": {
+                "pages": [],
+                "blocks": []
+              },
+              "blockDiagram": {
+                "pages": [],
+                "blocks": []
+              },
+              "circuitDiagram": {
+                "pages": [],
+                "blocks": []
+              },
+              "referenceSignal": {
+                "pages": [],
+                "blocks": []
+              }
+            }
+          }
+        },
+        {
+          "id": "exp3",
+          "experimentNumber": "Experiment 3",
+          "title": "Study of TTL Clock Generation Using NAND Gates ",
+          "displayOrder": 3,
+          "sections": {
+            "objective": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "objective_001",
+                  "type": "text",
+                  "order": 1,
+                  "text": "To design and verify TTL clock generation using NAND gates.\n"
+                }
+              ]
+            },
+            "theory": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "theory_001",
+                  "type": "text",
+                  "order": 1,
+                  "text": "As we will see, many digital circuits require a “clock” signal. That is, a periodic square wave at a controlled frequency. Therefore, the final resistor, capacitor, and inverter circuit that we will consider is the free running oscillator shown in Fig. below. \n\nNote, in this circuit R22 is only added to the circuit in order to limit the currents flowing into the input protection diodes of the inverters. If we further simplify the problem by assuming  that the input protection diodes will limit the voltage at all gate inputs to the range {–0.7V – +5.7V}, we can eliminate this resistor (for analysis purposes only). In addition, we can lump the fixed resistor R23 in with the variable resistor RV. By eliminating both R22 and R23 we end up with the simplified circuit shown in Fig. 8.7. Let us consider the operation of the circuit shown in Fig. 8.7. The easiest way to understand the operation of a RC and inverter circuit is to assume a given starting state and then simply analyze the operation of the circuit over time. For simplicity, let us assume that A=0V, B=5V, C=0V, and D=5V. Note, you can choose any set of starting voltages you wish. However, it is important to pick ones that are consistent with the inverter’s characteristic. Next consider how the circuit will evolve. As long as the voltage at point Are mains below 2.5V, then point C will stay at ground. In this case we have an R in series with a C to ground just as we did in below Fig. The solution for the voltage at point A \nfollows from that derivation and is VA= 5V (1-e-t/RC).\n\nThe first part of the curve for point A in above Fig. shows this curve. However, as soon as the voltage at point A crosses 2.5V the output at point D will go to 0V and at point C will go to +5V. Since the capacitor keeps the voltage across itself constant, the voltage at point A \nwill try to go to 2.5V+5V=7.5V. However, the input protection diodes will clamp the voltage at point A at 5.7V (see above Fig.). Because point D is now 0V, the resistor will try to drag point A down to 0V from its starting point at 5.7V. Again, as soon as it crosses 2.5V the outputs of the inverters will all switch. An important question in determining the frequency of oscillation of this clock circuit is how long does it take to go from 5.7V to2.5V? We know the equation of this line is simply,  VA(t) =5.7 V e –t ⁄ RC= 2.5V \n\nWe can set it equal to 2.5V and solve for the value of t. In this case it takes 0.82RC units of time before the inverters switch. Note the product of resistance and capacitance has units of time. Specifically, 1 farad times 1 ohm is equal to 1 second. \n\nAs soon as the voltage at point A crosses 2.5V the output at point D will go to 5V and at point C will go to 0V. Since the capacitor keeps the voltage across itself constant, the voltage at point A will try to go to +2.5V–5V=–2.5V. However, the input protection diodes will clamp the voltage at point A at –0.7V (see above Fig.). Because point D is now at +5V, the resistor will try to drag point A up to +5V from its starting point at –0.7V. Again, as soon as it crosses 2.5V the outputs of the inverts will all switch. How long does it take to go from –0.7V to 2.5V? We know the equation of this line is simply \n\nWe can set it equal to 2.5V and solve for the value of t. In this case it again takes 0.82RC units of time before the inverters switch. Therefore the period of this oscillator is 1.64RC seconds and its frequency of oscillation is 1/ (1.64RC) Hz. "
+                },
+                {
+                  "id": "theory_002",
+                  "type": "image",
+                  "order": 2,
+                  "imageFile": "images/exp3/theory/01_image_-1.webp",
+                  "imageFiles": [
+                    {
+                      "imageFile": "images/exp3/theory/01_image_-1.webp",
+                      "width": 368,
+                      "height": 224,
+                      "byteSize": 8128,
+                      "sha256": "c024717c5e61b1b3a6b5fd28a6209a75cd3651248e2fe85c2f3857d3690e57fe"
+                    },
+                    {
+                      "imageFile": "images/exp3/theory/02_image_-2.webp",
+                      "width": 371,
+                      "height": 245,
+                      "byteSize": 6100,
+                      "sha256": "a619d71fbadff20065f9ea11c143c5ce41375eb8c9128c8b2ea57b21ab192d83"
+                    },
+                    {
+                      "imageFile": "images/exp3/theory/03_image_-3.webp",
+                      "width": 369,
+                      "height": 287,
+                      "byteSize": 11496,
+                      "sha256": "0242c24b9ca2aaaf927273caad75d4a9e1929c5e62eb2b2c97660227bb91c9f8"
+                    },
+                    {
+                      "imageFile": "images/exp3/theory/04_image_-4.webp",
+                      "width": 424,
+                      "height": 243,
+                      "byteSize": 5494,
+                      "sha256": "8c768a28c05480591b021ff5fcc98251d3d86078da1820d2d502dc6c34810590"
+                    }
+                  ],
+                  "caption": ""
+                }
+              ]
+            },
+            "functionalBlock": {
+              "pages": [
+                9
+              ],
+              "blocks": []
+            },
+            "procedure": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "procedure_001",
+                  "type": "text",
+                  "order": 1,
+                  "text": "1) Do the Connection as shown in figure below.  To mount R& C make use of ZIF socket \n2) Observe the output at point D on oscilloscope. \n3) Verify the theoretical and practical frequency of clock. \n4) Observe the effect on frequency of clock by varying the resistor value."
+                },
+                {
+                  "id": "procedure_002",
+                  "type": "image",
+                  "order": 2,
+                  "imageFile": "images/exp2/result/result.webp",
+                  "imageFiles": [
+                    {
+                      "imageFile": "images/exp2/result/result.webp",
+                      "width": 553,
+                      "height": 292,
+                      "byteSize": 10900,
+                      "sha256": "b2e09973d963206613142817f8269d5d6d144bb12ae8d18052d92cb111208ce7"
+                    }
+                  ],
+                  "caption": ""
+                }
+              ]
+            },
+            "observation": {
+              "pages": [],
+              "blocks": []
+            },
+            "equipments": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "equipments_001",
+                  "type": "text",
+                  "order": 1,
+                  "text": "* BEL-DIT Board  \n* Power supply"
+                }
+              ]
+            },
+            "result": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "result_001",
+                  "type": "image",
+                  "order": 1,
+                  "imageFile": "images/exp2/result/result.webp",
+                  "imageFiles": [
+                    {
+                      "imageFile": "images/exp2/result/result.webp",
+                      "width": 553,
+                      "height": 292,
+                      "byteSize": 10900,
+                      "sha256": "b2e09973d963206613142817f8269d5d6d144bb12ae8d18052d92cb111208ce7"
+                    }
+                  ],
+                  "caption": ""
+                }
+              ]
+            },
+            "conclusion": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "conclusion_001",
+                  "type": "text",
+                  "order": 1,
+                  "text": "Effect on frequency of clock by varying the resistor value is observed."
+                }
+              ]
+            },
+            "references": {
+              "pages": [],
+              "blocks": []
+            },
+            "technicalData": {
+              "datasheet": {
+                "pages": [],
+                "blocks": []
+              },
+              "blockDiagram": {
+                "pages": [],
+                "blocks": []
+              },
+              "circuitDiagram": {
+                "pages": [],
+                "blocks": []
+              },
+              "referenceSignal": {
+                "pages": [],
+                "blocks": []
+              }
+            }
+          }
+        },
+        {
+          "id": "exp4",
+          "experimentNumber": "Experiment 4",
+          "title": "Study of Key DEBOUNCE Circuit ",
+          "displayOrder": 4,
+          "sections": {
+            "objective": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "objective_001",
+                  "type": "text",
+                  "order": 1,
+                  "text": "To study and verify key denounce using NAND Gates."
+                }
+              ]
+            },
+            "theory": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "theory_001",
+                  "type": "text",
+                  "order": 1,
+                  "text": "With any mechanical switch, the contacts rarely open and close cleanly. Rather, when you close a switch, the contacts are driven together and when they make contact, they bounce back apart, close again, bounce apart again, etc. Eventually, the bouncing ceases and the contacts remain closed. A similar phenomenon occurs when you open the contacts The duration of the contact bounce depends on the type of switch, the quality of the materials and workmanship, the condition of the contacts and other factors but a good rule \nof thumb is that the duration will be in the range of 30mS to50mS. Depending on the timing, this often produces undesirable results. For example, say your program is keeps track of how many times a push button switch closes and increments a counter. The false \nclosures due to contact bounce will likely lead to erroneous Counts. So, what can be done about contact bounce? The methods employed to deal with this phenomenon are called denouncing and it can be done in hardware or in software. To do so in software is fairly simple: sample the switch state and when a change is detected, delay for 30mS to 50mS before proceeding. That simple delay helps to ensure that your program won’t get back around to testing the switch state again until after the bouncing has ceased. The software denounce method works well for many situations but for some it does not.  For example, if the flow of the software cannot tolerate the required delay it may be necessary to implement the denouncing in hardware. The schematic below Figure shows a simple switch denouncing circuit."
+                },
+                {
+                  "id": "theory_002",
+                  "type": "image",
+                  "order": 2,
+                  "imageFile": "images/exp4/theory/image_-1.webp",
+                  "imageFiles": [
+                    {
+                      "imageFile": "images/exp4/theory/image_-1.webp",
+                      "width": 292,
+                      "height": 200,
+                      "byteSize": 4954,
+                      "sha256": "029b593685ea35bb88ab907276e028bc495aeeebe48f82a15dbc76cd0603c5ed"
+                    }
+                  ],
+                  "caption": ""
+                }
+              ]
+            },
+            "functionalBlock": {
+              "pages": [
+                9
+              ],
+              "blocks": []
+            },
+            "procedure": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "procedure_001",
+                  "type": "text",
+                  "order": 1,
+                  "text": "1) Do the connection as shown in figure below. To mount R & switch make use of ZIF Socket. \n2) Press the switch and observe the output of NAND gate in DSO. \n3) Apply this Key denounced signal to counter and observe that the bounce effect of key is nullifying using gates. "
+                }
+              ]
+            },
+            "observation": {
+              "pages": [],
+              "blocks": []
+            },
+            "equipments": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "equipments_001",
+                  "type": "text",
+                  "order": 1,
+                  "text": "* BEL-DIT Board  \n* Power supply"
+                }
+              ]
+            },
+            "result": {
+              "pages": [],
+              "blocks": []
+            },
+            "conclusion": {
+              "pages": [],
+              "blocks": []
+            },
+            "references": {
+              "pages": [],
+              "blocks": []
+            },
+            "technicalData": {
+              "datasheet": {
+                "pages": [],
+                "blocks": []
+              },
+              "blockDiagram": {
+                "pages": [],
+                "blocks": []
+              },
+              "circuitDiagram": {
+                "pages": [],
+                "blocks": []
+              },
+              "referenceSignal": {
+                "pages": [],
+                "blocks": []
+              }
+            }
+          }
+        },
+        {
+          "id": "exp5",
+          "experimentNumber": "Experiment 5",
+          "title": "Study of De-Morgan’s Theorem ",
+          "displayOrder": 5,
+          "sections": {
+            "objective": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "objective_001",
+                  "type": "text",
+                  "order": 1,
+                  "text": "To study and verify DeMorgan’s Theorem."
+                }
+              ]
+            },
+            "theory": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "theory_001",
+                  "type": "text",
+                  "order": 1,
+                  "text": "A mathematician named De Morgan developed a pair of important rules regarding group complementation in Boolean algebra. By group complementation, represented by a long bar over more than one variable. Inverting all inputs to a gate reverses that gate's essential function from AND to OR, or vice versa, and also inverts the output. So, an OR gate with all inputs inverted (a Negative-OR gate) behaves the same as a NAND gate, and an AND gate with all inputs inverted (a Negative-AND gate) behaves the same as a NOR gate. De Morgan's theorems state the same equivalence in \"backward\" form: that inverting the output of any gate results in the same function as the opposite type of gate (AND vs. OR) with inverted inputs: (Image - 1& 2)\n\nA long bar extending over the term AB acts as a grouping symbol, and as such is entirely different from the product of A and B independently inverted. In other words, (AB)' is not equal to A'B'. Because the \"prime\" symbol (') cannot be stretched over two variables like a bar can, we are forced to use parentheses to make it apply to the whole term AB in the previous sentence. A bar, however, acts as its own grouping symbol when stretched over more than one variable. This has profound impact on how Boolean expressions are \nevaluated and reduced, as we shall see. DeMorgan's theorem may be thought of in terms of breaking a long bar symbol. When a \nlong bar is broken, the operation directly underneath the break changes from addition to multiplication, or vice versa, and the broken bar pieces remain over the individual variables. To illustrate (Image - 3).\n\nWhen multiple \"layers\" of bars exist in an expression, you may only break one bar at a time, and it is generally easier to begin simplification by breaking the longest (uppermost) bar first. To illustrate, let's take the expression (A + (BC)')' and reduce it using DeMorgan's Theorems. (Image - 4)\nFollowing the advice of breaking the longest (uppermost) bar first, We’ll begin by breaking the bar covering the entire expression as a first step:   (Image - 5)\nAs a result, the original circuit is reduced to a three-input AND gate with the A input inverted:  (Image - 6)\nYou should never break more than one bar in a single step, as illustrated here:  (Image - 7)\n\nAs tempting as it may be to conserve steps and break more than one bar at a time, it often leads to an incorrect result. \nIt is possible to properly reduce this expression by breaking the short bar first, rather than the long bar first (Image -8)\n\nThe end result is the same, but more steps are required compared to using the first method, where the longest bar was broken first  \n(Image -9 )\nAs you can see, maintaining the grouping implied by the complementation bars for this expression is crucial to obtaining the correct answer.  \nVerification Of De-Morgan’s Theorem Let's apply the principles of DeMorgan's theorems to the simplification of a gate circuit.(Image -10 )\n\nAs always, our first step in simplifying this circuit must be to generate an equivalent Boolean expression. We can do this by placing a sub-expression label at the output of each gate, as the inputs become known. Here's the first step in this process.(Image -11 )\n\nNext, we can label the outputs of the first NOR gate and the NAND gate. When dealing with inverted-output gates, we find it easier to write an expression for the gate's output without the final inversion, with an arrow pointing to just before the inversion bubble. Then, \nat the wire leading out of the gate (after the bubble), we write the full, complemented expression. This helps ensure we don't forget a complementing bar in the sub-expression, by forcing me to split the expression-writing task into two steps. (Image -12 )\nFinally, we write an expression (or pair of expressions) for the last NOR gate. (Image -13)\nNow, we reduce this expression using the identities, properties, rules, and theorems (DeMorgan's) of Boolean algebra.(Image -14)\n The equivalent gate circuit for this much-simplified expression is as follows: (Image -15)"
+                },
+                {
+                  "id": "theory_002",
+                  "type": "image",
+                  "order": 2,
+                  "imageFile": "images/exp5/theory/01_image_-_1.webp",
+                  "imageFiles": [
+                    {
+                      "imageFile": "images/exp5/theory/01_image_-_1.webp",
+                      "width": 335,
+                      "height": 320,
+                      "byteSize": 2750,
+                      "sha256": "312105e2a95b0355f31c6d3a2071a11391d5d83fab6fea3a49a9f4e79afd7850"
+                    },
+                    {
+                      "imageFile": "images/exp5/theory/02_image_-_2.webp",
+                      "width": 593,
+                      "height": 330,
+                      "byteSize": 6402,
+                      "sha256": "ce61f56c883886e64140814a3982fd9719bfb0c1450a92fc2ce4acfeadb6977b"
+                    },
+                    {
+                      "imageFile": "images/exp5/theory/03_image_-_3.webp",
+                      "width": 429,
+                      "height": 234,
+                      "byteSize": 5804,
+                      "sha256": "f0d0ce97995a11ea32ad8c1c1225f25badc2d135aa88f360329a86386e73511b"
+                    },
+                    {
+                      "imageFile": "images/exp5/theory/04_image_-_4.webp",
+                      "width": 293,
+                      "height": 98,
+                      "byteSize": 1608,
+                      "sha256": "b8deeb5a5e06af7ec5d8cd36fc24d67643b9fc79ec8c18e6fda926dcfe1e875d"
+                    },
+                    {
+                      "imageFile": "images/exp5/theory/05_image_-_5.webp",
+                      "width": 350,
+                      "height": 164,
+                      "byteSize": 5526,
+                      "sha256": "792d00823d48dac65333a32d82a897169315a8d906a7c897a5c16fabc67082b7"
+                    },
+                    {
+                      "imageFile": "images/exp5/theory/06_image_-_6.webp",
+                      "width": 215,
+                      "height": 95,
+                      "byteSize": 1446,
+                      "sha256": "898becab605604a294c206919c0143ffa7cef55dd1b06144645bac2b489aa627"
+                    },
+                    {
+                      "imageFile": "images/exp5/theory/07_image_-_7.webp",
+                      "width": 505,
+                      "height": 154,
+                      "byteSize": 7840,
+                      "sha256": "e27b2cb7a36d011593804537a84b18e27a2cc484fa629d85f6d6c83a2191ef48"
+                    },
+                    {
+                      "imageFile": "images/exp5/theory/08_image_-_8.webp",
+                      "width": 397,
+                      "height": 312,
+                      "byteSize": 13812,
+                      "sha256": "ab873430c04ec7ff9f59f709a3b9ca3a39b189a0d8e6f8bb59d517f8d81ea077"
+                    },
+                    {
+                      "imageFile": "images/exp5/theory/09_image_-_9.webp",
+                      "width": 604,
+                      "height": 379,
+                      "byteSize": 16326,
+                      "sha256": "392a92e5c5645e66e234ce59d34c6512ae59d2dff8bd4d66ed908c100679e918"
+                    },
+                    {
+                      "imageFile": "images/exp5/theory/10_image_-_10.webp",
+                      "width": 292,
+                      "height": 123,
+                      "byteSize": 2440,
+                      "sha256": "e2cc27eb62d3c4103b7cc698e0a0e201008ffc74ce3ad1fb112fd408c52d45cd"
+                    },
+                    {
+                      "imageFile": "images/exp5/theory/11_image_-_11.webp",
+                      "width": 324,
+                      "height": 131,
+                      "byteSize": 2998,
+                      "sha256": "bacea3be70c18e2c262fa44be4f3964356ddcefd3dc46f6c050c61817e61531d"
+                    },
+                    {
+                      "imageFile": "images/exp5/theory/12_image_-_12.webp",
+                      "width": 298,
+                      "height": 163,
+                      "byteSize": 3248,
+                      "sha256": "654fb6c1c201cb1e1bf03cfde6854eb82fc909633c4e3f6179a2a7305ae4b8b0"
+                    },
+                    {
+                      "imageFile": "images/exp5/theory/13_image_-_13.webp",
+                      "width": 369,
+                      "height": 192,
+                      "byteSize": 4394,
+                      "sha256": "398211d2914a13cdd4cd50a054e4bb1e9fdf0e9db849f5789859790a06a7ce8f"
+                    },
+                    {
+                      "imageFile": "images/exp5/theory/14_image_-_14.webp",
+                      "width": 325,
+                      "height": 302,
+                      "byteSize": 10490,
+                      "sha256": "558c2296fc3b781eae18d93dd44a8fc76af5cb8d62c302570138d504c8cf0664"
+                    },
+                    {
+                      "imageFile": "images/exp5/theory/15_image_-_15.webp",
+                      "width": 241,
+                      "height": 79,
+                      "byteSize": 1074,
+                      "sha256": "b46c0b79fda92fc754d58049f99446e50cfd00e4899379b16fc5f16f4c745f0f"
+                    }
+                  ],
+                  "caption": ""
+                }
+              ]
+            },
+            "functionalBlock": {
+              "pages": [
+                9
+              ],
+              "blocks": []
+            },
+            "procedure": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "procedure_001",
+                  "type": "text",
+                  "order": 1,
+                  "text": "Verification of DeMorgan’s theorem: \nA) Theorem 1: (AB)’ = A’ + B’ \n* Do the connection as shown in the circuit above. \n* Connect A & B terminals to the Logic Inputs from I/P Switches. \n* Connect both the outputs to led indicators in O/P section \n* Provide Different combinations of inputs to A & B and observe the output on LEDs. \n* For any combination of input, output at both the LED is similar. \n* From this we can verify the DeMorgan’s theorem. Calculate the gate count and chip count before and after applying DeMorgan’s      theorem. \nB) Theorem 2: (A+B)’ = A’B’ \n* Repeat the above procedure for below rule too "
+                },
+                {
+                  "id": "procedure_002",
+                  "type": "image",
+                  "order": 2,
+                  "imageFile": "images/exp5/procedure/01_image_-_16.webp",
+                  "imageFiles": [
+                    {
+                      "imageFile": "images/exp5/procedure/01_image_-_16.webp",
+                      "width": 360,
+                      "height": 292,
+                      "byteSize": 6114,
+                      "sha256": "ea3edff689c42c6632c2dd7e0e8f4e7574365bec3096674a35ba8123226c413c"
+                    },
+                    {
+                      "imageFile": "images/exp5/procedure/02_image_-_17.webp",
+                      "width": 341,
+                      "height": 208,
+                      "byteSize": 2876,
+                      "sha256": "6d64d58099914ae558a2b049b34b4cec8daf4066524a6e7acc48d02a6b47de3f"
+                    }
+                  ],
+                  "caption": ""
+                }
+              ]
+            },
+            "observation": {
+              "pages": [],
+              "blocks": []
+            },
+            "equipments": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "equipments_001",
+                  "type": "text",
+                  "order": 1,
+                  "text": "* BEL-DIT Board  \n* Power supply "
+                }
+              ]
+            },
+            "result": {
+              "pages": [],
+              "blocks": []
+            },
+            "conclusion": {
+              "pages": [],
+              "blocks": []
+            },
+            "references": {
+              "pages": [],
+              "blocks": []
+            },
+            "technicalData": {
+              "datasheet": {
+                "pages": [],
+                "blocks": []
+              },
+              "blockDiagram": {
+                "pages": [],
+                "blocks": []
+              },
+              "circuitDiagram": {
+                "pages": [],
+                "blocks": []
+              },
+              "referenceSignal": {
+                "pages": [],
+                "blocks": []
+              }
+            }
+          }
         }
       ]
     }
