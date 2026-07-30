@@ -1,6 +1,5 @@
 import { Asset } from 'expo-asset';
 import { manualPdfAssets } from '../content/manualPdfAssets.generated';
-import { getMappedManual } from '../data/manualData';
 
 const uriCache = new Map();
 
@@ -26,11 +25,3 @@ export async function resolveManualPdfUri(manualId) {
   return uri;
 }
 
-export function getManualTotalPages(manualId) {
-  return Number(getMappedManual(manualId)?.totalPages || 0);
-}
-
-export function getCompleteManualPages(manualId) {
-  const totalPages = getManualTotalPages(manualId);
-  return totalPages > 0 ? Array.from({ length: totalPages }, (_, index) => index + 1) : [];
-}

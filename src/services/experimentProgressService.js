@@ -22,8 +22,9 @@ const SECTION_LABELS = {
   referenceSignal: 'Reference Signal',
 };
 
-const STANDARD_SECTIONS = ['objective', 'theory', 'functionalBlock', 'procedure', 'observation', 'equipments', 'result', 'conclusion'];
+const PRE_TECHNICAL_SECTIONS = ['objective', 'theory', 'functionalBlock', 'procedure'];
 const TECHNICAL_SECTIONS = ['datasheet', 'blockDiagram', 'circuitDiagram', 'referenceSignal'];
+const POST_TECHNICAL_SECTIONS = ['observation', 'equipments', 'result', 'conclusion'];
 
 const hasText = (value) => typeof value === 'string' && value.trim().length > 0;
 
@@ -62,22 +63,24 @@ function makeSectionItem(sectionKey, value, technical = false) {
   };
 }
 
-function hasProcedureContent(sections) {
-  return hasValidContent(sections?.procedure);
-}
 
 export function getExperimentCompletionItems({ manualId, experimentId, draft } = {}) {
   const experiment = getProgressExperiment(manualId, experimentId);
   const sections = experiment?.sections || {};
   const items = [];
 
-  STANDARD_SECTIONS.forEach((sectionKey) => {
+  PRE_TECHNICAL_SECTIONS.forEach((sectionKey) => {
     const item = makeSectionItem(sectionKey, sections[sectionKey], false);
     if (item) items.push(item);
   });
 
   TECHNICAL_SECTIONS.forEach((sectionKey) => {
     const item = makeSectionItem(sectionKey, sections.technicalData?.[sectionKey], true);
+    if (item) items.push(item);
+  });
+
+  POST_TECHNICAL_SECTIONS.forEach((sectionKey) => {
+    const item = makeSectionItem(sectionKey, sections[sectionKey], false);
     if (item) items.push(item);
   });
 

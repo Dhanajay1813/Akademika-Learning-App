@@ -5,7 +5,7 @@ import ScreenContainer from '../components/ScreenContainer';
 import AppButton from '../components/AppButton';
 import { colors } from '../constants/colors';
 import { getExperimentById } from '../data/experiments';
-import { getMappedExperiment, isPdfPageMappedManual } from '../data/manualData';
+import { getMappedExperiment } from '../data/manualData';
 import { saveDraftPatch } from '../storage/autosave';
 import { getCurrentUser, getDrafts } from '../storage/storage';
 import { getDraftOwnerId, isGuestUser } from '../auth/userRole';
@@ -50,7 +50,6 @@ export default function ExperimentMenuScreen({ route, navigation }) {
   const { refreshVersion } = useAppRefresh();
   const experiment = getMappedExperiment(manualId, experimentId) || getExperimentById(experimentId);
   const isMappedExperiment = Boolean(manualId && experiment?.sections);
-  const pdfMapped = isPdfPageMappedManual(manualId);
   const visibleStandardSections = isMappedExperiment
     ? standardSections.filter(([sectionKey]) => hasValidContent(experiment.sections[sectionKey]))
     : standardSections;
@@ -141,7 +140,6 @@ export default function ExperimentMenuScreen({ route, navigation }) {
       {visibleStandardSections.map(([sectionKey, title]) => (
         <AppButton key={sectionKey} title={title} onPress={() => open(sectionKey, title)} />
       ))}
-      {pdfMapped ? <AppButton title="Open Complete Manual" onPress={() => navigation.navigate('CompleteManual', { productId, manualId })} variant="secondary" /> : null}
       {!isMappedExperiment || hasTechnicalData(experiment.sections) ? (
         <AppButton title="Technical Data" onPress={() => navigation.navigate('TechnicalData', { productId, experimentId, manualId, allowGuestWorkbookAccess })} />
       ) : null}

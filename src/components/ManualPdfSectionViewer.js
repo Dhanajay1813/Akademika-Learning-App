@@ -1,22 +1,11 @@
-import { useMemo, useState } from 'react';
-import { Alert, StyleSheet, Text, View } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import AppButton from './AppButton';
+import { useEffect, useMemo, useState } from 'react';
+import { ActivityIndicator, Platform, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
+import { File } from 'expo-file-system';
+import * as LegacyFileSystem from 'expo-file-system/legacy';
+import ExpoPdfViewer from './pdf/ExpoPdfViewer';
+import AndroidEmbeddedPdfViewer from './pdf/AndroidEmbeddedPdfViewer';
 import { colors } from '../constants/colors';
-import { resolveManualPdfUri } from '../services/manualPdfAssetService';
 import { prepareManualSectionPdf } from '../services/manualSectionPdfService';
-import { sharePdf } from '../services/pdfOpenService';
-import { openPdfInsideApp } from '../services/pdfNavigationService';
-
-const sectionPdfOptions = {
-  title: 'Open PDF',
-  message: 'These mapped manual pages will open as a PDF.',
-};
-
-const completeManualOptions = {
-  title: 'Open PDF',
-  message: 'The complete manual will open as a PDF.',
-};
 
 const uniquePages = (pages = []) => {
   const seen = new Set();
@@ -30,9 +19,11 @@ const uniquePages = (pages = []) => {
     });
 };
 
-function friendlyPdfError(action) {
-  if (action === 'prepare') return 'The selected manual pages could not be prepared.';
-  return 'This device could not open the system file menu.';
+async function readPdfBase64(uri) {
+  const file = new File(uri);
+  if (!file.exists || !Number(file.size || 0)) throw new Error('The selected manual pages could not be prepared.');
+  if (typeof file.base64 === 'function') return file.base64();
+  return LegacyFileSystem.readAsStringAsync(uri, { encoding: LegacyFileSystem.EncodingType.Base64 });
 }
 
 export default function ManualPdfSectionViewer({
@@ -41,40 +32,65 @@ export default function ManualPdfSectionViewer({
   sectionKey,
   pages = [],
   title = 'Manual Pages',
-  isCompleteManual = false,
   ListFooterComponent,
 }) {
-  const navigation = useNavigation();
+  const { height: windowHeight } = useWindowDimensions();
   const mappedPages = useMemo(() => uniquePages(pages), [pages]);
-  const [busyAction, setBusyAction] = useState('');
+  const pageKey = useMemo(() => mappedPages.join(','), [mappedPages]);
+  const [pdfUri, setPdfUri] = useState('');
+  const [pdfBase64, setPdfBase64] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [reloadKey, setReloadKey] = useState(0);
+  const [status, setStatus] = useState('Loading manual pages...');
   const hasMappedPages = mappedPages.length > 0;
-  const actionOptions = isCompleteManual ? completeManualOptions : sectionPdfOptions;
-  const heading = isCompleteManual ? 'Complete Manual PDF' : 'Manual Pages PDF';
-  const message = isCompleteManual ? completeManualOptions.message : sectionPdfOptions.message;
-  const primaryLabel = isCompleteManual ? 'Open Complete Manual' : 'Open Section PDF';
-  const shareLabel = isCompleteManual ? 'Share / Save Manual' : 'Share / Save Section';
 
-  const resolvePdfForAction = async () => {
-    if (isCompleteManual) return resolveManualPdfUri(manualId);
-    return prepareManualSectionPdf({ manualId, experimentId, sectionKey: sectionKey || title, pages: mappedPages });
-  };
+  useEffect(() => {
+    let active = true;
 
-  const runPdfAction = async (action) => {
-    if (busyAction) return;
-    setBusyAction(action === 'open' ? 'open' : 'share');
-    try {
-      const uri = await resolvePdfForAction();
-      setBusyAction(action === 'open' ? 'opening-menu' : 'sharing');
-      const options = { title, fileName: isCompleteManual ? `${manualId || 'manual'}.pdf` : `${manualId || 'manual'}_${sectionKey || title}.pdf` };
-      if (action === 'open') {
-        await openPdfInsideApp(navigation, uri, { ...options, title: isCompleteManual ? (title || 'Complete Manual') : `${title || 'Section'} PDF` });
-      } else {
-        await sharePdf(uri, actionOptions);
+    async function loadMappedPages() {
+      if (!hasMappedPages || !manualId) return;
+      setLoading(true);
+      setError('');
+      setStatus('Loading manual pages...');
+      setPdfUri('');
+      setPdfBase64('');
+      setReloadKey((key) => key + 1);
+
+      try {
+        const uri = await prepareManualSectionPdf({ manualId, experimentId, sectionKey: sectionKey || title, pages: mappedPages });
+        if (!active) return;
+        setPdfUri(uri);
+        if (Platform.OS === 'android') {
+          setStatus('Preparing manual pages...');
+          const base64 = await readPdfBase64(uri);
+          if (!active) return;
+          setPdfBase64(base64);
+        }
+        setStatus('Rendering manual pages...');
+      } catch (nextError) {
+        if (!active) return;
+        setError(nextError?.message || 'The selected manual pages could not be displayed.');
+        setLoading(false);
       }
-    } catch (error) {
-      Alert.alert(actionOptions.title, error?.message || friendlyPdfError(action === 'open' && !isCompleteManual ? 'prepare' : action));
-    } finally {
-      setBusyAction('');
+    }
+
+    loadMappedPages();
+    return () => { active = false; };
+  }, [experimentId, hasMappedPages, manualId, pageKey, sectionKey, title]);
+
+
+  const handleViewerMessage = (message) => {
+    if (!message?.type) return;
+    if (message.type === 'VIEWER_READY' || message.type === 'PDF_LOADING') setStatus('Loading document...');
+    if (message.type === 'PDF_LOADED') setStatus(`Rendering page 1 of ${Number(message.totalPages || 1)}...`);
+    if (message.type === 'PAGE_RENDERED') {
+      setLoading(false);
+      setError('');
+    }
+    if (message.type === 'PDF_ERROR') {
+      setLoading(false);
+      setError('The selected manual pages could not be displayed.');
     }
   };
 
@@ -89,19 +105,36 @@ export default function ManualPdfSectionViewer({
 
   return (
     <View style={styles.root}>
-      <View style={styles.card}>
-        <Text style={styles.title}>{heading}</Text>
-        <Text style={styles.message}>{message}</Text>
-        {!isCompleteManual ? (
-          <Text style={styles.detail}>{mappedPages.length} mapped page{mappedPages.length === 1 ? '' : 's'} will be prepared for {title}.</Text>
+      <View style={[styles.viewerWrap, { height: Math.max(320, windowHeight * 0.62) }]}>
+        {error ? (
+          <View style={styles.messageBox}>
+            <Text style={styles.messageText}>{error}</Text>
+          </View>
         ) : null}
-        {busyAction === 'open' || busyAction === 'share' ? <Text style={styles.status}>Preparing PDF...</Text> : null}
-        {busyAction === 'opening-menu' ? <Text style={styles.status}>Opening PDF...</Text> : null}
-        {busyAction === 'sharing' ? <Text style={styles.status}>Sharing PDF...</Text> : null}
-        <View style={styles.actions}>
-          <AppButton title={primaryLabel} onPress={() => runPdfAction('open')} disabled={Boolean(busyAction)} />
-          <AppButton title={shareLabel} onPress={() => runPdfAction('share')} variant="secondary" disabled={Boolean(busyAction)} />
-        </View>
+        {!error && Platform.OS === 'android' && pdfBase64 ? (
+          <AndroidEmbeddedPdfViewer
+            pdfBase64={pdfBase64}
+            fileName={`${manualId || 'manual'}_${sectionKey || title}.pdf`}
+            reloadKey={reloadKey}
+            onViewerMessage={handleViewerMessage}
+            onError={() => handleViewerMessage({ type: 'PDF_ERROR' })}
+          />
+        ) : null}
+        {!error && Platform.OS !== 'android' && pdfUri ? (
+          <ExpoPdfViewer
+            pdfUri={pdfUri}
+            title={title}
+            reloadKey={reloadKey}
+            onViewerMessage={handleViewerMessage}
+            onError={() => handleViewerMessage({ type: 'PDF_ERROR' })}
+          />
+        ) : null}
+        {!error && loading ? (
+          <View style={styles.loadingOverlay}>
+            <ActivityIndicator color={colors.primary} />
+            <Text style={styles.status}>{status}</Text>
+          </View>
+        ) : null}
       </View>
       {ListFooterComponent}
     </View>
@@ -109,13 +142,10 @@ export default function ManualPdfSectionViewer({
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, minHeight: 0 },
-  card: { backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.border, borderRadius: 8, padding: 18 },
-  title: { color: colors.text, fontSize: 18, fontWeight: '900', lineHeight: 24, marginBottom: 10 },
-  message: { color: colors.text, fontSize: 15, lineHeight: 22, marginBottom: 10 },
-  detail: { color: colors.muted, fontSize: 14, lineHeight: 20, marginBottom: 10 },
-  status: { color: colors.primary, fontSize: 14, fontWeight: '800', lineHeight: 20, marginBottom: 8 },
-  actions: { marginTop: 6 },
+  root: { width: '100%' },
+  viewerWrap: { backgroundColor: '#eef2f7', borderRadius: 6, overflow: 'hidden', marginBottom: 10 },
+  loadingOverlay: { ...StyleSheet.absoluteFillObject, alignItems: 'center', justifyContent: 'center', padding: 18, backgroundColor: colors.background },
+  status: { color: colors.muted, fontSize: 15, fontWeight: '800', lineHeight: 22, marginTop: 10, textAlign: 'center' },
   messageBox: { minHeight: 220, alignItems: 'center', justifyContent: 'center', padding: 18, backgroundColor: colors.surface, borderRadius: 8, borderWidth: 1, borderColor: colors.border },
-  messageText: { color: colors.muted, fontSize: 15, lineHeight: 22, marginTop: 8, textAlign: 'center' },
+  messageText: { color: colors.muted, fontSize: 15, lineHeight: 22, textAlign: 'center' },
 });

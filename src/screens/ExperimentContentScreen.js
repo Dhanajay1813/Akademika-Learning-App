@@ -90,7 +90,7 @@ export default function ExperimentContentScreen({ route, navigation }) {
           <AppButton title="Mark as Incomplete" onPress={markIncomplete} variant="secondary" />
         </>
       ) : (
-        <AppButton title="Mark Section Complete" onPress={markComplete} accessibilityLabel={`Mark ${title} complete`} />
+        <AppButton title="Mark Section Complete" onPress={markComplete} accessibilityLabel={`Mark ${title} complete`} variant="secondary" />
       )}
     </View>
   ) : null;
@@ -98,7 +98,7 @@ export default function ExperimentContentScreen({ route, navigation }) {
   const recordTools = isProcedure && !guestBlocked ? (
     <View style={styles.recordSection}>
       <Text style={styles.recordTitle}>Experiment Record</Text>
-      <AppButton title="Capture Signal / Your Signal" onPress={() => navigation.navigate('CaptureImage', { productId, experimentId, manualId, allowGuestWorkbookAccess })} />
+      <AppButton title="Capture Signal / Your Signal" onPress={() => navigation.navigate('CaptureImage', { productId, experimentId, manualId, allowGuestWorkbookAccess })} variant="secondary" />
       <AppButton title="Table" onPress={() => navigation.navigate('Table', { productId, experimentId, manualId, allowGuestWorkbookAccess })} variant="secondary" />
       <AppButton title="Graph" onPress={openGraph} variant="secondary" />
     </View>
@@ -116,14 +116,14 @@ export default function ExperimentContentScreen({ route, navigation }) {
 
   if (manualId) {
     const customBlockContent = customBlocks.length ? <ManualBlockList manualId={manualId} blocks={customBlocks} /> : null;
-    const footer = <>{customBlockContent}{completionControls}<AutoSaveStatus />{recordTools}</>;
+    const footer = <>{customBlockContent}{recordTools}{completionControls}<AutoSaveStatus /></>;
     const sectionItems = pdfMapped ? customBlocks : pageFiles;
     return (
-      <ScreenContainer title={title} scroll={false}>
+      <ScreenContainer title={title} scroll={Boolean(pdfMapped && pageFiles.length)}>
         {pdfMapped && pageFiles.length ? (
           <ManualPdfSectionViewer manualId={manualId} experimentId={experimentId} sectionKey={sectionKey} pages={pageFiles} title={title} ListFooterComponent={footer} />
         ) : (
-          <ManualPageList manualId={manualId} pageFiles={sectionItems} ListFooterComponent={<>{completionControls}<AutoSaveStatus />{recordTools}</>} />
+          <ManualPageList manualId={manualId} pageFiles={sectionItems} ListFooterComponent={<>{recordTools}{completionControls}<AutoSaveStatus /></>} />
         )}
       </ScreenContainer>
     );
@@ -132,9 +132,9 @@ export default function ExperimentContentScreen({ route, navigation }) {
   return (
     <ScreenContainer title={title}>
       <View style={styles.placeholder}><Text style={styles.content}>{legacyText || 'Manual content not added yet.'}</Text></View>
+      {recordTools}
       {completionControls}
       <AutoSaveStatus />
-      {recordTools}
     </ScreenContainer>
   );
 }

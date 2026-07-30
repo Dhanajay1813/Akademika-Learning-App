@@ -1,5 +1,6 @@
 import acsManualContent from './manuals/acs/manualContent.json';
 import bel_adaManualContent from './manuals/bel-ada/manualContent.json';
+import bel_ditManualContent from './manuals/bel-dit/manualContent.json';
 
 import manualIndex from './manualIndex.json';
 
@@ -8,6 +9,7 @@ export const submittedManualIndex = manualIndex;
 export const submittedManuals = {
   'acs': acsManualContent.manuals['acs'],
   'bel-ada': bel_adaManualContent.manuals['bel-ada'],
+  'bel-dit': bel_ditManualContent.manuals['bel-dit'],
 };
 
 export const submittedManualAssets = {

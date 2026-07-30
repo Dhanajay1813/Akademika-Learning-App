@@ -7,7 +7,7 @@ import AppButton from '../components/AppButton';
 import { colors } from '../constants/colors';
 import { getExperimentById } from '../data/experiments';
 import { getProductById } from '../data/products';
-import { getCurrentUser, getDrafts } from '../storage/storage';
+import { getCurrentUser, getDrafts, setDrafts } from '../storage/storage';
 import { getDraftOwnerId, isGuestUser } from '../auth/userRole';
 import { applyProgressToDraft } from '../services/experimentProgressService';
 import { sharePdf } from '../services/pdfOpenService';
@@ -16,7 +16,7 @@ import { useAppRefresh } from '../context/AppRefreshContext';
 
 export default function WorkbookScreen({ navigation }) {
   const [tab, setTab] = useState('progress');
-  const [drafts, setDrafts] = useState([]);
+  const [drafts, setDraftsState] = useState([]);
   const [busyPdfDraftId, setBusyPdfDraftId] = useState('');
   const { refreshVersion, isRefreshing, refreshAppData } = useAppRefresh();
 
@@ -31,7 +31,7 @@ export default function WorkbookScreen({ navigation }) {
     const visibleDrafts = all
       .filter((draft) => !draft.userId || draft.userId === userId)
       .map(applyProgressToDraft);
-    setDrafts(visibleDrafts);
+    setDraftsState(visibleDrafts);
   }, [navigation]);
 
   useFocusEffect(useCallback(() => {
@@ -64,6 +64,27 @@ export default function WorkbookScreen({ navigation }) {
     }
   };
 
+
+  const deleteWorkbook = async (draft) => {
+    Alert.alert(
+      'Delete Workbook?',
+      'This will remove the saved workbook and generated PDF for this experiment. Opening the experiment again will start fresh.',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Delete',
+          style: 'destructive',
+          onPress: async () => {
+            const allDrafts = await getDrafts();
+            const nextDrafts = allDrafts.filter((item) => item.id !== draft.id);
+            await setDrafts(nextDrafts);
+            setDraftsState(nextDrafts.map(applyProgressToDraft));
+          },
+        },
+      ]
+    );
+  };
+
   const shown = drafts.filter((draft) => (tab === 'completed' ? draft.pdfGenerated : !draft.pdfGenerated));
 
   return (
@@ -91,9 +112,13 @@ export default function WorkbookScreen({ navigation }) {
                 <AppButton title={busyPdfDraftId === `open:${draft.id}` ? 'Opening PDF...' : 'Open PDF'} onPress={() => runWorkbookPdfAction(draft, 'open')} disabled={Boolean(busyPdfDraftId)} />
                 <AppButton title={busyPdfDraftId === `share:${draft.id}` ? 'Sharing PDF...' : 'Share / Save'} onPress={() => runWorkbookPdfAction(draft, 'share')} variant="secondary" disabled={Boolean(busyPdfDraftId)} />
                 <AppButton title="View Details" onPress={() => navigation.navigate('GeneratePDF', { productId: draft.productId, experimentId: draft.experimentId, manualId: draft.manualId || product?.manualId, allowGuestWorkbookAccess: true })} variant="secondary" />
+                <AppButton title="Delete Workbook" onPress={() => deleteWorkbook(draft)} variant="secondary" disabled={Boolean(busyPdfDraftId)} />
               </>
             ) : (
-              <AppButton title="Resume" onPress={() => navigation.navigate('ExperimentMenu', { productId: draft.productId, experimentId: draft.experimentId, manualId: draft.manualId || product?.manualId, allowGuestWorkbookAccess: true })} />
+              <>
+                <AppButton title="Resume" onPress={() => navigation.navigate('ExperimentMenu', { productId: draft.productId, experimentId: draft.experimentId, manualId: draft.manualId || product?.manualId, allowGuestWorkbookAccess: true })} />
+                <AppButton title="Delete Workbook" onPress={() => deleteWorkbook(draft)} variant="secondary" />
+              </>
             )}
           </AppCard>
         );

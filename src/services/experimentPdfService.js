@@ -3,7 +3,7 @@ import * as Print from 'expo-print';
 import { sharePdf as shareSystemPdf } from './systemPdfService';
 import { getSubmittedManualImageSource } from '../content/contentRegistry';
 import { resolveManualPdfUri } from './manualPdfAssetService';
-import { getMappedExperiment, getMappedManual, isPdfPageMappedManual } from '../data/manualData';
+import { getMappedExperiment, getMappedManual } from '../data/manualData';
 import { getExperimentById } from '../data/experiments';
 import { getProductCategoryById } from '../data/products';
 import { calculateExperimentProgress } from './experimentProgressService';
@@ -18,10 +18,11 @@ const PRE_TECHNICAL_SECTION_ORDER = [
 ];
 
 const POST_TECHNICAL_SECTION_ORDER = [
-  ['observation', 'Observation Instructions'],
+  ['observation', 'Observation'],
   ['equipments', 'Equipments'],
-  ['result', 'Result Guidance'],
-  ['conclusion', 'Conclusion Guidance'],
+  ['result', 'Result'],
+  ['conclusion', 'Conclusion'],
+  ['references', 'References'],
 ];
 
 const SECTION_ORDER = [...PRE_TECHNICAL_SECTION_ORDER, ...POST_TECHNICAL_SECTION_ORDER];
@@ -437,6 +438,122 @@ function hasRenderableBlocks(blocks) {
   });
 }
 
+
+function validMappedPages(section) {
+  const seen = new Set();
+  return (Array.isArray(section?.pages) ? section.pages : [])
+    .map((page) => Number(page))
+    .filter((page) => Number.isInteger(page) && page > 0)
+    .filter((page) => {
+      if (seen.has(page)) return false;
+      seen.add(page);
+      return true;
+    });
+}
+
+function hasMappedPages(section) {
+  return validMappedPages(section).length > 0;
+}
+
+function hasValidBlocks(section) {
+  if (hasText(section)) return true;
+  const customBlocks = sectionCustomBlocks(section);
+  if (!customBlocks.length) return false;
+  return customBlocks.some((block) => {
+    if (!block) return false;
+    if (block.type === 'image') return imageItemsFromBlock(block).length > 0;
+    if (block.type === 'table') return Boolean(manualTableHtml(block));
+    if (block.type === 'note') return hasText(block.text) || hasText(block.note);
+    return hasText(block.text) || hasText(block.tableData);
+  });
+}
+
+function hasValidSectionContent(section, contentMode = 'blocks') {
+  if (contentMode === 'pdfPageMapping' && hasMappedPages(section)) return true;
+  return hasValidBlocks(section);
+}
+
+function hasStudentRecordContent(studentRecord = {}) {
+  const hasCapture = (studentRecord.capturedImages || []).some((image) => hasText(getSignalImageSource(image)));
+  return hasCapture || hasFilledTable(studentRecord.table) || getStudentGraphs(studentRecord).length > 0;
+}
+
+function sectionSourceNode({ sectionKey, title, section, contentMode = 'blocks', subsection = false, seenMappedPages }) {
+  if (contentMode === 'pdfPageMapping' && hasMappedPages(section)) {
+    const duplicatePages = [];
+    const pages = validMappedPages(section).filter((page) => {
+      if (section?.allowDuplicate) return true;
+      if (seenMappedPages.has(page)) {
+        duplicatePages.push(page);
+        return false;
+      }
+      seenMappedPages.add(page);
+      return true;
+    });
+    if (__DEV__ && duplicatePages.length) {
+      console.warn('[Complete PDF Plan]', { sectionKey, skippedDuplicatePages: duplicatePages });
+    }
+    if (pages.length) return { type: 'mappedPdfPages', sectionKey, title, pages, subsection };
+    return null;
+  }
+  if (hasValidBlocks(section)) return { type: 'blockSection', sectionKey, title, blocks: section, subsection };
+  return null;
+}
+
+function studentRecordSummaryHtml(draft = {}) {
+  const entries = [
+    draft.capturedImages?.some((image) => hasText(getSignalImageSource(image))) ? 'Captured Signal / Your Signal saved' : null,
+    hasFilledTable(draft.table) ? 'Observation Table saved' : null,
+    getStudentGraphs(draft).length ? `${getStudentGraphs(draft).length === 1 ? 'Graph' : 'Graphs'} generated` : null,
+  ].filter(Boolean);
+  return entries.length ? `<section class="report-section"><div class="section-opening"><h2 class="report-section-title">Student Experiment Record</h2><div class="record-checklist">${entries.map((entry) => `<div class="record-check-item"><span class="completion-check">✓</span><span>${escapeHtml(entry)}</span></div>`).join('')}</div></div></section>` : '';
+}
+
+function buildStudentRecordHtml(studentRecord = {}, resolvedImages = {}) {
+  if (!hasStudentRecordContent(studentRecord)) return '';
+  return `${studentRecordSummaryHtml(studentRecord)}${capturedSignalsHtml(resolvedImages.captured)}${studentTableHtml(studentRecord.table)}${graphsHtml(studentRecord.table, studentRecord)}`;
+}
+
+export function buildCompleteExperimentReportPlan({ product, manual, experiment, progress, studentRecord = {}, student, journal, resolvedImages = {} } = {}) {
+  const contentMode = manual?.contentMode || 'blocks';
+  const sections = experiment?.sections || {};
+  const seenMappedPages = new Set();
+  const nodes = [{ type: 'cover', student, product, manual, experiment, progress, journal }];
+  const addSection = (sectionKey, title, section = sections[sectionKey], subsection = false) => {
+    const node = sectionSourceNode({ sectionKey, title, section, contentMode, subsection, seenMappedPages });
+    if (node) nodes.push(node);
+    return node;
+  };
+
+  PRE_TECHNICAL_SECTION_ORDER.forEach(([sectionKey, title]) => {
+    addSection(sectionKey, title);
+    if (sectionKey === 'procedure' && hasStudentRecordContent(studentRecord)) {
+      nodes.push({ type: 'studentRecord', sectionKey: 'studentRecord', title: 'Student Experiment Record', html: buildStudentRecordHtml(studentRecord, resolvedImages) });
+    }
+  });
+
+  const technicalNodes = TECHNICAL_ORDER
+    .map(([sectionKey, title]) => sectionSourceNode({ sectionKey, title, section: sections.technicalData?.[sectionKey], contentMode, subsection: true, seenMappedPages }))
+    .filter(Boolean);
+  const firstTechnicalBlockIndex = technicalNodes.findIndex((node) => node.type === 'blockSection');
+  if (firstTechnicalBlockIndex >= 0) technicalNodes.splice(firstTechnicalBlockIndex, 0, { type: 'technicalData', title: 'Technical Data' });
+  nodes.push(...technicalNodes);
+
+  POST_TECHNICAL_SECTION_ORDER.forEach(([sectionKey, title]) => addSection(sectionKey, title));
+  if (progress?.percentage === 100) nodes.push({ type: 'signOff', title: 'Sign-off' });
+
+  if (__DEV__) {
+    console.warn('[Complete PDF Plan]', nodes.map((node, index) => {
+      if (node.type === 'mappedPdfPages') return `${index + 1}. ${node.sectionKey}: mapped pages [${node.pages.join(', ')}]`;
+      if (node.type === 'blockSection') return `${index + 1}. ${node.sectionKey}: blocks`;
+      if (node.type === 'studentRecord') return `${index + 1}. studentRecord: capture/table/graph`;
+      return `${index + 1}. ${node.type}`;
+    }).join('\n'));
+  }
+
+  return nodes.filter((node) => node.type !== 'studentRecord' || hasText(node.html));
+}
+
 function sectionHtml(title, blocks, manualImages, extra = "", sectionKey = "", options = {}) {
   const items = blockItemsHtml(blocks, manualImages, sectionKey);
   if (!items.length && !extra) return "";
@@ -500,7 +617,11 @@ function renderReportModel(layout, manualImages = {}, extras = {}) {
       const remainingHtml = remainingSubsections.map((subsection) => sectionHtml(subsection.title, subsection.blocks, manualImages, '', subsection.key, { subsection: true })).join('');
       return `<section class="report-section technical-section allow-break"><div class="section-opening"><h2 class="report-section-title">Technical Data</h2>${firstHtml}</div>${remainingHtml}</section>`;
     }
-    const extra = section.key === 'observation' ? extras.studentObservation || '' : section.key === 'result' ? extras.studentResult || '' : '';
+    const extra = [
+      section.key === 'procedure' ? extras.procedureRecordHtml || '' : '',
+      section.key === 'observation' ? extras.studentObservation || '' : '',
+      section.key === 'result' ? extras.studentResult || '' : '',
+    ].join('');
     return sectionHtml(section.title, section.blocks, manualImages, extra, section.key, {});
   }).join('');
 }
@@ -584,23 +705,22 @@ function studentRecordHtml(draft = {}) {
 }
 
 export function buildReportContentList({ manualId, experiment, draft = {}, completionDetails }) {
-  const sections = experiment?.sections || {};
+  const manual = getMappedManual(manualId) || { manualId, contentMode: 'blocks' };
+  const plan = buildCompleteExperimentReportPlan({ manual, experiment, progress: completionDetails, studentRecord: draft });
   const items = ['Cover and experiment details', 'Student details', 'Completion summary'];
-  PRE_TECHNICAL_SECTION_ORDER.forEach(([key, label]) => {
-    if (hasRenderableBlocks(sections[key])) items.push(Array.isArray(sections[key]?.pages) ? `${label} mapped manual pages` : label);
+  plan.slice(1).forEach((node) => {
+    if (node.type === 'mappedPdfPages') items.push(`${node.title} mapped manual pages`);
+    if (node.type === 'blockSection') items.push(node.title);
+    if (node.type === 'technicalData') items.push('Technical Data');
+    if (node.type === 'studentRecord') {
+      const signalCount = (draft.capturedImages || []).filter((image) => hasText(getSignalImageSource(image))).length;
+      const graphCount = getStudentGraphs(draft).length;
+      if (signalCount) items.push(`${signalCount} captured signal image${signalCount === 1 ? '' : 's'}`);
+      if (hasFilledTable(draft.table)) items.push('Observation Table');
+      if (graphCount) items.push(graphCount === 1 ? 'Graph' : `${graphCount} graphs`);
+    }
+    if (node.type === 'signOff') items.push('Completion sign-off');
   });
-  const technical = TECHNICAL_ORDER.filter(([key]) => hasRenderableBlocks(sections.technicalData?.[key])).map(([, label]) => label);
-  if (technical.length) items.push(`Technical Data: ${technical.join(', ')}`);
-  POST_TECHNICAL_SECTION_ORDER.forEach(([key, label]) => {
-    if (hasRenderableBlocks(sections[key])) items.push(label.replace(' Instructions', '').replace(' Guidance', ''));
-  });
-  if (hasText(draft.observation)) items.push('Student Observation Record');
-  const signalCount = (draft.capturedImages || []).filter((image) => hasText(getSignalImageSource(image))).length;
-  if (signalCount) items.push(`${signalCount} captured signal image${signalCount === 1 ? '' : 's'}`);
-  if (hasFilledTable(draft.table)) items.push('Observation Table');
-  if (getStudentGraphs(draft).length) items.push(getStudentGraphs(draft).length === 1 ? 'Graph' : `${getStudentGraphs(draft).length} graphs`);
-  if (hasText(draft.result)) items.push('Student Result / Conclusion');
-  if (completionDetails?.percentage === 100) items.push('Completion sign-off');
   return items;
 }
 
@@ -622,9 +742,10 @@ export function buildCompleteExperimentHtml({ user, product, manual, experiment,
 
   const studentObservation = studentRecord.observation ? `<div class="section-opening"><h3 class="report-subsection-title">Student Observation Record</h3>${structuredTextHtml(studentRecord.observation)}</div>` : '';
   const studentResult = studentRecord.result ? `<div class="section-opening"><h3 class="report-subsection-title">Student Result</h3>${structuredTextHtml(studentRecord.result)}</div>` : '';
+  const procedureRecordHtml = `${studentRecordHtml(studentRecord)}${capturedSignalsHtml(resolvedImages.captured)}${studentTableHtml(studentRecord.table)}${graphsHtml(studentRecord.table, studentRecord)}`;
   const reportModel = buildAdaptiveReportModel(sections);
   const adaptiveLayout = buildAdaptiveReportLayout(reportModel, resolvedImages.manualImages);
-  const reportContentHtml = renderReportModel(adaptiveLayout, resolvedImages.manualImages, { studentObservation, studentResult });
+  const reportContentHtml = renderReportModel(adaptiveLayout, resolvedImages.manualImages, { studentObservation, studentResult, procedureRecordHtml });
   const warningHtml = resolvedImages.warnings?.length ? `<section class="report-section"><div class="section-opening"><h2 class="report-section-title">Image Preparation Warnings</h2><ul class="report-list">${resolvedImages.warnings.map((warning) => `<li>${escapeHtml(warning.label)} could not be included.</li>`).join('')}</ul></div></section>` : '';
 
   return `<!doctype html><html><head><meta name="viewport" content="width=device-width, initial-scale=1.0"/><style>
@@ -649,6 +770,8 @@ export function buildCompleteExperimentHtml({ user, product, manual, experiment,
     .report-table { width: 100%; border-collapse: collapse; table-layout: fixed; margin: 7px 0 14px; break-inside: auto; page-break-inside: auto; }
     .report-table th, .report-table td { border: 1px solid #CBD5E1; padding: 6px 7px; text-align: left; vertical-align: top; font-size: 9.8pt; line-height: 1.3; overflow-wrap: anywhere; word-break: normal; }
     .report-table th { background: #F1F5F9; font-weight: 700; }
+  .report-table thead { display: table-header-group; }
+  .report-table tr { break-inside: avoid; page-break-inside: avoid; }
     .report-table thead { display: table-header-group; }
     .report-meta-table .label-column { width: 32%; background: #F8FAFC; }
     .report-meta-table .value-column { width: 68%; }
@@ -709,56 +832,204 @@ export function buildCompleteExperimentHtml({ user, product, manual, experiment,
     </div>
     ${reportContentHtml}
     ${warningHtml}
-    ${studentRecordHtml(studentRecord)}
-    ${capturedSignalsHtml(resolvedImages.captured)}
-    ${studentTableHtml(studentRecord.table)}
-    ${graphsHtml(studentRecord.table, studentRecord)}
     ${completionDetails?.percentage === 100 ? '<section class="report-section signoff-block"><h2 class="report-section-title">Sign-off</h2><div class="signature-row"><div class="signature-column"><div class="signature-line">Student Signature</div></div><div class="signature-column"><div class="signature-line">Faculty Signature</div></div></div></section>' : ''}
   </body></html>`;
 }
 
 
 
-function collectMappedManualPagesForExperiment(experiment = {}) {
-  const sections = experiment.sections || {};
-  const ordered = [];
-  const addPages = (value) => {
-    const pages = Array.isArray(value?.pages) ? value.pages : [];
-    pages.forEach((page) => {
-      const number = Number(page);
-      if (Number.isInteger(number) && number > 0) ordered.push(number);
-    });
-  };
-  PRE_TECHNICAL_SECTION_ORDER.forEach(([key]) => addPages(sections[key]));
-  TECHNICAL_ORDER.forEach(([key]) => addPages(sections.technicalData?.[key]));
-  POST_TECHNICAL_SECTION_ORDER.forEach(([key]) => addPages(sections[key]));
-  addPages(sections.references);
-  return ordered;
+const REPORT_FRAGMENT_STYLE = `
+  @page { size: A4; margin: 14mm 13mm 15mm 13mm; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body { font-family: Arial, Helvetica, sans-serif; color: #172033; font-size: 10.5pt; line-height: 1.45; text-align: left; }
+  h1, h2, h3, p, ul, ol, figure, table { margin: 0; }
+  h1 { color: #0B5CAD; font-size: 19.5pt; line-height: 1.18; margin-bottom: 5px; }
+  .cover { background: #FFFFFF; border: 1px solid #E2E8F0; padding: 10px 12px; border-radius: 5px; break-inside: avoid; page-break-inside: avoid; }
+  .report-section-title { color: #172033; font-size: 14pt; font-weight: 700; line-height: 1.25; margin: 16px 0 7px; padding-bottom: 4px; border-bottom: 1px solid #CBD5E1; break-after: avoid; page-break-after: avoid; }
+  .report-subsection-title { color: #172033; font-size: 12pt; font-weight: 700; line-height: 1.3; margin: 12px 0 6px; padding-bottom: 3px; border-bottom: 1px solid #E2E8F0; break-after: avoid; page-break-after: avoid; }
+  .report-paragraph { margin: 0 0 7px; line-height: 1.45; white-space: normal; orphans: 3; widows: 3; }
+  .report-section { margin: 0 0 12px; break-inside: auto; page-break-inside: auto; }
+  .section-opening, .keep-together, .table--small, .graph-block, .graph-values-block, .signoff-block, .completion-summary-block { break-inside: avoid; page-break-inside: avoid; }
+  .report-table, .report-meta-table, .student-table { width: 100%; border-collapse: collapse; table-layout: fixed; margin: 7px 0 14px; break-inside: auto; page-break-inside: auto; }
+  .report-table th, .report-table td { border: 1px solid #CBD5E1; padding: 6px 7px; text-align: left; vertical-align: top; font-size: 9.8pt; line-height: 1.3; overflow-wrap: anywhere; word-break: normal; }
+  .report-table th { background: #F1F5F9; font-weight: 700; }
+  .report-table thead { display: table-header-group; }
+  .report-table tr { break-inside: avoid; page-break-inside: avoid; }
+  .report-meta-table .label-column { width: 32%; background: #F8FAFC; }
+  .report-meta-table .value-column { width: 68%; }
+  .completion-columns { display: flex; gap: 18px; align-items: flex-start; margin-top: 5px; }
+  .completion-column { width: 50%; }
+  .completion-item, .record-check-item { display: flex; align-items: flex-start; margin: 3px 0; line-height: 1.3; break-inside: avoid; page-break-inside: avoid; }
+  .completion-check { flex: 0 0 16px; color: #16865C; font-weight: 700; }
+  .record-checklist { margin-top: 4px; }
+  .report-list { margin: 6px 0 10px; padding-left: 20px; }
+  .report-list li { margin-bottom: 4px; padding-left: 3px; line-height: 1.4; break-inside: avoid; page-break-inside: avoid; }
+  .report-numbered-list { margin: 6px 0 11px; }
+  .report-numbered-item { display: flex; align-items: flex-start; margin: 0 0 5px; break-inside: avoid; page-break-inside: avoid; }
+  .report-numbered-marker { flex: 0 0 26px; text-align: right; margin-right: 8px; font-weight: 600; }
+  .report-numbered-body { flex: 1; min-width: 0; line-height: 1.4; }
+  .content-label { font-weight: 700; margin: 8px 0 5px; text-transform: none; break-after: avoid; page-break-after: avoid; }
+  .formula-block { background: #F8FAFC; border-left: 3px solid #2563A8; padding: 7px 10px; margin: 7px 0 10px; line-height: 1.45; overflow-wrap: anywhere; break-inside: avoid; page-break-inside: avoid; }
+  .pdf-image { width: 100%; text-align: center; break-inside: avoid; page-break-inside: avoid; }
+  .pdf-image img { display: block; width: auto; height: auto; object-fit: contain; margin: 0 auto; border: 1px solid #E2E8F0; }
+  .pdf-image--diagram img { max-width: 100%; max-height: 125mm; }
+  .pdf-image--wide-diagram img { max-width: 100%; max-height: 100mm; }
+  .pdf-image--photo img { max-width: 70%; max-height: 108mm; }
+  .pdf-image--wide-photo img { max-width: 88%; max-height: 100mm; }
+  .pdf-image--signal img { max-width: 68%; max-height: 108mm; }
+  .pdf-image--signal-wide img { max-width: 90%; max-height: 95mm; }
+  .image-caption { margin-top: 5px; font-size: 8.5pt; line-height: 1.3; color: #64748B; text-align: center; break-inside: avoid; page-break-inside: avoid; }
+  .image-warning { margin: 10px 0 12px; padding: 8px 10px; border: 1px solid #FEC84B; background: #FFFAEB; color: #A15C07; font-weight: 700; break-inside: avoid; page-break-inside: avoid; }
+  .note { border-left: 4px solid #0B5CAD; background: #F8FAFC; padding: 8px 10px; margin: 8px 0 12px; }
+  .manual-table-text { white-space: pre-wrap; border: 1px solid #CBD5E1; padding: 8px; background: #F8FAFC; font-family: Arial, Helvetica, sans-serif; font-size: 9.8pt; }
+  .graph-image, .graph-container { display: block; max-width: 92%; max-height: 88mm; width: 92%; height: auto; margin: 7px auto 0; }
+  .graph-values-block { margin-top: 10px; break-inside: auto; page-break-inside: auto; }
+  .signoff-block { margin-top: 18px; break-inside: avoid; page-break-inside: avoid; }
+  .signature-row { display: flex; gap: 28px; margin-top: 24px; }
+  .signature-column { width: 50%; }
+  .signature-line { border-top: 1px solid #172033; padding-top: 5px; font-size: 9.5pt; }
+`;
+
+function reportFragmentHtml(bodyHtml) {
+  return `<!doctype html><html><head><meta name="viewport" content="width=device-width, initial-scale=1.0"/><style>${REPORT_FRAGMENT_STYLE}</style></head><body>${bodyHtml}</body></html>`;
 }
 
-async function mergeMappedManualPages({ reportUri, manualId, experiment }) {
-  const mappedPages = collectMappedManualPagesForExperiment(experiment);
-  if (!mappedPages.length) return reportUri;
-  const { PDFDocument } = await import('pdf-lib');
-  const manualUri = await resolveManualPdfUri(manualId);
-  const [reportBase64, manualBase64] = await Promise.all([
-    FileSystem.readAsStringAsync(reportUri, { encoding: FileSystem.EncodingType.Base64 }),
-    FileSystem.readAsStringAsync(manualUri, { encoding: FileSystem.EncodingType.Base64 }),
-  ]);
-  const reportDoc = await PDFDocument.load(reportBase64);
-  const manualDoc = await PDFDocument.load(manualBase64);
-  const pageIndexes = mappedPages
-    .map((page) => page - 1)
-    .filter((index) => index >= 0 && index < manualDoc.getPageCount());
-  const copiedPages = await reportDoc.copyPages(manualDoc, pageIndexes);
-  copiedPages.forEach((page) => reportDoc.addPage(page));
-  const mergedBase64 = await reportDoc.saveAsBase64();
-  if (__DEV__) console.warn('[PDF Generate FS]', { stage: 'MERGED_BASE64_READY', ...pdfBase64HeaderDiagnostic(mergedBase64) });
-  const mergedUri = `${FileSystem.cacheDirectory}akademika-complete-${Date.now()}.pdf`;
-  await FileSystem.writeAsStringAsync(mergedUri, mergedBase64, { encoding: FileSystem.EncodingType.Base64 });
-  await logGeneratedPdfHeader('MERGED_FILE_WRITTEN', mergedUri);
-  return mergedUri;
+function coverRowsForReport({ user, product, manual, experiment, completionDetails }) {
+  const category = getProductCategoryById(product?.categoryId);
+  const now = new Date();
+  return [
+    ['Category', manual?.categoryName || category?.name],
+    ['Product', product?.name || manual?.productName],
+    ['Product ID / Model', product?.id || manual?.productId],
+    ['Experiment Number', experiment?.experimentNumber],
+    ['Experiment Title', experiment?.title],
+    ['Completion Percentage', `${completionDetails?.percentage || 0}%`],
+    ['Completion Date', completionDetails?.percentage === 100 ? now.toLocaleDateString() : 'Not completed'],
+    ['PDF Generation Date', now.toLocaleString()],
+  ].filter(([, value]) => hasText(value));
 }
+
+function coverFragmentHtml({ user, product, manual, experiment, completionDetails }) {
+  const coverRows = coverRowsForReport({ user, product, manual, experiment, completionDetails });
+  return reportFragmentHtml(`
+    <section class="cover"><h1>Akademika Learning</h1><h2 class="report-section-title">Complete Experiment Report</h2><table class="report-table report-meta-table"><tbody>${coverRows.map(([label, value]) => `<tr><th class="label-column">${escapeHtml(label)}</th><td class="value-column">${escapeHtml(value)}</td></tr>`).join('')}</tbody></table></section>
+    <section class="report-section"><div class="section-opening"><h2 class="report-section-title">Student Details</h2>${userDetailsHtml(user)}</div></section>
+    ${completionHtml(completionDetails)}
+  `);
+}
+
+function signOffHtml() {
+  return '<section class="report-section signoff-block"><h2 class="report-section-title">Sign-off</h2><div class="signature-row"><div class="signature-column"><div class="signature-line">Student Signature</div></div><div class="signature-column"><div class="signature-line">Faculty Signature</div></div></div></section>';
+}
+
+function isHtmlReportNode(node) {
+  return ['cover', 'blockSection', 'technicalData', 'studentRecord', 'signOff'].includes(node?.type);
+}
+
+function nodeBodyHtml(node, manualImages = {}) {
+  if (node.type === 'cover') {
+    const coverRows = coverRowsForReport({ user: node.student, product: node.product, manual: node.manual, experiment: node.experiment, completionDetails: node.progress });
+    return `
+      <section class="cover"><h1>Akademika Learning</h1><h2 class="report-section-title">Complete Experiment Report</h2><table class="report-table report-meta-table"><tbody>${coverRows.map(([label, value]) => `<tr><th class="label-column">${escapeHtml(label)}</th><td class="value-column">${escapeHtml(value)}</td></tr>`).join('')}</tbody></table></section>
+      <section class="report-section"><div class="section-opening"><h2 class="report-section-title">Student Details</h2>${userDetailsHtml(node.student)}</div></section>
+      ${completionHtml(node.progress)}
+    `;
+  }
+  if (node.type === 'blockSection') return sectionHtml(node.title, node.blocks, manualImages, '', node.sectionKey, { subsection: node.subsection });
+  if (node.type === 'technicalData') return '<section class="report-section technical-section"><div class="section-opening"><h2 class="report-section-title">Technical Data</h2></div></section>';
+  if (node.type === 'studentRecord') return node.html || '';
+  if (node.type === 'signOff') return signOffHtml();
+  return '';
+}
+
+function htmlSegmentFromNodes(nodes = [], manualImages = {}) {
+  const bodyHtml = nodes.map((node) => nodeBodyHtml(node, manualImages)).filter(hasText).join('');
+  return hasText(bodyHtml) ? reportFragmentHtml(bodyHtml) : '';
+}
+
+function groupAdjacentHtmlReportNodes(reportPlan = []) {
+  const grouped = [];
+  let htmlNodes = [];
+  const flush = () => {
+    if (htmlNodes.length) grouped.push({ type: 'htmlSegment', nodes: htmlNodes });
+    htmlNodes = [];
+  };
+
+  reportPlan.forEach((node) => {
+    if (node.type === 'cover') {
+      flush();
+      grouped.push({ type: 'htmlSegment', nodes: [node], fixedFirstPage: true });
+      return;
+    }
+    if (isHtmlReportNode(node)) {
+      htmlNodes.push(node);
+      return;
+    }
+    flush();
+    grouped.push(node);
+  });
+  flush();
+  return grouped;
+}
+
+async function appendPdfUri(finalDoc, uri, PDFDocument) {
+  const base64 = await FileSystem.readAsStringAsync(uri, { encoding: FileSystem.EncodingType.Base64 });
+  const sourceDoc = await PDFDocument.load(base64);
+  const copiedPages = await finalDoc.copyPages(sourceDoc, sourceDoc.getPageIndices());
+  copiedPages.forEach((page) => finalDoc.addPage(page));
+}
+
+async function appendHtmlNode(finalDoc, html, PDFDocument, temporaryUris) {
+  if (!hasText(html)) return;
+  const result = await Print.printToFileAsync({ html });
+  temporaryUris.push(result.uri);
+  await appendPdfUri(finalDoc, result.uri, PDFDocument);
+}
+
+async function assembleCompleteExperimentPdf({ plan, manualId, manualImages = {} }) {
+  const { PDFDocument } = await import('pdf-lib');
+  const finalDoc = await PDFDocument.create();
+  const temporaryUris = [];
+  const mappedNodes = plan.filter((node) => node.type === 'mappedPdfPages');
+  let manualDoc = null;
+
+  if (mappedNodes.length) {
+    const manualUri = await resolveManualPdfUri(manualId);
+    const manualBase64 = await FileSystem.readAsStringAsync(manualUri, { encoding: FileSystem.EncodingType.Base64 });
+    manualDoc = await PDFDocument.load(manualBase64);
+  }
+
+  try {
+    const groupedPlan = groupAdjacentHtmlReportNodes(plan);
+    for (const node of groupedPlan) {
+      if (node.type === 'mappedPdfPages') {
+        const indexes = node.pages.map((page) => {
+          const index = page - 1;
+          if (!manualDoc || index < 0 || index >= manualDoc.getPageCount()) {
+            throw new Error(`${node.title || node.sectionKey} contains an invalid mapped PDF page: ${page}.`);
+          }
+          return index;
+        });
+        const copiedPages = await finalDoc.copyPages(manualDoc, indexes);
+        copiedPages.forEach((page) => finalDoc.addPage(page));
+        continue;
+      }
+      if (node.type === 'htmlSegment') {
+        const html = htmlSegmentFromNodes(node.nodes, manualImages);
+        await appendHtmlNode(finalDoc, html, PDFDocument, temporaryUris);
+      }
+    }
+
+    const finalBase64 = await finalDoc.saveAsBase64();
+    const outputUri = `${FileSystem.cacheDirectory}akademika-complete-${Date.now()}.pdf`;
+    await FileSystem.writeAsStringAsync(outputUri, finalBase64, { encoding: FileSystem.EncodingType.Base64 });
+    return outputUri;
+  } finally {
+    await cleanupTemporaryImages(temporaryUris);
+  }
+}
+
 
 async function cleanupTemporaryImages(uris = []) {
   for (const uri of uris) {
@@ -777,13 +1048,9 @@ export async function generateCompleteExperimentPdf({ user, product, manual, exp
   const selectedCompletion = completionDetails || calculateExperimentProgress({ productId: product?.id || studentRecord.productId, manualId: selectedManual?.manualId || studentRecord.manualId, experimentId: selectedExperiment?.id || studentRecord.experimentId, draft: studentRecord });
   const sections = selectedExperiment?.sections || {};
   const resolvedImages = await prepareReportImages({ manualId: selectedManual?.manualId || studentRecord.manualId || product?.manualId, sections, capturedImages: studentRecord.capturedImages || [] });
-  const html = buildCompleteExperimentHtml({ user, product, manual: selectedManual, experiment: selectedExperiment, studentRecord, completionDetails: selectedCompletion, resolvedImages });
   try {
-    const result = await Print.printToFileAsync({ html });
-    await logGeneratedPdfHeader('PRINT_OUTPUT', result.uri);
-    const outputUri = isPdfPageMappedManual(selectedManual?.manualId || studentRecord.manualId || product?.manualId)
-      ? await mergeMappedManualPages({ reportUri: result.uri, manualId: selectedManual?.manualId || studentRecord.manualId || product?.manualId, experiment: selectedExperiment })
-      : result.uri;
+    const plan = buildCompleteExperimentReportPlan({ product, manual: selectedManual, experiment: selectedExperiment, progress: selectedCompletion, studentRecord, student: user, resolvedImages });
+    const outputUri = await assembleCompleteExperimentPdf({ plan, manualId: selectedManual?.manualId || studentRecord.manualId || product?.manualId, manualImages: resolvedImages.manualImages });
     await logGeneratedPdfHeader('FINAL_OUTPUT', outputUri);
     return {
       uri: outputUri,

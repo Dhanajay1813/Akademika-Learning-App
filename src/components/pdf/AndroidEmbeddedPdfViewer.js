@@ -511,6 +511,7 @@ export default function AndroidEmbeddedPdfViewer({ pdfBase64, fileName, initialP
         onHttpError={onError}
         setSupportMultipleWindows={false}
         overScrollMode="always"
+        nestedScrollEnabled
         scalesPageToFit={false}
         style={styles.webview}
       />

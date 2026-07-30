@@ -30,6 +30,7 @@ function Inner({ title, children, keyboard = false, scroll = true, bottomNav = t
       contentContainerStyle={[styles.content, { paddingBottom: finalPaddingBottom }]}
       keyboardShouldPersistTaps="handled"
       keyboardDismissMode={Platform.OS === 'ios' ? 'interactive' : 'on-drag'}
+      nestedScrollEnabled={Platform.OS === 'android'}
       showsVerticalScrollIndicator={false}
       refreshControl={onRefresh ? <RefreshControl refreshing={refreshing} onRefresh={onRefresh} /> : undefined}
     >
