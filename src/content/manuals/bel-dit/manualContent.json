@@ -11,13 +11,13 @@
       "pdfFile": "manual.pdf",
       "originalFilename": "BEL-DIT-VER 19.0.pdf",
       "totalPages": 112,
-      "compressedByteSize": 3015454,
-      "sha256": "701409343065310a2b936af036f46e50fa0db9da7968a818475fa35bdae3d5af",
+      "compressedByteSize": 3015455,
+      "sha256": "4f5dfd35d5ef09df86c4861f96aea77c2a28527ab6133e01a04e4272556331f9",
       "experiments": [
         {
           "id": "exp1",
           "experimentNumber": "Experiment 1",
-          "title": "Study of Logic Gates",
+          "title": "Study of Boolean Expression Simplification ",
           "displayOrder": 1,
           "sections": {
             "objective": {
@@ -27,7 +27,7 @@
                   "id": "objective_001",
                   "type": "text",
                   "order": 1,
-                  "text": "To study about logic gates and verify their truth tables.\n"
+                  "text": "To study the Boolean rules &Boolean expression simplification"
                 }
               ]
             },
@@ -38,7 +38,7 @@
                   "id": "theory_001",
                   "type": "text",
                   "order": 1,
-                  "text": "Circuit that takes the logical decision and the process are called logic gates. Each gate \nhas one or more input and only one output. OR, AND and NOT are basic gates. NAND, \nNOR and X-OR are known as universal gates. Basic gates form these gates. \n\nAND Gate \nThe AND gate performs a logical multiplication commonly known as AND function. The \noutput is high when both the inputs are high. The output is low level when any one of the \ninputs is low. \n\nOR Gate \nThe OR gate performs a logical addition commonly known as OR function. The output is \nhigh when any one of the inputs is high. The output is low level when both the inputs are \nlow. \n\nNOT Gate \nThe NOT gate is called an inverter. The output is high when the input is low. The output is \nlow when the input is high. \n\nNAND Gate \nThe NAND gate is a contraction of AND-NOT. The output is high when both inputs are low \nand any one of the input is low .The output is low level when both inputs are high. \n\nNOR Gate \nThe NOR gate is a contraction of OR-NOT. The output is high when both inputs are low. \nThe output is low when one or both inputs are high. \n\nX-OR Gate \nThe output is high when any one of the inputs is high. The output is low when both the \ninputs are low and both the inputs are high."
+                  "text": "Here is the list of rules used for the Boolean expression simplifications.  \n \nThe Idempotent Laws   :- AA = A                            A+A = A \n \nThe Associative Laws    :- (AB) C = A (BC)          (A+B) +C = A+ (B+C) \n \nThe Commutative Laws :- AB = BA                       A+B = B+A \n \nThe Distributive Laws    :-  A (B+C) = AB+AC      A+BC = (A+B) (A+C) \n \nThe Identity Laws            :-  AF = F    AT = A           A+F = A     A+T = T \n \nThe Complement Laws :- AA = F   A+A = T          F = T         T = F \n \nThe Involution Law         :- A = A \n \nDe-Morgan's Law             :- AB = A+BA+B = AB \n \n(T – True – 1 and F – False – 0) \n \nFind below some examples of Boolean algebra simplifications. Each line gives a form of the expression, and the rule or rules used to derive it from the previous one. Generally, there are several ways to reach the result. \n \n* Simplify: C + BC:  \n           Expression                                  Rule(s) Used \n     1. C + BC                                           Original Expression\n     2. C + (B + C)                                   DeMorgan's Law.  \n     3. (C + C) + B                                   Commutative, Associative Laws.  \n     4. T + B                                             Complement Law.\n     5. T                                                     Identity Law.  \n\n*Simplify: AB(A + B)(B + B):  \n          Expression                                     Rule(s) Used \n     1. AB(A + B)(B + B)                          Original Expression \n     2. AB(A + B)                                       Complement law, Identity law.  \n     3. (A + B)(A + B)                                DeMorgan's Law  \n     4. A + BB                                             Distributive law. This step uses the fact that or distributes over and. It can look a bit strange since      \n                                                                    addition does not distribute over multiplication.  \n    5. A                                                         Complement, Identity.  \n\n* Simplify: (A + C)(AD + AD) + AC + C:  \n           Expression                                                      Rule(s) Used\n       1. (A + C)(AD + AD) + AC + C                         Original Expression \n       2. (A + C)A(D + D) + AC + C                            Distributive.   \n       3. (A + C)A + AC + C                                         Complement, Identity. \n       4. A((A + C) + C) + C                                         Commutative, Distributive.  \n       5. A(A + C) + C                                                   Associative, Idempotent. \n       6. AA + AC + C                                                   Distributive. \n       7. A + (A + T)C                                                   Idempotent, Identity, Distributive.  \n       8. A + C                                                               Identity, twice. \n\n* You can also use distribution of or over and starting from A(A+C)+C to reach the same result by another route. \n* Simplify: A(A + B) + (B + AA)(A + B):  \n           Expression                                                         Rule(s) Used \n      1. A(A + B) + (B + AA)(A + B)                               Original Expression \n      2. AA + AB + (B + A)A + (B + A)B                        Idempotent (AA to A), then Distributive, used twice.\n      3. AB + (B + A)A + (B + A)B                                  Complement, then Identity. (Strictly speaking, we also used the Commutative Law for each  \n                                                                                            of these applications.)\n      4. AB + BA + AA + BB + AB                                   Distributive, two places. \n      5. AB + BA + A + AB                                                Idempotent (for the A's), then Complement and Identity to remove BB.   \n      6. AB + AB + AT + AB                                             Commutative, Identity; setting up for the next step.  \n      7. AB + A(B + T + B)                                               Distributive.  \n      8. AB + A                                                                    Identity, twice (depending how you count it).  \n      9. A + AB                                                                    Commutative.\n    10. (A + A)(A + B)                                                      Distributive.  \n    11. A + B                                                                      Complement, Identity."
                 }
               ]
             },
@@ -49,12 +49,7 @@
               "blocks": []
             },
             "procedure": {
-              "pages": [
-                13,
-                14,
-                15,
-                16
-              ],
+              "pages": [],
               "blocks": []
             },
             "observation": {
@@ -68,7 +63,7 @@
                   "id": "equipments_001",
                   "type": "text",
                   "order": 1,
-                  "text": "1.  BEL-DIT Board  \n2. Power supply"
+                  "text": " * BEL-DIT Board  \n * Power supply "
                 }
               ]
             },
@@ -78,14 +73,1548 @@
             },
             "conclusion": {
               "pages": [],
+              "blocks": []
+            },
+            "references": {
+              "pages": [],
+              "blocks": []
+            },
+            "technicalData": {
+              "datasheet": {
+                "pages": [],
+                "blocks": []
+              },
+              "blockDiagram": {
+                "pages": [],
+                "blocks": []
+              },
+              "circuitDiagram": {
+                "pages": [],
+                "blocks": []
+              },
+              "referenceSignal": {
+                "pages": [],
+                "blocks": []
+              }
+            }
+          }
+        },
+        {
+          "id": "exp2",
+          "experimentNumber": "Experiment 2",
+          "title": "Study of Adder and Subtractor ",
+          "displayOrder": 2,
+          "sections": {
+            "objective": {
+              "pages": [],
               "blocks": [
                 {
-                  "id": "conclusion_001",
+                  "id": "objective_001",
                   "type": "text",
                   "order": 1,
-                  "text": "The truth tables for various logic gates like AND, OR, NAND, NOT, EX-OR, NOR are \nverified "
+                  "text": "To study the half adder, full adder, half Subtractor and full Subtractor."
                 }
               ]
+            },
+            "theory": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "theory_001",
+                  "type": "text",
+                  "order": 1,
+                  "text": "Half Adder :\nA half adder has two inputs for the two bits to be added and two Outputs one from the sum ‘ S’ and other from the carry ‘ c’ into the higher adder position. Above circuit is called as a carry signal from the BEL-DIT on of the less significant bits sum from the X-OR Gate the carry out from the AND gate. \nLogic Diagram of Half Adder (Image 1&2)\n\nFull Adder :\nA full adder is a combinational circuit that forms the arithmetic sum of input; it consists of three inputs and two outputs. A full adder is useful to add three bits at a time but a half adder cannot do so. In full adder sum output will be taken from X-OR Gate, carry output will be taken from OR Gate. (Image 3-6)\n\nHalf Subtractor :\nThe half subtractor is constructed using X-OR and AND Gate. The half subtractor has two input and two outputs. The outputs are difference and borrow. The difference can be applied using X-OR Gate, borrow output can be implemented using an AND Gate and an \ninverter. (Image 7&8)\n\nFull Subtractor: \nThe full subtractor is a combination of X-OR, AND, OR, NOT Gates. In a full subtractor the logic circuit should have three inputs and two outputs. The two half subtractor put together gives a full subtractor .The first half subtractor will be C and A B. The output will be \ndifference output of full subtractor. The expression AB assembles the borrow output of the half subtractor and the second term is the inverted difference output of first XOR.  ( Image 9-11)\n"
+                },
+                {
+                  "id": "theory_002",
+                  "type": "image",
+                  "order": 2,
+                  "imageFile": "images/exp2/theory/01_image_-_1.webp",
+                  "imageFiles": [
+                    {
+                      "imageFile": "images/exp2/theory/01_image_-_1.webp",
+                      "width": 564,
+                      "height": 474,
+                      "byteSize": 10144,
+                      "sha256": "e62595a6488b45e9980e789331c85c1a000db1380165f3399fe01b2e7faa2f64"
+                    },
+                    {
+                      "imageFile": "images/exp2/theory/02_image_-_2.webp",
+                      "width": 618,
+                      "height": 334,
+                      "byteSize": 8180,
+                      "sha256": "9393dcf7e6bd2f13b897a878da75315afa246fdbbcd2beb50929637ba80a686d"
+                    },
+                    {
+                      "imageFile": "images/exp2/theory/03_image_-_3.webp",
+                      "width": 601,
+                      "height": 283,
+                      "byteSize": 12010,
+                      "sha256": "6f2b6d6b6f5d0c7051f45a1e1684b3adf7c3800b0decf4125838de7ac9b6f976"
+                    },
+                    {
+                      "imageFile": "images/exp2/theory/04_image_-_4.webp",
+                      "width": 631,
+                      "height": 341,
+                      "byteSize": 8602,
+                      "sha256": "248e7748f3eba2c65ee3b16f27e6e180e622c154f02644b1910db55cb8055e41"
+                    },
+                    {
+                      "imageFile": "images/exp2/theory/05_image_-_5.webp",
+                      "width": 541,
+                      "height": 237,
+                      "byteSize": 5280,
+                      "sha256": "0fae7f2785b3a04b218f24fb017c460b4b5c504141a5ceff26232de9574c1205"
+                    },
+                    {
+                      "imageFile": "images/exp2/theory/06_image_-_6.webp",
+                      "width": 574,
+                      "height": 264,
+                      "byteSize": 6180,
+                      "sha256": "63ded36e3b742a0573b48f3a88e09a66d38aabf7df8817806d4ab3cfceb8e9fa"
+                    },
+                    {
+                      "imageFile": "images/exp2/theory/07_image_-_7.webp",
+                      "width": 568,
+                      "height": 497,
+                      "byteSize": 13348,
+                      "sha256": "4e2fb79c1ca026485abc8931b08d3ebdc2c204bedac118c73ac947e01e9c36d2"
+                    },
+                    {
+                      "imageFile": "images/exp2/theory/08_image_-8.webp",
+                      "width": 521,
+                      "height": 415,
+                      "byteSize": 10010,
+                      "sha256": "53d425243369fc81fb5bb699e07c029fd356407111bb5c3c5dd99fb4f0fb3215"
+                    },
+                    {
+                      "imageFile": "images/exp2/theory/09_image_-_9.webp",
+                      "width": 614,
+                      "height": 381,
+                      "byteSize": 11016,
+                      "sha256": "470485177d9c8e29ae9de54633c12a1b6985f9ed6309ddb50c8bf49e2ec42721"
+                    },
+                    {
+                      "imageFile": "images/exp2/theory/10_image_-_10.webp",
+                      "width": 612,
+                      "height": 420,
+                      "byteSize": 14724,
+                      "sha256": "83be748738652f0db8f5e893d47ac73ceb45f5a4eb5b3136f79d3c3fe6d6a27f"
+                    },
+                    {
+                      "imageFile": "images/exp2/theory/11_image_-_11.webp",
+                      "width": 377,
+                      "height": 435,
+                      "byteSize": 8400,
+                      "sha256": "e1bd0a1b83e1e5544c8b44d220c30e8b70ac0d56ca8991ae024515f1265af986"
+                    }
+                  ],
+                  "caption": ""
+                }
+              ]
+            },
+            "functionalBlock": {
+              "pages": [
+                9
+              ],
+              "blocks": []
+            },
+            "procedure": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "procedure_001",
+                  "type": "text",
+                  "order": 1,
+                  "text": "B) Half Adder \n    * Connect A & B I/P of Half Adder to switches from input switches section. \n    * Connect SUM O/P of Half Adder to L1 & CARRY O/P of Half Adder to L2 in O/P SECTION. \n    * Switch on the power supply of the Kit. \n    * Provide proper inputs to half adder using switches as per truth table of half adder hown above. \n    * Observe the O/P of Half Adder on LEDs. \n    *  Verify the functionality of half Adder as per truth table & Note it down. \nC) Full Adder \n    * Connect A, B and C I/P of Full adder to switches from input switches section. \n    * Connect SUM & CARRY O/P of Full Adder to LEDs from O/P LED section. \n    * Switch ON the power supply of the Kit. \n    * Provide proper inputs to Full adder using switches as per truth table ofFull adder shown above. \n    * Observe the O/P of Full Adder on LEDs. Verify the functionality of Full Adder as per truth table & Note it down.  \nD) Half Subtractor \n   * Connect A & B I/P of Half Subtractor to switches from input switches section. \n   * Connect DIF&BOR O/P of Half subtractor to LEDs in O/P LED section. \n   *  Switch on the power supply of the Kit. \n   *  Provide proper inputs to half subtractor using switches as per truth table of half adder shown above. \n   * Observe the O/P of Half subtractor on LEDs. \n   * Verify the functionality of half subtractor as per truth table & Note it down.  \n\nE) Full Subtractor \n   * Connect A, B & C I/P of Full Subtractor to switches from input switches section. \n   * Connect DIF&BOR O/P of Full Subtractor to LEDs from O/P SECTION. \n  * Switch ON the power supply of the Kit. \n  * Provide proper inputs to Full Subtractor using switches as per truth table of Full Subtractor shown above. \n  * Observe the O/P of Full Subtractor on LEDs. \n  * Verify the functionality of Full Subtractor as per truth table & Note it down."
+                }
+              ]
+            },
+            "observation": {
+              "pages": [],
+              "blocks": []
+            },
+            "equipments": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "equipments_001",
+                  "type": "text",
+                  "order": 1,
+                  "text": " * BEL-DIT Board \n * Power supply "
+                }
+              ]
+            },
+            "result": {
+              "pages": [],
+              "blocks": []
+            },
+            "conclusion": {
+              "pages": [],
+              "blocks": []
+            },
+            "references": {
+              "pages": [],
+              "blocks": []
+            },
+            "technicalData": {
+              "datasheet": {
+                "pages": [],
+                "blocks": []
+              },
+              "blockDiagram": {
+                "pages": [],
+                "blocks": []
+              },
+              "circuitDiagram": {
+                "pages": [],
+                "blocks": []
+              },
+              "referenceSignal": {
+                "pages": [],
+                "blocks": []
+              }
+            }
+          }
+        },
+        {
+          "id": "exp3",
+          "experimentNumber": "Experiment 3",
+          "title": "Study of Flip-flops ",
+          "displayOrder": 3,
+          "sections": {
+            "objective": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "objective_001",
+                  "type": "text",
+                  "order": 1,
+                  "text": "To study the behavior of S-R, J-K, MS-JK, D and T Flip Flop"
+                }
+              ]
+            },
+            "theory": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "theory_001",
+                  "type": "text",
+                  "order": 1,
+                  "text": "S-R Flip-Flop:\nA flip-flop circuit can be constructed from two NAND gates or two NOR gates. These flip flops are shown in Figure 1and Figure 2. Each flip-flop has two outputs, Q and Q', and two inputs, set and reset. This type of flip-flop is referred to as an SR flip-flop or SR latch. The flip-flop in Figure 1 has two useful states. When Q=1 and Q'=0, it is in the set state (or 1-state).  \nWhen Q=0 and Q'=1, it is in the clear state (or 0-state). The outputs Q and Q' are complements of each other and are referred to as the normal and complement outputs, respectively. The binary state of the flip-flop is taken to be the value of the normal output. When 1 is given as input to both the set and reset inputs of the flip-flop in Figure 1, both Q and Q' outputs go to 0. This BEL-DIT violates the fact that both outputs are complements of each other. In normal operation this BEL-DIT must be avoided by making sure that 1's are not applied to both inputs simultaneously. (Image -1)\n\nThe NAND basic flip-flop circuit in Figure 2(a) operates with inputs normally at 1 unless the state of the flip-flop has to be changed. A 0 is applied momentarily to the set input causes Q to go to 1 and Q' to go to 0, putting the flip-flop in the set state. When both inputs go to 0, both outputs go to 1. This condition should be avoided in normal operation.  \nJK Flipflop:\nFig 3(a) shows the clocked J-K flip-flop with clear (CR) and preset (PR) inputs. The small circle (inversion symbols) on these inputs indicates that logic ‘0’ is required to clear or set the flip-flop. Thus the ‘0’ applied to the clear input will reset the flip-flop to Q = ‘0’, and a ‘0’ applied to the Preset input will set the flip-flop to Q = ‘1’. These inputs override the clock & J-K input. I.e. a ‘0’ applied to the clear input will reset the flip-flop regardless of the values of J-K, and the clock. Under normal condition, a ‘0’ should not be applied simultaneously \nto clear and preset. When the clear and preset inputs are both held at logic ‘1’, the J, K and clock inputs operate in the normal manner. Fig.3 (b) shows the truth table for J-K Flip Flop.  (Image- 2&3)\n\nMaster –Slave JK Flip-Flop:\nJ-K Flip-Flop suffers from timing problems called \"race\" if the output Q changes state before the timing pulse of the clock input has time to go \"OFF\". To avoid this the timing pulse period (T) must be kept as short as possible (high frequency). As this is sometimes is not possible with modern TTL IC's the much improved Master-Slave JK Flip-flop was developed. This eliminates all the timing problems by using two SR flip-flops connected together in series, one for the \"Master\" circuit, which triggers on the leading edge of the clock pulse and the other, the \"Slave\" circuit, which triggers on the falling edge of the clock pulse. \nThe Master-Slave Flip-Flop is basically two JK bistable flip-flops connected together in a series configuration with the outputs from Q and Q’ from the \"Slave\" flip-flop being fed back to the inputs of the \"Master\" with the outputs of the \"Master\" flip-flop being connected \nto the two inputs of the \"Slave\" flip-flop as shown below. (Image-4)\n\nFig.3(c) shows one way to build a JK master-slave flip-flop. It provides another way to avoid racing. Here’s how it works. To begin with, the master is positive edge triggered and the slave, negative edge triggered. Therefore, the master responds to its J and k inputs before the slave. \nIf J =’1’ and K = ‘0’, the master set on positive clock edge. The high Q output of the master drives the J input of the slave, so when the negative clock edge hits, the slave sets, copying the action of master. \n1. If J = ‘0’ and K = ‘1’, the master reset on leading edge of the clock. The high ‘Q’ output of the master goes to the K input of the slave. \n    Therefore, the arrival of the clock’s trailing edge forces the slave to reset. Again, the slave has copied the master. \n2. If the master’s J and K input are both High. It toggles on the positive edge and the slave then toggles on the negative clock edge.   \n    Regardless of what the master does, therefore, the slave copies it: if the master sets, the slave sets; if the master reset, the slave resets.  \nThe timing relationship is shown in Fig.3 (d) and is assumed that the flip-flop is in the clear state prior to the occurrence of the clock pulse. The output state of the masterslave flip-flop occurs on the negative transition of the clock pulse. Some master-slave flip-flops change output state on the positive transition of the clock pulse by having an Additional inverter between the CP terminal and the input of the master.  (Image-5)\n\nD Flip-Flop:\nAs seen from the truth table Fig.8 (f), the state of this flip-flop after the clock pulse   Q (t+1)is equal to the input D before the clock pulse. For example, if D = ‘1’ before the clock pulse, Q = ‘1’ after the clock pulse regardless of the previous value of Q. therefore, the characteristic equation is Q (t+1) = D. (Image-6)\n\nT Flip-Flop; \nT flip-flop is a clocked Flip-Flop whose output “toggles”, i.e. changes to the complementary logic state, on every active transition of the clock signal. The device acts as a divide-by-two counter since two active transitions of the clock signal generate one active transition of the output. It can be considered as being equivalent to a J-K Flip-Flop who’s J and K inputs are held at logic 1. This type of flip-flop is a simplified version of the JK flip-flop. It is not usually found as an IC chip by itself, but is used in many kinds of circuits, especially counter and dividers. Its only function is that it toggles itself with every clock pulse (on either the leading edge, on the trailing edge) it can be constructed from the JK flip-flop as shown in Fig.3 (H). This flip flop is normally set, or “loaded” with the preset and clear inputs. It can be used to obtain an output pulse train with a frequency of half that of the clock pulse train, as seen from the timing diagram, in this example, the T flip flop is triggered on the falling edge of the clock pulse. (Image 7)\n"
+                },
+                {
+                  "id": "theory_002",
+                  "type": "image",
+                  "order": 2,
+                  "imageFile": "images/exp3/theory/01_image_-1.webp",
+                  "imageFiles": [
+                    {
+                      "imageFile": "images/exp3/theory/01_image_-1.webp",
+                      "width": 607,
+                      "height": 350,
+                      "byteSize": 16328,
+                      "sha256": "a5ce87e50bc1fae2f2f1fccffc69978f2130dd9d362386063bc288b3d0bc77bc"
+                    },
+                    {
+                      "imageFile": "images/exp3/theory/02_image_-_2.webp",
+                      "width": 474,
+                      "height": 466,
+                      "byteSize": 6112,
+                      "sha256": "9770919c70d3153c54871c7cab486e93ce02f736e1d7e76394a04202cbddb176"
+                    },
+                    {
+                      "imageFile": "images/exp3/theory/03_image_-_3.webp",
+                      "width": 667,
+                      "height": 338,
+                      "byteSize": 17506,
+                      "sha256": "da1f79311839172e91d9c2f5178c449e71458afb5f299781553e8a2838494a55"
+                    },
+                    {
+                      "imageFile": "images/exp3/theory/04_image_-_4.webp",
+                      "width": 534,
+                      "height": 221,
+                      "byteSize": 9816,
+                      "sha256": "ea246177e70653797ea26c60b7a3b08e628e8ca132a8b330973b6b5e53c535e0"
+                    },
+                    {
+                      "imageFile": "images/exp3/theory/05_image_-_5.webp",
+                      "width": 435,
+                      "height": 183,
+                      "byteSize": 3806,
+                      "sha256": "eba35e837c73166056b90aa88af14e03ce95bebb68194a20e56f97dad250d698"
+                    },
+                    {
+                      "imageFile": "images/exp3/theory/06_image_-_6.webp",
+                      "width": 599,
+                      "height": 291,
+                      "byteSize": 8130,
+                      "sha256": "7835ff3b2a736de363223ba1f9be42b8519ba9e0a3c26adf76445dcd9ff3ebf6"
+                    },
+                    {
+                      "imageFile": "images/exp3/theory/07_image_-_7.webp",
+                      "width": 680,
+                      "height": 550,
+                      "byteSize": 15592,
+                      "sha256": "1bc5e87d0da12fc53ed4c233b0766181cd5662a8c3e0aab7767c0fe078281d1e"
+                    }
+                  ],
+                  "caption": ""
+                }
+              ]
+            },
+            "functionalBlock": {
+              "pages": [
+                9
+              ],
+              "blocks": []
+            },
+            "procedure": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "procedure_001",
+                  "type": "text",
+                  "order": 1,
+                  "text": "A) S-R Flip-Flop  \n    *  Connect the logic signals from the logic input switches to S and R input of R-S Flip Flop. \n    *  Observe the logic outputs on the LEDs in O/P section.  \n    *  Verify the truth table of RS flip-flops. \n\nB) J-K Flip-Flop  \nNote: use any one of the gate available out of 4. \n   * Connect PR to PRESET, CR to CLEAR and J and K terminals to the logic input switches. \n   * Connect CLK of JK flip-flop to Clock terminal. \n   * Connect Q and /Q terminals to LED indicators in O/P section. \n   * Set the PR, CR,CLK, J and K Signals by means of the switches as per the truth table of JK flip-flop given above and verify the Q and/Q \n      outputs by changing possible input condition. \n\nC) Master Slave J-K Flip-Flop  \nNote: use any two of the gate available out of 4.  \n   * Do the connection for MS JK Flip-Flop as shown in Fig.3(c) above.\n   * Connect PR to PRESET, CR to CLEAR of both the flip-flops and J and K terminals of master flip-flop to the logic input switches. \n   * Connect CLK of master JK flip-flop to Clock terminal. \n   * Connect Q and /Q terminals of slave flip-flop to LED indicators in O/P LED section. Also connect Q & /Q terminals of master flip-flop to     \n       the LEDs in O/P LED section.\n   * Set the PR, CR, clk, J and K Signals by means of the switches as per the truth table of MS JK flip-flop given above and verify the Q and   \n       /Q outputs. \n\nD) D Flip-Flop  \nNote: use any one of the gate available out of 2. \n   * Connect PR to PRESET,CR to CLEAR and D terminals to the logic input switch. \n   * Connect the CLK of D Flip-Flop to CLOCK terminal. \n   * Connect Q and /Q terminals to LED indicators in O/P LED section. \n   * Set the PR, CR, CLK and D Signals by means of the switches as per the truth table of D flip-flop given above and verify the Q and /Q \n      outputs. \n\nE) T Flip-Flop  \nNote: use any one of the gate available out of 4. \n    * Do the connection for T Flip-Flop as shown in FIG.3 (g)above. Connect PR to PRESET, CR to CLEAR and T terminals to the logic input \n       switch. \n   * Connect the CLK of T Flip-Flop to CLOCK terminal. \n   * Connect Q and /Q terminals to LED indicators in O/P LED section. \n   * Set the PR, CR, CLK and T Signals by means of the switches as per the truth table of T flip-flop given above and verify the Q and /Q  \n      outputs."
+                }
+              ]
+            },
+            "observation": {
+              "pages": [],
+              "blocks": []
+            },
+            "equipments": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "equipments_001",
+                  "type": "text",
+                  "order": 1,
+                  "text": "* BEL-DIT Board  \n* Power supply"
+                }
+              ]
+            },
+            "result": {
+              "pages": [],
+              "blocks": []
+            },
+            "conclusion": {
+              "pages": [],
+              "blocks": []
+            },
+            "references": {
+              "pages": [],
+              "blocks": []
+            },
+            "technicalData": {
+              "datasheet": {
+                "pages": [],
+                "blocks": []
+              },
+              "blockDiagram": {
+                "pages": [],
+                "blocks": []
+              },
+              "circuitDiagram": {
+                "pages": [],
+                "blocks": []
+              },
+              "referenceSignal": {
+                "pages": [],
+                "blocks": []
+              }
+            }
+          }
+        },
+        {
+          "id": "exp4",
+          "experimentNumber": "Experiment 4",
+          "title": "Study of Counters",
+          "displayOrder": 4,
+          "sections": {
+            "objective": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "objective_001",
+                  "type": "text",
+                  "order": 1,
+                  "text": "To study and design of ripple (Asynchronous) counter using JK flip-flop \nTo study and design of Ring counter & Johnson counter."
+                }
+              ]
+            },
+            "theory": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "theory_001",
+                  "type": "text",
+                  "order": 1,
+                  "text": "Asynchronous Counter: \nWhen the output of a flip-flop is used as a clock input for the next flip-flop, we call the counter a ripple counter or asynchronous counter. The A flip-flop must change states before it can trigger B flip-flop, and the B flip-flop has to change states before it can trigger the C Flip-flop and so on. The triggers move through the flip-flop like a ripple in water. Because of this, the overall propagation delay time is the sum of the individual delays. For instance, if each flip-flop in this four flip-flop counter has a propagation delay time of 10ns, the overall propagation delay time for the counter is 40ns. (Image 1-3)\n\n Decade Counter: \nA Four Flip-flop has a natural count of 16. We can thus construct any counter that has a modulus between 16 and 2, inclusive. We might choose to use four flip flops only for counters having a modulus between 16 and 9, since only three flip-flops are required for a modulus of less than 8, and only two are required for a modulus of less than 4. There are a many different methods for constructing a counter having a modified count. A counter can be synchronous, asynchronous, or a combination of these two types; furthermore, there is the decision of which count is skip.  (Image-4)\n\nReferring the function table of the decade counter it mainly counts 10 states from 0000 to 1001. As soon as counter reaches to 1010 all flip-flops are get reset due to AND gate and counters start counting again from 0000. \n Function table for Asynchronous UP / DOWN Counter: (Image-5)\n\n* To design 4 bit Ring counter using JK flip-flop.  \nA Ring Counter is a type of counter composed of a circular Shift register. The output of the last shift register is fed to the input of the first register. \nThere are two types of ring counters: \n1. A straight ring counter or Over beck counter connects the output of the last shift register to the first shift register input and circulates a single one (or zero) bit around the ring. For example, in a 4-register counter, with initial register values of 1000, the repeating pattern is: 1000, 0100, 0010, 0001, 1000... . Note that one of the registers must be pre-loaded with a 1 (or 0) in order to operate properly.  \n2. A twisted ring counter or Johnson counter connects the complement of the output of the last shift register to its input and circulates a stream of ones followed by zeros around the ring. For example, in a 4-register counter, with initial register values of 0000, the repeating pattern is: 0000, 1000, 1100, 1110, 1111, 0111, 0011, 0001, 0000... .  (Image-6&7)\n"
+                },
+                {
+                  "id": "theory_002",
+                  "type": "image",
+                  "order": 2,
+                  "imageFile": "images/exp4/theory/01_image-1.webp",
+                  "imageFiles": [
+                    {
+                      "imageFile": "images/exp4/theory/01_image-1.webp",
+                      "width": 617,
+                      "height": 225,
+                      "byteSize": 8828,
+                      "sha256": "3234b8023426770a50cee4a66531bf3933837936beef3e79ed8797707c110335"
+                    },
+                    {
+                      "imageFile": "images/exp4/theory/02_image-2.webp",
+                      "width": 569,
+                      "height": 233,
+                      "byteSize": 8894,
+                      "sha256": "6701ab3d044c408bbee43857d23b43ba9e91006022cb144ebcfba9020128fe87"
+                    },
+                    {
+                      "imageFile": "images/exp4/theory/03_image-3.webp",
+                      "width": 617,
+                      "height": 389,
+                      "byteSize": 18638,
+                      "sha256": "24a42e0ae5c17e0362af3a3f75a67e2f8bd20b874038d6d5cd5431c67af8fd47"
+                    },
+                    {
+                      "imageFile": "images/exp4/theory/04_image-4.webp",
+                      "width": 594,
+                      "height": 197,
+                      "byteSize": 8294,
+                      "sha256": "a111521726c584e5c62b8572e8a1678fd7b548857bacf9b14f0438a28042058a"
+                    },
+                    {
+                      "imageFile": "images/exp4/theory/05_image-5.webp",
+                      "width": 324,
+                      "height": 359,
+                      "byteSize": 9456,
+                      "sha256": "d1abfc8a0238f5f0c26cf875b808b6544fee76bb020dff7e0c286815e281e4e8"
+                    },
+                    {
+                      "imageFile": "images/exp4/theory/06_image-6.webp",
+                      "width": 602,
+                      "height": 524,
+                      "byteSize": 21288,
+                      "sha256": "6ef9b2a5d4285d94001cd2a035380118050f890e99e5708a57a2faeacdcbdc42"
+                    },
+                    {
+                      "imageFile": "images/exp4/theory/07_image-7.webp",
+                      "width": 558,
+                      "height": 249,
+                      "byteSize": 6450,
+                      "sha256": "192bb05d6bce4af6f1a8b503bea4abea9893decebb503add30b80f182d5a2d68"
+                    }
+                  ],
+                  "caption": ""
+                }
+              ]
+            },
+            "functionalBlock": {
+              "pages": [
+                9
+              ],
+              "blocks": []
+            },
+            "procedure": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "procedure_001",
+                  "type": "text",
+                  "order": 1,
+                  "text": "Assemble the different counters as shown in above diagrams using JK flip-flop and verify its functionality by referring its function table. "
+                }
+              ]
+            },
+            "observation": {
+              "pages": [],
+              "blocks": []
+            },
+            "equipments": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "equipments_001",
+                  "type": "text",
+                  "order": 1,
+                  "text": "* BEL -DIT Board\n* Power Supply"
+                }
+              ]
+            },
+            "result": {
+              "pages": [],
+              "blocks": []
+            },
+            "conclusion": {
+              "pages": [],
+              "blocks": []
+            },
+            "references": {
+              "pages": [],
+              "blocks": []
+            },
+            "technicalData": {
+              "datasheet": {
+                "pages": [],
+                "blocks": []
+              },
+              "blockDiagram": {
+                "pages": [],
+                "blocks": []
+              },
+              "circuitDiagram": {
+                "pages": [],
+                "blocks": []
+              },
+              "referenceSignal": {
+                "pages": [],
+                "blocks": []
+              }
+            }
+          }
+        },
+        {
+          "id": "exp5",
+          "experimentNumber": "Experiment 5",
+          "title": "Study of Binary Counter ",
+          "displayOrder": 5,
+          "sections": {
+            "objective": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "objective_001",
+                  "type": "text",
+                  "order": 1,
+                  "text": "To study of synchronous binary counter using IC 74191. "
+                }
+              ]
+            },
+            "theory": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "theory_001",
+                  "type": "text",
+                  "order": 1,
+                  "text": "The 74LS191 circuit is a synchronous, reversible, up/down counter. Synchronous operation is provided by having all flip-flops clocked simultaneously, so that the outputs change simultaneously when so instructed by the steering logic. This mode of operation eliminates the output counting spikes normally associated with asynchronous (ripple Clock) counters. \nThe outputs of the four internal master-slave flip-flops are triggered on a LOW-to-HIGH level transition of the clock input, if the enable input is LOW. A HIGH at the enable input inhibits counting. Level changes at either the enable input or the down/up input should be made only when the clock input is HIGH. Thedirection of the count is determined by the level of the down/up input. When LOW, the counter counts up and when HIGH, it counts down. \nThe counter is fully programmable; that is, the outputs maybe preset to either level by placing a LOW on the load input and entering the desired data at the data inputs. The output will change independent of the level of the clock input. This feature allows the counters to be used as modulo-N dividers by simply modifying the count length with the preset inputs. \nThe clock, down/up, and load inputs are buffered to lower the drive requirement; which significantly reduces the number of clock drivers, etc., required for long parallel words. Two outputs have been made available to perform the cascading function: ripple clock and \nmaximum/minimum count. The latter output produces a high-level output pulse with duration approximately equal to one complete cycle of the clock when the counter overflows or underflows. The ripple clock output produces a low-level output pulse equal in width to the low-level portion of the clock input when an overflow or underflow condition exists. The counters can be easily cascaded by feeding the ripple clock output to the enable input of the succeeding counter if parallel clocking is used, or to the clock input if parallel enabling is used. The maximum/minimum count output can be used to accomplish look-ahead for high-speed operation. (Image1&2)\n"
+                },
+                {
+                  "id": "theory_002",
+                  "type": "image",
+                  "order": 2,
+                  "imageFile": "images/exp5/theory/01_image-1.webp",
+                  "imageFiles": [
+                    {
+                      "imageFile": "images/exp5/theory/01_image-1.webp",
+                      "width": 416,
+                      "height": 405,
+                      "byteSize": 12382,
+                      "sha256": "ede803d8231171953b56776a9d51c4f9682d6446ca4a8cea123446cd18163b74"
+                    },
+                    {
+                      "imageFile": "images/exp5/theory/02_image-2.webp",
+                      "width": 580,
+                      "height": 564,
+                      "byteSize": 23460,
+                      "sha256": "e4a4070a33b57d7af6beba5d89ed5c1b6a1088c20c56fad2ff751d8a28f03d31"
+                    }
+                  ],
+                  "caption": ""
+                }
+              ]
+            },
+            "functionalBlock": {
+              "pages": [
+                9
+              ],
+              "blocks": []
+            },
+            "procedure": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "procedure_001",
+                  "type": "text",
+                  "order": 1,
+                  "text": "* Do the connection as per block diagram shown. And switch on the power supply.  (Image -1)\n* Provide proper logic inputs from I/P Switched. \n* To perform Count UP Operation initially set ABCD = 0000, U/D input to logic ‘0’ and press PRESET switch once to load the data. As you \n    load the data into counter led indicator will display the same data. \n* Now provide clock to the counter manually by pressing the clock switch and observe the data on LEDs. It should follow the following \n   table. (Image-2)\n* After 15th clock pulse TC (Max/Min) line goes high for one clock pulse duration. And for 16th clock pulse RC goes low for half duration of \n  clock pulse & again goes high.\n* For count down mode of counter load ABCD = 1111, U/D input to logic ‘1’ and press PRESET switch once to load the data in to counter. \n   As you load the data into counter led indicator will display the same data i.e. 1111. \n* Now provide clock to the counter manually by pressing the clock switch and observe the data on LEDs. It should follow the following  \n  table. (Image-3)\n* After 15th clock pulse TC (Max/Min) line goes high for one clock pulse duration. And for 16th clock pulse RC goes low for half duration of \n  clock pulse & again goes high."
+                },
+                {
+                  "id": "procedure_002",
+                  "type": "image",
+                  "order": 2,
+                  "imageFile": "images/exp5/procedure/01_image-_1.webp",
+                  "imageFiles": [
+                    {
+                      "imageFile": "images/exp5/procedure/01_image-_1.webp",
+                      "width": 579,
+                      "height": 324,
+                      "byteSize": 13062,
+                      "sha256": "74cfa110c69ca4ba067d7ed61e7fcd7bdd66b7241b6d80d8481d5eed62a2fd59"
+                    },
+                    {
+                      "imageFile": "images/exp5/procedure/02_image-_2.webp",
+                      "width": 476,
+                      "height": 353,
+                      "byteSize": 12078,
+                      "sha256": "bc4776370f08f35e8a51356e256ea981c39bfb85d9e44dd2c5b4482c1c24dbf5"
+                    },
+                    {
+                      "imageFile": "images/exp5/procedure/03_image-_3.webp",
+                      "width": 452,
+                      "height": 357,
+                      "byteSize": 12508,
+                      "sha256": "79d67c5613d4304b92b57417d11f8c3bf7f9fa4e7eaa3c05957b2dab8b616492"
+                    }
+                  ],
+                  "caption": ""
+                }
+              ]
+            },
+            "observation": {
+              "pages": [],
+              "blocks": []
+            },
+            "equipments": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "equipments_001",
+                  "type": "text",
+                  "order": 1,
+                  "text": "* BEL-DIT Board\n* Power Supply"
+                }
+              ]
+            },
+            "result": {
+              "pages": [],
+              "blocks": []
+            },
+            "conclusion": {
+              "pages": [],
+              "blocks": []
+            },
+            "references": {
+              "pages": [],
+              "blocks": []
+            },
+            "technicalData": {
+              "datasheet": {
+                "pages": [],
+                "blocks": []
+              },
+              "blockDiagram": {
+                "pages": [],
+                "blocks": []
+              },
+              "circuitDiagram": {
+                "pages": [],
+                "blocks": []
+              },
+              "referenceSignal": {
+                "pages": [],
+                "blocks": []
+              }
+            }
+          }
+        },
+        {
+          "id": "exp6",
+          "experimentNumber": "Experiment 6",
+          "title": "Study of Decade Counter",
+          "displayOrder": 6,
+          "sections": {
+            "objective": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "objective_001",
+                  "type": "text",
+                  "order": 1,
+                  "text": "To study of synchronous binary counter using IC 7490."
+                }
+              ]
+            },
+            "theory": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "theory_001",
+                  "type": "text",
+                  "order": 1,
+                  "text": "The 7490 monolithic counter contains four master slave flip-flops and additional gating to provide a divide-by two counter and a three-stage binary counter for which the count cycle length is divide-by-five. \nThe counter has a gated zero reset and also has gated set to nine inputs for used in BCD nine’s complement applications. \nTo use the maximum count length (decade or four-bit binary), the B input is connected to the QA output. The input count pulses are applied to input A and the outputs are as described in the appropriate Function Table. A symmetrical divide-by-ten count can be \nobtained from the counters by connecting the QD output to the A input and applying the input count to the B input which gives a divide by-ten square wave at output QA. (Image-1)\n1) BCD Count sequence when O/P QA is connected to input B for BCD count. (Image-2)\n2) BCD Count sequence when O/P QD is connected to input A for Bi-quinary count. (Image-3)\nRESET/ COUNT function table (Image-4)"
+                },
+                {
+                  "id": "theory_002",
+                  "type": "image",
+                  "order": 2,
+                  "imageFile": "images/exp6/theory/01_image-1.webp",
+                  "imageFiles": [
+                    {
+                      "imageFile": "images/exp6/theory/01_image-1.webp",
+                      "width": 447,
+                      "height": 284,
+                      "byteSize": 8686,
+                      "sha256": "3a69b0f4d123eec808b0b38599731dc8ac2dd6438daf3bc35ba6c5d640aff057"
+                    },
+                    {
+                      "imageFile": "images/exp6/theory/02_image-2.webp",
+                      "width": 552,
+                      "height": 276,
+                      "byteSize": 8292,
+                      "sha256": "0322375f4644bf1d848de4799186df12542ea9028f87e94adecd2208e5eb05ff"
+                    },
+                    {
+                      "imageFile": "images/exp6/theory/03_image-3.webp",
+                      "width": 602,
+                      "height": 275,
+                      "byteSize": 8682,
+                      "sha256": "375062448d57cd3330dc492afe9bfa88fc3b616cc2b8c6eab929f1b406932b14"
+                    },
+                    {
+                      "imageFile": "images/exp6/theory/04_image-4.webp",
+                      "width": 507,
+                      "height": 259,
+                      "byteSize": 9540,
+                      "sha256": "3f4959876477bc36e4e006144eb72e0046d9da9c04e876f217d4dc3f346c15f4"
+                    }
+                  ],
+                  "caption": ""
+                }
+              ]
+            },
+            "functionalBlock": {
+              "pages": [
+                9
+              ],
+              "blocks": []
+            },
+            "procedure": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "procedure_001",
+                  "type": "text",
+                  "order": 1,
+                  "text": "*  Do the connection as shown in block diagram above and switch ON the power supply.  (Image-1)\n*  Provide the proper logic inputs to R0 (1), R0 (2), RG (1) and RG (2) by referring its RESET/ COUNT function table \n*  Now provide Clock pulse one at a time by pressing Clock switch &observe the led indication at O/P section. It should be as shown in \n    table. (Image-2)\n* Once the count reached to 1001 counter resets to 0000. That means it count 10 clock pulses and counter advances its counts by ten. \n* The 7490 can be configured in following mode also. \n* Do the connection as shown in block diagram above (Image-3)\n* Provide the proper logic inputs to R0 (1), R0 (2), RG (1) and RG (2) by referring its RESET/ COUNT function table.  \n* Now provide Clock pulse one at a time by pressing Clock switch & observe the LED indication at O/P section. It should be as shown in \n   table. (Image-4)\n* In this case counter output is not in sequence as in earlier case. Once the count reached to 1100 counter resets to 0000. That means it \n   count 10 clock pulses."
+                },
+                {
+                  "id": "procedure_002",
+                  "type": "image",
+                  "order": 2,
+                  "imageFile": "images/exp6/procedure/01_image_-1.webp",
+                  "imageFiles": [
+                    {
+                      "imageFile": "images/exp6/procedure/01_image_-1.webp",
+                      "width": 522,
+                      "height": 464,
+                      "byteSize": 9640,
+                      "sha256": "312262d6de6465b9fbeadbe7dcc0b54e43bbb38f65714c4578ff6ea2793e1f95"
+                    },
+                    {
+                      "imageFile": "images/exp6/procedure/02_image_-2.webp",
+                      "width": 451,
+                      "height": 262,
+                      "byteSize": 9164,
+                      "sha256": "40f4f58101757f175ba23524bf2368d7d0df9130a01cdd6ceb172de05f34a47a"
+                    },
+                    {
+                      "imageFile": "images/exp6/procedure/03_image_-_3.webp",
+                      "width": 435,
+                      "height": 384,
+                      "byteSize": 8290,
+                      "sha256": "6765a78b1fbcd17a0567704fc2557169f95437accc25fea18121eae9a5575c20"
+                    },
+                    {
+                      "imageFile": "images/exp6/procedure/04_image_-4.webp",
+                      "width": 452,
+                      "height": 246,
+                      "byteSize": 8780,
+                      "sha256": "e2168f09a8cb7b02fe2c067c53a2419990d1e687daa1d563de4355000e9547b7"
+                    }
+                  ],
+                  "caption": ""
+                }
+              ]
+            },
+            "observation": {
+              "pages": [],
+              "blocks": []
+            },
+            "equipments": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "equipments_001",
+                  "type": "text",
+                  "order": 1,
+                  "text": "* BEL -DIT Board\n* Power Supply"
+                }
+              ]
+            },
+            "result": {
+              "pages": [],
+              "blocks": []
+            },
+            "conclusion": {
+              "pages": [],
+              "blocks": []
+            },
+            "references": {
+              "pages": [],
+              "blocks": []
+            },
+            "technicalData": {
+              "datasheet": {
+                "pages": [],
+                "blocks": []
+              },
+              "blockDiagram": {
+                "pages": [],
+                "blocks": []
+              },
+              "circuitDiagram": {
+                "pages": [],
+                "blocks": []
+              },
+              "referenceSignal": {
+                "pages": [],
+                "blocks": []
+              }
+            }
+          }
+        },
+        {
+          "id": "exp7",
+          "experimentNumber": "Experiment 7",
+          "title": "Study of Shift Register ",
+          "displayOrder": 7,
+          "sections": {
+            "objective": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "objective_001",
+                  "type": "text",
+                  "order": 1,
+                  "text": "To study of Universal shift register using IC 74194. "
+                }
+              ]
+            },
+            "theory": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "theory_001",
+                  "type": "text",
+                  "order": 1,
+                  "text": "The 74194 is a high speed CMOS 4BIT PIPO SHIFT REGISTER fabricated in silicon gate C2MOS technology. It has the same high speed performance of LSTTL combined with true CMOS low power consumption. This SHIFT REGISTER is designed to incorporate Virtually all of the features a system designer may want in a shift register. It features parallel inputs, parallel outputs, right shift and left shift serial inputs, clear line. The register has four distinct modes of operation: PARALLEL (broadside) LOAD; SHIFT RIGHT (in the direction QA QD); SHIFT LEFT; INHIBIT CLOCK (does nothing).  \nSynchronous parallel loading is accomplished by applying the four data bits and taking both mode control inputs, S0 and S1 high. The data are loaded into their respective flipflops and appear at the outputs after the positive transition of the CLOCK input. During loading, serial data flow is inhibited.  \nShift right is accomplished synchronously with the rising edge of the clock pulse when S0 is high and S1 is low. Serial data for this mode is entered at the SHIFT RIGHT data input. When S0 is low and S1 is high, data shifts left synchronously and new data is entered at the SHIFT LEFT serial input. Clocking of the flip-flops is inhibited when both mode control inputs are low. The mode control inputs should be changed only when the CLOCK input is high. All inputs are equipped with protection circuits against static discharge and transient excess voltage. (Image 1-3)"
+                },
+                {
+                  "id": "theory_002",
+                  "type": "image",
+                  "order": 2,
+                  "imageFile": "images/exp7/theory/01_image-1.webp",
+                  "imageFiles": [
+                    {
+                      "imageFile": "images/exp7/theory/01_image-1.webp",
+                      "width": 492,
+                      "height": 312,
+                      "byteSize": 8380,
+                      "sha256": "9c3b7bbb9805016335163b9bcf915bd95b8d25bae6b6081736c54a8a4144acb9"
+                    },
+                    {
+                      "imageFile": "images/exp7/theory/02_image-2.webp",
+                      "width": 600,
+                      "height": 270,
+                      "byteSize": 23584,
+                      "sha256": "148dbb43964bb7ff4e5b1c5e512e8836bc8887fda7eadc80500301437de5dfe5"
+                    },
+                    {
+                      "imageFile": "images/exp7/theory/03_image-3.webp",
+                      "width": 561,
+                      "height": 344,
+                      "byteSize": 21028,
+                      "sha256": "a4f35f3fbd07b840b3355d0a3af9d39ac27fe720310c2d82f0d315e10707bd8b"
+                    }
+                  ],
+                  "caption": ""
+                }
+              ]
+            },
+            "functionalBlock": {
+              "pages": [
+                9
+              ],
+              "blocks": []
+            },
+            "procedure": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "procedure_001",
+                  "type": "text",
+                  "order": 1,
+                  "text": "A) PIPO mode   \n     * Do the connection as shown in block diagram below. (Image-1)\n     * Set ABCD = 1010 using logic switches. Set S1 = S0 = ‘1’ or Logic HIGH, connect Clear of Shift reg. to CLEAR terminal. \n     * Connect outputs QA to QD of reg. to LED indicators. \n     * Switch on the power supply. All Led indicators are in OFF positions.  \n     * Now give clock signal to Shift register by CLOCK terminal, as soon as clock is reached to Reg. led indicators will show 1010, which is  \n        the input we have set for register. \n    * Now change the data at input side using I/P switches & press clock switch, LED indication now displays the new data. It means this \n      shift register works as parallel in parallel out under clock signal control. \n\nB) Right Shit Register \n    * Do the connection as per block diagram shown below,  (Image-2)\n    * Set S1 = ‘0’, S0 = ‘1’, SL = X, SR = ‘1’. Connect Clear of Shift Reg. to CLEAR terminal. \n    * Connect outputs QA to QD of reg. to LED indicators. \n    * Switch on the power supply. All Led indicators are in OFF positions.  \n    * Now give clock signal to Shift register by CLOCK terminal and observe the LED indication. The led indication should follow the \n       sequence as shown in table. (Image-3)\n    * From the above function table we can conclude that this register work as right shift register as it shifts ‘1’ towards right by one \n       position at every clock pulse. \n    *  To start the counting again or to reset the register press CLEAR. \n\nC) Left Shift Register \n    * Do the connection as per Right Shift register.\n    * Set S1= ‘1’, S0 = ‘0’, SL = ‘1’ and SR = X. Connect Clear of Shift Register to CLEAR terminal. \n    * Connect outputs QA to QD of reg. to LED indicators. \n    * Switch on the power supply. All Led indicators are in OFF positions. Now give clock signal to Shift register by CLOCK terminal and   \n       observe the LED indication. The led indication should follow the sequence as shown in table (Image-4)\n    * From the above function table we can conclude that this register work as Left shift register as it shifts ‘1’ towards left by one position   \n       at every clock pulse.       \n    * To start the counting again or to reset the register press CLEAR. "
+                },
+                {
+                  "id": "procedure_002",
+                  "type": "image",
+                  "order": 2,
+                  "imageFile": "images/exp7/procedure/01_image-_1.webp",
+                  "imageFiles": [
+                    {
+                      "imageFile": "images/exp7/procedure/01_image-_1.webp",
+                      "width": 509,
+                      "height": 396,
+                      "byteSize": 13596,
+                      "sha256": "5a8a26887b4a8ec53475733e887a2f8532b9b3f2da463fc853a62b8aff4c83a7"
+                    },
+                    {
+                      "imageFile": "images/exp7/procedure/02_image-_2.webp",
+                      "width": 550,
+                      "height": 394,
+                      "byteSize": 12616,
+                      "sha256": "2647cfe80629e07ab22bbaeb89555348fd671652fd629f1d10cb2b6a6f359e93"
+                    },
+                    {
+                      "imageFile": "images/exp7/procedure/03_image-_3.webp",
+                      "width": 464,
+                      "height": 252,
+                      "byteSize": 5208,
+                      "sha256": "cb91124b1fffd8f796b33c6cda0919d27699ba13fbd609fd4482948b1c4fb0de"
+                    },
+                    {
+                      "imageFile": "images/exp7/procedure/04_image-_4.webp",
+                      "width": 520,
+                      "height": 128,
+                      "byteSize": 6272,
+                      "sha256": "973a3c778860b66c611e224e7f50ce0330f72be74c3815ef98974de2123d4b18"
+                    }
+                  ],
+                  "caption": ""
+                }
+              ]
+            },
+            "observation": {
+              "pages": [],
+              "blocks": []
+            },
+            "equipments": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "equipments_001",
+                  "type": "text",
+                  "order": 1,
+                  "text": "* BEL -DIT Board\n* Power Supply"
+                }
+              ]
+            },
+            "result": {
+              "pages": [],
+              "blocks": []
+            },
+            "conclusion": {
+              "pages": [],
+              "blocks": []
+            },
+            "references": {
+              "pages": [],
+              "blocks": []
+            },
+            "technicalData": {
+              "datasheet": {
+                "pages": [],
+                "blocks": []
+              },
+              "blockDiagram": {
+                "pages": [],
+                "blocks": []
+              },
+              "circuitDiagram": {
+                "pages": [],
+                "blocks": []
+              },
+              "referenceSignal": {
+                "pages": [],
+                "blocks": []
+              }
+            }
+          }
+        },
+        {
+          "id": "exp8",
+          "experimentNumber": "Experiment 8",
+          "title": "Study of Parity Checker",
+          "displayOrder": 8,
+          "sections": {
+            "objective": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "objective_001",
+                  "type": "text",
+                  "order": 1,
+                  "text": "To study of Even and Odd parity Checker using IC 74280 "
+                }
+              ]
+            },
+            "theory": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "theory_001",
+                  "type": "text",
+                  "order": 1,
+                  "text": "A parity bit is used for detecting errors during transmission of binary information. A parity bit is an extra bit included with a binary message to make the number is either even or odd. The message including the parity bit is transmitted and then checked at the receiver \nends for errors. An error is detected if the checked parity bit doesn’t correspond to the one transmitted. The circuit that generates the parity bit in the transmitter is called a ‘parity Generator’ and the circuit that checks the parity in the receiver is called a ‘Parity checker’. In even parity, the added parity bit will make the total number is even amount. In odd parity, the added parity bit will make the total number is odd amount. The parity checker circuit checks for possible errors in the transmission. If the information is passed in even \nparity, then the bits required must have an even number of 1’s. An error occur during transmission, if the received bits have an odd number of 1’s indicating that, one bit has changed in value during transmission. \nThis universal, monolithic, nine bit parity generator/checker utilize Schottky -clamped TTL high performance circuitry and feature ODD/ EVEN outputs to facilitate operation of either Odd or Even parity application. The word length capability is easily expanded by \ncascading. \n74280 parity generator/checker offer the designer a trade-off between reduced power consumption and high performance. This device can be used to upgrade the performance of most systems utilizing the 74180 parity generator/checker. This device is fully compatible with most other TTL circuits. All 74280 are buffered to lower the drive requirement. (Image-1)\n"
+                },
+                {
+                  "id": "theory_002",
+                  "type": "image",
+                  "order": 2,
+                  "imageFile": "images/exp8/theory/image-1.webp",
+                  "imageFiles": [
+                    {
+                      "imageFile": "images/exp8/theory/image-1.webp",
+                      "width": 339,
+                      "height": 134,
+                      "byteSize": 6958,
+                      "sha256": "4d568e282aea5a086bb37f1aee9bb19659826d087cc858d72fd11534c2f5bd6e"
+                    }
+                  ],
+                  "caption": ""
+                }
+              ]
+            },
+            "functionalBlock": {
+              "pages": [
+                9
+              ],
+              "blocks": []
+            },
+            "procedure": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "procedure_001",
+                  "type": "text",
+                  "order": 1,
+                  "text": "* Do the connections as per block diagram shown below.  \n* Apply logic inputs as shown in its function table and observe the corresponding parity indication \n* For example set A to I = 101010101. In this data pattern No Of ‘1’ (Logic High) are odd, thus ODD line must be high. \n* Now set data A to I = 110011000. In this data pattern No Of ‘1’ (Logic High) are Even, thus EVEN line must be high. \n* In the similar way 74280 can be designed to generate the parity coded data.  (image-1)"
+                },
+                {
+                  "id": "procedure_002",
+                  "type": "image",
+                  "order": 2,
+                  "imageFile": "images/exp8/procedure/image-_1.webp",
+                  "imageFiles": [
+                    {
+                      "imageFile": "images/exp8/procedure/image-_1.webp",
+                      "width": 446,
+                      "height": 258,
+                      "byteSize": 8300,
+                      "sha256": "7c345d528c87c8c4b2448bee43dccabdb9953cb6f7c94f548d925ffc2e589784"
+                    }
+                  ],
+                  "caption": ""
+                }
+              ]
+            },
+            "observation": {
+              "pages": [],
+              "blocks": []
+            },
+            "equipments": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "equipments_001",
+                  "type": "text",
+                  "order": 1,
+                  "text": "* BEL -DIT Board\n* Power Supply"
+                },
+                {
+                  "id": "equipments_002",
+                  "type": "text",
+                  "order": 2,
+                  "text": ""
+                }
+              ]
+            },
+            "result": {
+              "pages": [],
+              "blocks": []
+            },
+            "conclusion": {
+              "pages": [],
+              "blocks": []
+            },
+            "references": {
+              "pages": [],
+              "blocks": []
+            },
+            "technicalData": {
+              "datasheet": {
+                "pages": [],
+                "blocks": []
+              },
+              "blockDiagram": {
+                "pages": [],
+                "blocks": []
+              },
+              "circuitDiagram": {
+                "pages": [],
+                "blocks": []
+              },
+              "referenceSignal": {
+                "pages": [],
+                "blocks": []
+              }
+            }
+          }
+        },
+        {
+          "id": "exp9",
+          "experimentNumber": "Experiment 9",
+          "title": "Study of Multiplexer / Demultiplexer ",
+          "displayOrder": 9,
+          "sections": {
+            "objective": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "objective_001",
+                  "type": "text",
+                  "order": 1,
+                  "text": "To study of Multiplexer IC 74153 and Demultiplexer IC 74138"
+                }
+              ]
+            },
+            "theory": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "theory_001",
+                  "type": "text",
+                  "order": 1,
+                  "text": "Multiplexer :-\nMultiplexer means transmitting a large number of information units over a smaller number of channels or lines. A digital multiplexer is a combinational circuit that selects binary information from one of many input lines and directs it to a single output line. The selection of a particular input line is controlled by a set of selection lines. Normally there are 2n input line and n selection lines whose bit combination determine which input is selected. \n\nIC75153 :-\nEach of these data selectors/multiplexers contains inverters and drivers to supply fully complementary, on-chip, binary decoding data selection to the AND-OR-invert gates. Separate strobe inputs are provided for each of the two four-line sections. \n\nInternal Block Diagram OF 74153: (Image-1&2)\n"
+                },
+                {
+                  "id": "theory_002",
+                  "type": "image",
+                  "order": 2,
+                  "imageFile": "images/exp9/theory/01_image-1.webp",
+                  "imageFiles": [
+                    {
+                      "imageFile": "images/exp9/theory/01_image-1.webp",
+                      "width": 333,
+                      "height": 308,
+                      "byteSize": 12126,
+                      "sha256": "10087dc3a207bb32605c70b8fa8946bc09104e5d03d32078741133a0bba8eedc"
+                    },
+                    {
+                      "imageFile": "images/exp9/theory/02_image-2.webp",
+                      "width": 562,
+                      "height": 313,
+                      "byteSize": 15440,
+                      "sha256": "1a52f675afa611bf4d2ae05eabeb6dc451110a06c4e397010f79167e0b050ff5"
+                    }
+                  ],
+                  "caption": ""
+                }
+              ]
+            },
+            "functionalBlock": {
+              "pages": [
+                9
+              ],
+              "blocks": []
+            },
+            "procedure": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "procedure_001",
+                  "type": "text",
+                  "order": 1,
+                  "text": "PROCEDURE:- 1\n* Do the connection as per block diagram shown below and switch ON the power supply. \n* Apply proper logic inputs o the Multiplexer and observe the output on LEDs. \n* Verify the function table of multiplexer in both the cases. (Image-1)\n\nFull Adder \nFunction table of Full Adder is as shown below;  (Image-2)\n74153 is dual 4:1 multiplexer. It has 2 select lines and it has two o/p lines. We can design Full adder using 74153 multiplexer as shown below; (Image-3)\nFrom function table of full adder LSB B&C connect to select inputs of multiplexer B and A respectively & MSB A to the inputs of multiplexer as shown in above table. The output 1Y will function as SUM output & 2Y will work as carry output. The connection diagram for Full adder using Multiplexer 74153 is as shown below. Connect both strobe lines 1g & 2g to logic low or ‘0’.  Now apply inputs A, B & C as ADDER inputs to Multiplexer and observe the output at multiplexer out (1Y & 2Y) which is functioning as Full Adder. Verify all possible combinations of full adder using its function table. \nMULTIPLEXER AS FULL ADDER  (Image-4)\n\nFull Subtractor \nFunction table of Full Subtractor: (Image-5)\n\nFull Subtractor Design \nDo the connection for Full Subtractor as shown in block diagram below. Apply inputs A, B & C as SUBTRACTOR inputs to Multiplexer and observe the output at multiplexer out (1Y & 2Y) which is functioning as Full Subtractor. Verify all possible combinations of full subtractor using its function table. \nMultiplexer as Full Subtractor (Image-6)\n\nDemultiplexer \nThe function of Demultiplexer is in contrast to multiplexer function. It takes information from one line and distributes it to a given number of output lines. For this reason, the demultiplexer is also known as a data distributor. Decoder can also be used as demultiplexer. \n\nIn the 1: 4 demultiplexer circuit, the data input line goes to all of the AND +9gates. The data select lines enable only one gate at a time and the data on the data input line will pass through the selected gate to the associated data output line. \n\nThe 74138 decodes one-of-eight lines, based upon the condition at the three binary select inputs and the three enable inputs. Two active-low and one active-high enable inputs reduce the need for external gates or inverters when expanding. A 24-line decoder can be \nimplemented with no external inverters, and a 32-line decoder requires only one inverter. An enable input can be used as a data input for demultiplexing applications. All of these decoders/Demultiplexer feature fully buffered inputs, presenting only one normalized load to its driving circuit. All inputs are clamped with high-performance Schottky diodes to suppress line-ringing and simplify system design.\n(Image-7&8).\n\nPROCEDURE:- 2\n* Do the connection as per block diagram shown below and switch ON the power supply. \n* Apply proper logic inputs o the Demultiplexer and observe the output on LEDs. \n* Verify the function table of Demultiplexer. (Image-8)\n* Application of Demultiplexer as full Adder and full Subtractor.\n\nFull Adder \nRefer the function table of Full adder shown above. To design full adder simply or the outputs of Demultiplexer for which output is high. The connection diagram for Demultiplexer as full adder is as shown below, (Image-9)\nAs 74138 have active low outputs, it is necessary to add the inverters at the outputs. As from the function table of full adder there are Total 7 inverters required and in BEL-DIT Boards there are 6 inverter available. Thus 7th inverter is built using NAND gate by shorting its both inputs (NAND as NOT).  \nOnes the connections are over then apply inputs to Demultiplexer and observe its final output. Verify the functionality of Full Adder using Demultiplexer.  \n* Application of Demultiplexer as full Adder and full Subtractor. \n\nFULL SUBTRACTOR:  Refer the function table of Full subtractor shown above. To design full subtractor simply or the outputs of Demultiplexer for which output is high The connection diagram for Demultiplexer as full subtractor is as shown below, (Image-10)\nOnes the connections are over then apply inputs to Demultiplexer and observe its final output. Verify the functionality of Full Subtractor using Demultiplexer. "
+                },
+                {
+                  "id": "procedure_002",
+                  "type": "image",
+                  "order": 2,
+                  "imageFile": "images/exp9/procedure/01_imagw-_1.webp",
+                  "imageFiles": [
+                    {
+                      "imageFile": "images/exp9/procedure/01_imagw-_1.webp",
+                      "width": 495,
+                      "height": 443,
+                      "byteSize": 12432,
+                      "sha256": "e47f0a6641c6dac3c91890099e8dbc2a89b4f5d8cee824a743c2bb2dcaf24fdb"
+                    },
+                    {
+                      "imageFile": "images/exp9/procedure/02_image-_2.webp",
+                      "width": 348,
+                      "height": 307,
+                      "byteSize": 9248,
+                      "sha256": "0208d5d80adef5e359806f7c592de447224583bdf6949e4d9f459de1fca3348b"
+                    },
+                    {
+                      "imageFile": "images/exp9/procedure/03_image-_3.webp",
+                      "width": 255,
+                      "height": 99,
+                      "byteSize": 2780,
+                      "sha256": "9f310f18f6cf41f1a1623b391eae202fc5fd42bbc39778f96b646a12a21ce013"
+                    },
+                    {
+                      "imageFile": "images/exp9/procedure/04_image-_4.webp",
+                      "width": 512,
+                      "height": 482,
+                      "byteSize": 10310,
+                      "sha256": "0c143f4ca2f4b7247f1ebd19f14c0ba2a0978ead9e386f7bbd22305bbe30dcc1"
+                    },
+                    {
+                      "imageFile": "images/exp9/procedure/05_image-_5.webp",
+                      "width": 594,
+                      "height": 236,
+                      "byteSize": 10308,
+                      "sha256": "80494751b05dc40a7b4fd7c9e130fba71e7bc4cddea06024ee9db81d216d1591"
+                    },
+                    {
+                      "imageFile": "images/exp9/procedure/06_image-_6.webp",
+                      "width": 489,
+                      "height": 485,
+                      "byteSize": 10182,
+                      "sha256": "e8a0a0ac424cf0bf56dfd21144610eae6cbfd582442fd172326df1b8b7fc34c3"
+                    },
+                    {
+                      "imageFile": "images/exp9/procedure/07_image-_7.webp",
+                      "width": 500,
+                      "height": 535,
+                      "byteSize": 23042,
+                      "sha256": "d3a18d86f58d09d685b032879f2d6a4eb8f79441ffed9ff713194a4300ae0491"
+                    },
+                    {
+                      "imageFile": "images/exp9/procedure/08_image-_8.webp",
+                      "width": 438,
+                      "height": 218,
+                      "byteSize": 11892,
+                      "sha256": "159658f74ab0724e6a671607e2c36cac5ea822041ee92bdb3b315ce835010ccb"
+                    },
+                    {
+                      "imageFile": "images/exp9/procedure/09_image-_9.webp",
+                      "width": 606,
+                      "height": 252,
+                      "byteSize": 11928,
+                      "sha256": "3f9f46ff6bdd68789fa18645d18172f05f3930bdb4ff116c9fac7a23a4bc5ec8"
+                    },
+                    {
+                      "imageFile": "images/exp9/procedure/10_image-_10.webp",
+                      "width": 610,
+                      "height": 250,
+                      "byteSize": 11416,
+                      "sha256": "e18ff45684000b4b05ba4d0d04661161dcc2f0a65255da3976abc957785a98b8"
+                    }
+                  ],
+                  "caption": ""
+                }
+              ]
+            },
+            "observation": {
+              "pages": [],
+              "blocks": []
+            },
+            "equipments": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "equipments_001",
+                  "type": "text",
+                  "order": 1,
+                  "text": "* BEL -DIT Board\n* Power Supply"
+                }
+              ]
+            },
+            "result": {
+              "pages": [],
+              "blocks": []
+            },
+            "conclusion": {
+              "pages": [],
+              "blocks": []
+            },
+            "references": {
+              "pages": [],
+              "blocks": []
+            },
+            "technicalData": {
+              "datasheet": {
+                "pages": [],
+                "blocks": []
+              },
+              "blockDiagram": {
+                "pages": [],
+                "blocks": []
+              },
+              "circuitDiagram": {
+                "pages": [],
+                "blocks": []
+              },
+              "referenceSignal": {
+                "pages": [],
+                "blocks": []
+              }
+            }
+          }
+        },
+        {
+          "id": "exp10",
+          "experimentNumber": "Experiment 10",
+          "title": "Study of Seven Segment Decoder ",
+          "displayOrder": 10,
+          "sections": {
+            "objective": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "objective_001",
+                  "type": "text",
+                  "order": 1,
+                  "text": "Study of Seven Segment Decoder \n"
+                }
+              ]
+            },
+            "theory": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "theory_001",
+                  "type": "text",
+                  "order": 1,
+                  "text": "The 7447 feature active-low outputs designed for driving common-anode LEDs or incandescent indicators directly. All of the circuits have full ripple-blanking input/output controls and a lamp test input. Segment identification and resultant displays are shown on a following page. Display patterns for BCD input counts above nine are unique symbols to authenticate input condition. \n\nAll of the circuits incorporate automatic leading and/or trailing-edge, zero-blanking control (RBI and RBO). Lamp test (LT) of these devices may be performed at any time when the BI/RBO node is at a high logic level. All types contain an overriding blanking input (BI) \nwhich can be used to control the lamp intensity (by pulsing) or to inhibit the outputs. \nConnection Diagram (Image-1)\n\n7 Segment Display : \nThe 7 Segment Display consists of 7 LEDs which can be glowed in some particular fashion using the 7 different input pins. For example, if a, b, g, e, d glow, numeral 2 is represented A stands for Anode, i.e. A has to be connected to 5 V. The decimal is optional as it is used to glow the decimal point in bottom right of the 7 segment display. \n\nNote 1: BI/RBO is a wire-AND logic serving as blanking input (BI) and/or ripple-blanking output (RBO). \nNote 2: The blanking input (BI) must be open or held at a high logic level when output functions 0 through 15 are desired. The ripple  \n                blanking input (RBI) must be open or high if blanking of a decimal zero is not desired. \nNote 3: When a low logic level is applied directly to the blanking input (BI), all segment outputs are high regardless of the level of any \n               other input. \nNote 4: When ripple-blanking input (RBI) and inputs A, B, C, and D are at a low level with the lamp test input high, all segment outputs go \n               H and the ripple blanking output (RBO) goes to a low level (response condition).\nNote 5: When the blanking input/ripple-blanking output (BI/RBO) is open or held high and a low is applied to the lamp-test input, all \n               segment outputs are L. H = High level, L = Low level, X = Don't Care\n\n"
+                },
+                {
+                  "id": "theory_002",
+                  "type": "image",
+                  "order": 2,
+                  "imageFile": "images/exp10/theory/01_image-1.webp",
+                  "imageFiles": [
+                    {
+                      "imageFile": "images/exp10/theory/01_image-1.webp",
+                      "width": 481,
+                      "height": 274,
+                      "byteSize": 7192,
+                      "sha256": "6823b8a2628c0e1d2244642bd2e39299d36edb240b8693f167a2191354a46037"
+                    },
+                    {
+                      "imageFile": "images/exp10/theory/02_image-2.webp",
+                      "width": 132,
+                      "height": 207,
+                      "byteSize": 2602,
+                      "sha256": "83431395f1fb77a8ca4d2136f493224d0a4edb6dc371be2ccf73f339d9fd133a"
+                    },
+                    {
+                      "imageFile": "images/exp10/theory/03_image-3.webp",
+                      "width": 638,
+                      "height": 472,
+                      "byteSize": 30314,
+                      "sha256": "f9c5b3d7d527befc84b5d6128a1c671f69deb8e19f30196761dde58fa207223e"
+                    }
+                  ],
+                  "caption": ""
+                }
+              ]
+            },
+            "functionalBlock": {
+              "pages": [
+                9
+              ],
+              "blocks": []
+            },
+            "procedure": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "procedure_001",
+                  "type": "text",
+                  "order": 1,
+                  "text": "* Do the connection as per block diagram shown below and switch on the power supply. \n* For normal operation set LT = ‘1’ RBI = ‘1’ and BI/RBO = ‘1’. Apply input to the IC from I/P switches as per the function table and observe      \n   the output on seven segment display  \n* You can give output of onboard Decade counter (7490) as input to seven segment decoder. Observe the output on Display. It displays \n   from 0 to 9 digits. \n* You can also give output of onboard Binary counter (74191) as input to seven segment decoder. Observe the output on Display. It   \n   displays digits as shown in the function table for 0 to 15. (Image-1)"
+                },
+                {
+                  "id": "procedure_002",
+                  "type": "image",
+                  "order": 2,
+                  "imageFile": "images/exp10/procedure/image-_1.webp",
+                  "imageFiles": [
+                    {
+                      "imageFile": "images/exp10/procedure/image-_1.webp",
+                      "width": 499,
+                      "height": 412,
+                      "byteSize": 8438,
+                      "sha256": "0e84d6b05561dc9c28bf2b9991e548e10d203405413f8570a0ddc6b05dd6bcbf"
+                    }
+                  ],
+                  "caption": ""
+                }
+              ]
+            },
+            "observation": {
+              "pages": [],
+              "blocks": []
+            },
+            "equipments": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "equipments_001",
+                  "type": "text",
+                  "order": 1,
+                  "text": "* BEL -DIT Board\n* Power Supply"
+                }
+              ]
+            },
+            "result": {
+              "pages": [],
+              "blocks": []
+            },
+            "conclusion": {
+              "pages": [],
+              "blocks": []
+            },
+            "references": {
+              "pages": [],
+              "blocks": []
+            },
+            "technicalData": {
+              "datasheet": {
+                "pages": [],
+                "blocks": []
+              },
+              "blockDiagram": {
+                "pages": [],
+                "blocks": []
+              },
+              "circuitDiagram": {
+                "pages": [],
+                "blocks": []
+              },
+              "referenceSignal": {
+                "pages": [],
+                "blocks": []
+              }
+            }
+          }
+        },
+        {
+          "id": "exp11",
+          "experimentNumber": "Experiment 11",
+          "title": "Study of Comparator ",
+          "displayOrder": 11,
+          "sections": {
+            "objective": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "objective_001",
+                  "type": "text",
+                  "order": 1,
+                  "text": "To study of 4 Bit Comparator IC 7485"
+                }
+              ]
+            },
+            "theory": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "theory_001",
+                  "type": "text",
+                  "order": 1,
+                  "text": "The comparison of two numbers is an operator that determines one number is greater than, less than (or) equal to the other number. A magnitude comparator is a combinational circuit that compares two numbers A and Band determines their relative magnitude. The \noutcome of the comparator is specified by three binary variables that indicate whether A>B, A=B (or) A<B.\n\nThese 4-bit magnitude comparators perform comparison of straight binary or BCD codes. Three fully-decoded decisions about two, 4-bit words (A, B) are made and are externally available at three outputs. These devices are fully expandable to any number of bits without external gates. Words of greater length may be compared by connecting comparators in cascade. The A l B, A k B, and A e B outputs of a stage handling lesssignificant bits are connected to the corresponding inputs of the next stage handling more significant bits. The stage handling the least-significant bits must have a high-level voltage applied to the A e B input. The cascading path is implemented with only a two-gate-level delay to reduce overall comparison times for long words. Pin Diagram of 7485 . (Image-1)\n\nFUNCTION TABLE FOR 7485 (Image-2)"
+                },
+                {
+                  "id": "theory_002",
+                  "type": "image",
+                  "order": 2,
+                  "imageFile": "images/exp11/theory/01_image-1.webp",
+                  "imageFiles": [
+                    {
+                      "imageFile": "images/exp11/theory/01_image-1.webp",
+                      "width": 480,
+                      "height": 283,
+                      "byteSize": 7994,
+                      "sha256": "514ae98ca4600ffb840ab99c12b38c892b4758dfc18c7592969c7ed1ebeb8127"
+                    },
+                    {
+                      "imageFile": "images/exp11/theory/02_image-2.webp",
+                      "width": 612,
+                      "height": 315,
+                      "byteSize": 23080,
+                      "sha256": "b0266df9368b6e9fe1e3537e40860ea2b1365f98bf3dce7f73391d5739ece63e"
+                    }
+                  ],
+                  "caption": ""
+                }
+              ]
+            },
+            "functionalBlock": {
+              "pages": [
+                9
+              ],
+              "blocks": []
+            },
+            "procedure": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "procedure_001",
+                  "type": "text",
+                  "order": 1,
+                  "text": "* Do the connection as per block diagram shown below and switch ON the power supply. \n* Give step by step inputs to A & B of comparator starting from MSB (A3 and B3). Initially just observe the comparison between inputs A &   \n   B inputs and ignore the cascading inputs. \n* Once all possible combinations for A & B inputs are over then apply cascading inputs as per function table. Observe the outputs of \n   comparator and verify it with function table. \n* Cascading inputs are used to increase the input line capacity of comparator. (Image-1)"
+                },
+                {
+                  "id": "procedure_002",
+                  "type": "image",
+                  "order": 2,
+                  "imageFile": "images/exp11/procedure/image-_1.webp",
+                  "imageFiles": [
+                    {
+                      "imageFile": "images/exp11/procedure/image-_1.webp",
+                      "width": 402,
+                      "height": 313,
+                      "byteSize": 8856,
+                      "sha256": "7966abf572e449bc1dafdf6cb0faaf0433a083e0879effa02a8d580f34fe7760"
+                    }
+                  ],
+                  "caption": ""
+                }
+              ]
+            },
+            "observation": {
+              "pages": [],
+              "blocks": []
+            },
+            "equipments": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "equipments_001",
+                  "type": "text",
+                  "order": 1,
+                  "text": "* BEL -DIT Board\n* Power Supply"
+                }
+              ]
+            },
+            "result": {
+              "pages": [],
+              "blocks": []
+            },
+            "conclusion": {
+              "pages": [],
+              "blocks": []
             },
             "references": {
               "pages": [],
