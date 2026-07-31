@@ -53,13 +53,19 @@ const collectImageItems = (manual) => {
     addItem(block.imageFile);
   };
 
+  const sectionBlocks = (value) => {
+    if (Array.isArray(value)) return value;
+    if (value && typeof value === 'object' && Array.isArray(value.blocks)) return value.blocks;
+    return [];
+  };
+
   (manual.experiments || []).forEach((experiment) => {
     const sections = experiment.sections || {};
     Object.entries(sections).forEach(([key, value]) => {
       if (key === 'technicalData' && value && typeof value === 'object') {
-        Object.values(value).forEach((blocks) => (blocks || []).forEach(visitBlock));
+        Object.values(value).forEach((section) => sectionBlocks(section).forEach(visitBlock));
       } else {
-        (value || []).forEach(visitBlock);
+        sectionBlocks(value).forEach(visitBlock);
       }
     });
   });
@@ -109,6 +115,7 @@ const seenPdfFiles = new Set();
   if (manual.productId !== entry.productId) errors.push(`productId mismatch for ${entry.manualId}.`);
   if (manual.categoryId !== entry.categoryId) errors.push(`categoryId mismatch for ${entry.manualId}.`);
   if (entry.experimentCount !== (manual.experiments || []).length) errors.push(`Experiment count mismatch for ${entry.manualId}.`);
+  const manualDir = path.dirname(contentPath);
 
   if (entry.contentMode === 'pdfPageMapping' || manual.contentMode === 'pdfPageMapping') {
     if (manual.contentMode !== 'pdfPageMapping') errors.push(`PDF manual contentMode mismatch for ${entry.manualId}.`);
@@ -139,10 +146,7 @@ const seenPdfFiles = new Set();
       ['objective','theory','functionalBlock','procedure','observation','equipments','result','conclusion','references'].forEach((key) => checkPages(key, sections[key]));
       ['datasheet','blockDiagram','circuitDiagram','referenceSignal'].forEach((key) => checkPages(`technicalData.${key}`, sections.technicalData?.[key]));
     });
-    return;
   }
-
-  const manualDir = path.dirname(contentPath);
   collectImageItems(manual).forEach((item) => {
     const imageFile = item.imageFile;
     if (isUnsafe(imageFile)) errors.push(`Unsafe imageFile in ${entry.manualId}: ${imageFile}`);

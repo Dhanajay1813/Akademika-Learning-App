@@ -32,6 +32,11 @@ const collectImageFiles = (manual) => {
   const addImage = (value) => {
     if (typeof value === 'string' && value.trim()) imageFiles.add(value);
   };
+  const sectionBlocks = (value) => {
+    if (Array.isArray(value)) return value;
+    if (value && typeof value === 'object' && Array.isArray(value.blocks)) return value.blocks;
+    return [];
+  };
   const visitBlock = (block) => {
     if (!block || typeof block !== 'object') return;
     addImage(block.imageFile);
@@ -47,9 +52,9 @@ const collectImageFiles = (manual) => {
     const sections = experiment.sections || {};
     Object.entries(sections).forEach(([key, value]) => {
       if (key === 'technicalData' && value && typeof value === 'object') {
-        Object.values(value).forEach((blocks) => (blocks || []).forEach(visitBlock));
+        Object.values(value).forEach((section) => sectionBlocks(section).forEach(visitBlock));
       } else {
-        (value || []).forEach(visitBlock);
+        sectionBlocks(value).forEach(visitBlock);
       }
     });
   });
@@ -78,8 +83,6 @@ manuals.slice().sort((a, b) => a.manualId.localeCompare(b.manualId)).forEach((en
   const contentImportPath = `./${toPosix(path.relative(path.join(root, 'src/content'), contentPath))}`;
   contentImports.push(`import ${varName} from '${contentImportPath}';`);
   manualEntries.push(`  '${entry.manualId}': ${varName}.manuals['${entry.manualId}'],`);
-
-  if (entry.contentMode === 'pdfPageMapping' || manual.contentMode === 'pdfPageMapping') return;
 
   const manualDir = path.dirname(contentPath);
   const lines = collectImageFiles(manual).map((imageFile) => {
