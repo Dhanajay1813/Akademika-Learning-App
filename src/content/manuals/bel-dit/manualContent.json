@@ -11,13 +11,13 @@
       "pdfFile": "manual.pdf",
       "originalFilename": "BEL-DIT-VER 19.0.pdf",
       "totalPages": 112,
-      "compressedByteSize": 3015454,
-      "sha256": "701409343065310a2b936af036f46e50fa0db9da7968a818475fa35bdae3d5af",
+      "compressedByteSize": 3015455,
+      "sha256": "4f5dfd35d5ef09df86c4861f96aea77c2a28527ab6133e01a04e4272556331f9",
       "experiments": [
         {
           "id": "exp1",
           "experimentNumber": "Experiment 1",
-          "title": "Study of Logic Gates",
+          "title": "Study of Boolean Expression Simplification ",
           "displayOrder": 1,
           "sections": {
             "objective": {
@@ -27,7 +27,7 @@
                   "id": "objective_001",
                   "type": "text",
                   "order": 1,
-                  "text": "To study about logic gates and verify their truth tables.\n"
+                  "text": "To study the Boolean rules &Boolean expression simplification"
                 }
               ]
             },
@@ -38,7 +38,7 @@
                   "id": "theory_001",
                   "type": "text",
                   "order": 1,
-                  "text": "Circuit that takes the logical decision and the process are called logic gates. Each gate \nhas one or more input and only one output. OR, AND and NOT are basic gates. NAND, \nNOR and X-OR are known as universal gates. Basic gates form these gates. \n\nAND Gate \nThe AND gate performs a logical multiplication commonly known as AND function. The \noutput is high when both the inputs are high. The output is low level when any one of the \ninputs is low. \n\nOR Gate \nThe OR gate performs a logical addition commonly known as OR function. The output is \nhigh when any one of the inputs is high. The output is low level when both the inputs are \nlow. \n\nNOT Gate \nThe NOT gate is called an inverter. The output is high when the input is low. The output is \nlow when the input is high. \n\nNAND Gate \nThe NAND gate is a contraction of AND-NOT. The output is high when both inputs are low \nand any one of the input is low .The output is low level when both inputs are high. \n\nNOR Gate \nThe NOR gate is a contraction of OR-NOT. The output is high when both inputs are low. \nThe output is low when one or both inputs are high. \n\nX-OR Gate \nThe output is high when any one of the inputs is high. The output is low when both the \ninputs are low and both the inputs are high."
+                  "text": "Here is the list of rules used for the Boolean expression simplifications.  \n \nThe Idempotent Laws   :- AA = A                            A+A = A \n \nThe Associative Laws    :- (AB) C = A (BC)          (A+B) +C = A+ (B+C) \n \nThe Commutative Laws :- AB = BA                       A+B = B+A \n \nThe Distributive Laws    :-  A (B+C) = AB+AC      A+BC = (A+B) (A+C) \n \nThe Identity Laws            :-  AF = F    AT = A           A+F = A     A+T = T \n \nThe Complement Laws :- AA = F   A+A = T          F = T         T = F \n \nThe Involution Law         :- A = A \n \nDe-Morgan's Law             :- AB = A+BA+B = AB \n \n(T – True – 1 and F – False – 0) \n \nFind below some examples of Boolean algebra simplifications. Each line gives a form of the expression, and the rule or rules used to derive it from the previous one. Generally, there are several ways to reach the result. \n \n* Simplify: C + BC:  \n           Expression                                  Rule(s) Used \n     1. C + BC                                           Original Expression\n     2. C + (B + C)                                   DeMorgan's Law.  \n     3. (C + C) + B                                   Commutative, Associative Laws.  \n     4. T + B                                             Complement Law.\n     5. T                                                     Identity Law.  \n\n*Simplify: AB(A + B)(B + B):  \n          Expression                                     Rule(s) Used \n     1. AB(A + B)(B + B)                          Original Expression \n     2. AB(A + B)                                       Complement law, Identity law.  \n     3. (A + B)(A + B)                                DeMorgan's Law  \n     4. A + BB                                             Distributive law. This step uses the fact that or distributes over and. It can look a bit strange since      \n                                                                    addition does not distribute over multiplication.  \n    5. A                                                         Complement, Identity.  \n\n* Simplify: (A + C)(AD + AD) + AC + C:  \n           Expression                                                      Rule(s) Used\n       1. (A + C)(AD + AD) + AC + C                         Original Expression \n       2. (A + C)A(D + D) + AC + C                            Distributive.   \n       3. (A + C)A + AC + C                                         Complement, Identity. \n       4. A((A + C) + C) + C                                         Commutative, Distributive.  \n       5. A(A + C) + C                                                   Associative, Idempotent. \n       6. AA + AC + C                                                   Distributive. \n       7. A + (A + T)C                                                   Idempotent, Identity, Distributive.  \n       8. A + C                                                               Identity, twice. \n\n* You can also use distribution of or over and starting from A(A+C)+C to reach the same result by another route. \n* Simplify: A(A + B) + (B + AA)(A + B):  \n           Expression                                                         Rule(s) Used \n      1. A(A + B) + (B + AA)(A + B)                               Original Expression \n      2. AA + AB + (B + A)A + (B + A)B                        Idempotent (AA to A), then Distributive, used twice.\n      3. AB + (B + A)A + (B + A)B                                  Complement, then Identity. (Strictly speaking, we also used the Commutative Law for each  \n                                                                                            of these applications.)\n      4. AB + BA + AA + BB + AB                                   Distributive, two places. \n      5. AB + BA + A + AB                                                Idempotent (for the A's), then Complement and Identity to remove BB.   \n      6. AB + AB + AT + AB                                             Commutative, Identity; setting up for the next step.  \n      7. AB + A(B + T + B)                                               Distributive.  \n      8. AB + A                                                                    Identity, twice (depending how you count it).  \n      9. A + AB                                                                    Commutative.\n    10. (A + A)(A + B)                                                      Distributive.  \n    11. A + B                                                                      Complement, Identity."
                 }
               ]
             },
@@ -49,12 +49,7 @@
               "blocks": []
             },
             "procedure": {
-              "pages": [
-                13,
-                14,
-                15,
-                16
-              ],
+              "pages": [],
               "blocks": []
             },
             "observation": {
@@ -68,7 +63,7 @@
                   "id": "equipments_001",
                   "type": "text",
                   "order": 1,
-                  "text": "1.  BEL-DIT Board  \n2. Power supply"
+                  "text": " * BEL-DIT Board  \n * Power supply "
                 }
               ]
             },
@@ -78,14 +73,185 @@
             },
             "conclusion": {
               "pages": [],
+              "blocks": []
+            },
+            "references": {
+              "pages": [],
+              "blocks": []
+            },
+            "technicalData": {
+              "datasheet": {
+                "pages": [],
+                "blocks": []
+              },
+              "blockDiagram": {
+                "pages": [],
+                "blocks": []
+              },
+              "circuitDiagram": {
+                "pages": [],
+                "blocks": []
+              },
+              "referenceSignal": {
+                "pages": [],
+                "blocks": []
+              }
+            }
+          }
+        },
+        {
+          "id": "exp2",
+          "experimentNumber": "Experiment 2",
+          "title": "Study of Adder and Subtractor ",
+          "displayOrder": 2,
+          "sections": {
+            "objective": {
+              "pages": [],
               "blocks": [
                 {
-                  "id": "conclusion_001",
+                  "id": "objective_001",
                   "type": "text",
                   "order": 1,
-                  "text": "The truth tables for various logic gates like AND, OR, NAND, NOT, EX-OR, NOR are \nverified "
+                  "text": "To study the half adder, full adder, half Subtractor and full Subtractor."
                 }
               ]
+            },
+            "theory": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "theory_001",
+                  "type": "text",
+                  "order": 1,
+                  "text": "Half Adder :\nA half adder has two inputs for the two bits to be added and two Outputs one from the sum ‘ S’ and other from the carry ‘ c’ into the higher adder position. Above circuit is called as a carry signal from the BEL-DIT on of the less significant bits sum from the X-OR Gate the carry out from the AND gate. \nLogic Diagram of Half Adder (Image 1&2)\n\nFull Adder :\nA full adder is a combinational circuit that forms the arithmetic sum of input; it consists of three inputs and two outputs. A full adder is useful to add three bits at a time but a half adder cannot do so. In full adder sum output will be taken from X-OR Gate, carry output will be taken from OR Gate. (Image 3-6)\n\nHalf Subtractor :\nThe half subtractor is constructed using X-OR and AND Gate. The half subtractor has two input and two outputs. The outputs are difference and borrow. The difference can be applied using X-OR Gate, borrow output can be implemented using an AND Gate and an \ninverter. (Image 7&8)\n\nFull Subtractor: \nThe full subtractor is a combination of X-OR, AND, OR, NOT Gates. In a full subtractor the logic circuit should have three inputs and two outputs. The two half subtractor put together gives a full subtractor .The first half subtractor will be C and A B. The output will be \ndifference output of full subtractor. The expression AB assembles the borrow output of the half subtractor and the second term is the inverted difference output of first XOR.  ( Image 9-11)\n"
+                },
+                {
+                  "id": "theory_002",
+                  "type": "image",
+                  "order": 2,
+                  "imageFile": "images/exp2/theory/01_image_-_1.webp",
+                  "imageFiles": [
+                    {
+                      "imageFile": "images/exp2/theory/01_image_-_1.webp",
+                      "width": 564,
+                      "height": 474,
+                      "byteSize": 10144,
+                      "sha256": "e62595a6488b45e9980e789331c85c1a000db1380165f3399fe01b2e7faa2f64"
+                    },
+                    {
+                      "imageFile": "images/exp2/theory/02_image_-_2.webp",
+                      "width": 618,
+                      "height": 334,
+                      "byteSize": 8180,
+                      "sha256": "9393dcf7e6bd2f13b897a878da75315afa246fdbbcd2beb50929637ba80a686d"
+                    },
+                    {
+                      "imageFile": "images/exp2/theory/03_image_-_3.webp",
+                      "width": 601,
+                      "height": 283,
+                      "byteSize": 12010,
+                      "sha256": "6f2b6d6b6f5d0c7051f45a1e1684b3adf7c3800b0decf4125838de7ac9b6f976"
+                    },
+                    {
+                      "imageFile": "images/exp2/theory/04_image_-_4.webp",
+                      "width": 631,
+                      "height": 341,
+                      "byteSize": 8602,
+                      "sha256": "248e7748f3eba2c65ee3b16f27e6e180e622c154f02644b1910db55cb8055e41"
+                    },
+                    {
+                      "imageFile": "images/exp2/theory/05_image_-_5.webp",
+                      "width": 541,
+                      "height": 237,
+                      "byteSize": 5280,
+                      "sha256": "0fae7f2785b3a04b218f24fb017c460b4b5c504141a5ceff26232de9574c1205"
+                    },
+                    {
+                      "imageFile": "images/exp2/theory/06_image_-_6.webp",
+                      "width": 574,
+                      "height": 264,
+                      "byteSize": 6180,
+                      "sha256": "63ded36e3b742a0573b48f3a88e09a66d38aabf7df8817806d4ab3cfceb8e9fa"
+                    },
+                    {
+                      "imageFile": "images/exp2/theory/07_image_-_7.webp",
+                      "width": 568,
+                      "height": 497,
+                      "byteSize": 13348,
+                      "sha256": "4e2fb79c1ca026485abc8931b08d3ebdc2c204bedac118c73ac947e01e9c36d2"
+                    },
+                    {
+                      "imageFile": "images/exp2/theory/08_image_-8.webp",
+                      "width": 521,
+                      "height": 415,
+                      "byteSize": 10010,
+                      "sha256": "53d425243369fc81fb5bb699e07c029fd356407111bb5c3c5dd99fb4f0fb3215"
+                    },
+                    {
+                      "imageFile": "images/exp2/theory/09_image_-_9.webp",
+                      "width": 614,
+                      "height": 381,
+                      "byteSize": 11016,
+                      "sha256": "470485177d9c8e29ae9de54633c12a1b6985f9ed6309ddb50c8bf49e2ec42721"
+                    },
+                    {
+                      "imageFile": "images/exp2/theory/10_image_-_10.webp",
+                      "width": 612,
+                      "height": 420,
+                      "byteSize": 14724,
+                      "sha256": "83be748738652f0db8f5e893d47ac73ceb45f5a4eb5b3136f79d3c3fe6d6a27f"
+                    },
+                    {
+                      "imageFile": "images/exp2/theory/11_image_-_11.webp",
+                      "width": 377,
+                      "height": 435,
+                      "byteSize": 8400,
+                      "sha256": "e1bd0a1b83e1e5544c8b44d220c30e8b70ac0d56ca8991ae024515f1265af986"
+                    }
+                  ],
+                  "caption": ""
+                }
+              ]
+            },
+            "functionalBlock": {
+              "pages": [
+                9
+              ],
+              "blocks": []
+            },
+            "procedure": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "procedure_001",
+                  "type": "text",
+                  "order": 1,
+                  "text": "B) Half Adder \n    * Connect A & B I/P of Half Adder to switches from input switches section. \n    * Connect SUM O/P of Half Adder to L1 & CARRY O/P of Half Adder to L2 in O/P SECTION. \n    * Switch on the power supply of the Kit. \n    * Provide proper inputs to half adder using switches as per truth table of half adder hown above. \n    * Observe the O/P of Half Adder on LEDs. \n    *  Verify the functionality of half Adder as per truth table & Note it down. \nC) Full Adder \n    * Connect A, B and C I/P of Full adder to switches from input switches section. \n    * Connect SUM & CARRY O/P of Full Adder to LEDs from O/P LED section. \n    * Switch ON the power supply of the Kit. \n    * Provide proper inputs to Full adder using switches as per truth table ofFull adder shown above. \n    * Observe the O/P of Full Adder on LEDs. Verify the functionality of Full Adder as per truth table & Note it down.  \nD) Half Subtractor \n   * Connect A & B I/P of Half Subtractor to switches from input switches section. \n   * Connect DIF&BOR O/P of Half subtractor to LEDs in O/P LED section. \n   *  Switch on the power supply of the Kit. \n   *  Provide proper inputs to half subtractor using switches as per truth table of half adder shown above. \n   * Observe the O/P of Half subtractor on LEDs. \n   * Verify the functionality of half subtractor as per truth table & Note it down.  \n\nE) Full Subtractor \n   * Connect A, B & C I/P of Full Subtractor to switches from input switches section. \n   * Connect DIF&BOR O/P of Full Subtractor to LEDs from O/P SECTION. \n  * Switch ON the power supply of the Kit. \n  * Provide proper inputs to Full Subtractor using switches as per truth table of Full Subtractor shown above. \n  * Observe the O/P of Full Subtractor on LEDs. \n  * Verify the functionality of Full Subtractor as per truth table & Note it down."
+                }
+              ]
+            },
+            "observation": {
+              "pages": [],
+              "blocks": []
+            },
+            "equipments": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "equipments_001",
+                  "type": "text",
+                  "order": 1,
+                  "text": " * BEL-DIT Board \n * Power supply "
+                }
+              ]
+            },
+            "result": {
+              "pages": [],
+              "blocks": []
+            },
+            "conclusion": {
+              "pages": [],
+              "blocks": []
             },
             "references": {
               "pages": [],
