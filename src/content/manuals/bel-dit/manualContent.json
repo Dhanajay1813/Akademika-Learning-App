@@ -11,13 +11,13 @@
       "pdfFile": "manual.pdf",
       "originalFilename": "BEL-DIT-VER 19.0.pdf",
       "totalPages": 112,
-      "compressedByteSize": 3015454,
-      "sha256": "701409343065310a2b936af036f46e50fa0db9da7968a818475fa35bdae3d5af",
+      "compressedByteSize": 3015455,
+      "sha256": "4f5dfd35d5ef09df86c4861f96aea77c2a28527ab6133e01a04e4272556331f9",
       "experiments": [
         {
           "id": "exp1",
           "experimentNumber": "Experiment 1",
-          "title": "Study of Logic Gates",
+          "title": "Study of Boolean Expression Simplification ",
           "displayOrder": 1,
           "sections": {
             "objective": {
@@ -27,7 +27,7 @@
                   "id": "objective_001",
                   "type": "text",
                   "order": 1,
-                  "text": "To study about logic gates and verify their truth tables.\n"
+                  "text": "To study the Boolean rules &Boolean expression simplification"
                 }
               ]
             },
@@ -38,7 +38,7 @@
                   "id": "theory_001",
                   "type": "text",
                   "order": 1,
-                  "text": "Circuit that takes the logical decision and the process are called logic gates. Each gate \nhas one or more input and only one output. OR, AND and NOT are basic gates. NAND, \nNOR and X-OR are known as universal gates. Basic gates form these gates. \n\nAND Gate \nThe AND gate performs a logical multiplication commonly known as AND function. The \noutput is high when both the inputs are high. The output is low level when any one of the \ninputs is low. \n\nOR Gate \nThe OR gate performs a logical addition commonly known as OR function. The output is \nhigh when any one of the inputs is high. The output is low level when both the inputs are \nlow. \n\nNOT Gate \nThe NOT gate is called an inverter. The output is high when the input is low. The output is \nlow when the input is high. \n\nNAND Gate \nThe NAND gate is a contraction of AND-NOT. The output is high when both inputs are low \nand any one of the input is low .The output is low level when both inputs are high. \n\nNOR Gate \nThe NOR gate is a contraction of OR-NOT. The output is high when both inputs are low. \nThe output is low when one or both inputs are high. \n\nX-OR Gate \nThe output is high when any one of the inputs is high. The output is low when both the \ninputs are low and both the inputs are high."
+                  "text": "Here is the list of rules used for the Boolean expression simplifications.  \n \nThe Idempotent Laws   :- AA = A                            A+A = A \n \nThe Associative Laws    :- (AB) C = A (BC)          (A+B) +C = A+ (B+C) \n \nThe Commutative Laws :- AB = BA                       A+B = B+A \n \nThe Distributive Laws    :-  A (B+C) = AB+AC      A+BC = (A+B) (A+C) \n \nThe Identity Laws            :-  AF = F    AT = A           A+F = A     A+T = T \n \nThe Complement Laws :- AA = F   A+A = T          F = T         T = F \n \nThe Involution Law         :- A = A \n \nDe-Morgan's Law             :- AB = A+BA+B = AB \n \n(T – True – 1 and F – False – 0) \n \nFind below some examples of Boolean algebra simplifications. Each line gives a form of the expression, and the rule or rules used to derive it from the previous one. Generally, there are several ways to reach the result. \n \n* Simplify: C + BC:  \n           Expression                                  Rule(s) Used \n     1. C + BC                                           Original Expression\n     2. C + (B + C)                                   DeMorgan's Law.  \n     3. (C + C) + B                                   Commutative, Associative Laws.  \n     4. T + B                                             Complement Law.\n     5. T                                                     Identity Law.  \n\n*Simplify: AB(A + B)(B + B):  \n          Expression                                     Rule(s) Used \n     1. AB(A + B)(B + B)                          Original Expression \n     2. AB(A + B)                                       Complement law, Identity law.  \n     3. (A + B)(A + B)                                DeMorgan's Law  \n     4. A + BB                                             Distributive law. This step uses the fact that or distributes over and. It can look a bit strange since      \n                                                                    addition does not distribute over multiplication.  \n    5. A                                                         Complement, Identity.  \n\n* Simplify: (A + C)(AD + AD) + AC + C:  \n           Expression                                                      Rule(s) Used\n       1. (A + C)(AD + AD) + AC + C                         Original Expression \n       2. (A + C)A(D + D) + AC + C                            Distributive.   \n       3. (A + C)A + AC + C                                         Complement, Identity. \n       4. A((A + C) + C) + C                                         Commutative, Distributive.  \n       5. A(A + C) + C                                                   Associative, Idempotent. \n       6. AA + AC + C                                                   Distributive. \n       7. A + (A + T)C                                                   Idempotent, Identity, Distributive.  \n       8. A + C                                                               Identity, twice. \n\n* You can also use distribution of or over and starting from A(A+C)+C to reach the same result by another route. \n* Simplify: A(A + B) + (B + AA)(A + B):  \n           Expression                                                         Rule(s) Used \n      1. A(A + B) + (B + AA)(A + B)                               Original Expression \n      2. AA + AB + (B + A)A + (B + A)B                        Idempotent (AA to A), then Distributive, used twice.\n      3. AB + (B + A)A + (B + A)B                                  Complement, then Identity. (Strictly speaking, we also used the Commutative Law for each  \n                                                                                            of these applications.)\n      4. AB + BA + AA + BB + AB                                   Distributive, two places. \n      5. AB + BA + A + AB                                                Idempotent (for the A's), then Complement and Identity to remove BB.   \n      6. AB + AB + AT + AB                                             Commutative, Identity; setting up for the next step.  \n      7. AB + A(B + T + B)                                               Distributive.  \n      8. AB + A                                                                    Identity, twice (depending how you count it).  \n      9. A + AB                                                                    Commutative.\n    10. (A + A)(A + B)                                                      Distributive.  \n    11. A + B                                                                      Complement, Identity."
                 }
               ]
             },
@@ -49,12 +49,7 @@
               "blocks": []
             },
             "procedure": {
-              "pages": [
-                13,
-                14,
-                15,
-                16
-              ],
+              "pages": [],
               "blocks": []
             },
             "observation": {
@@ -68,7 +63,7 @@
                   "id": "equipments_001",
                   "type": "text",
                   "order": 1,
-                  "text": "1.  BEL-DIT Board  \n2. Power supply"
+                  "text": " * BEL-DIT Board  \n * Power supply "
                 }
               ]
             },
@@ -78,14 +73,7 @@
             },
             "conclusion": {
               "pages": [],
-              "blocks": [
-                {
-                  "id": "conclusion_001",
-                  "type": "text",
-                  "order": 1,
-                  "text": "The truth tables for various logic gates like AND, OR, NAND, NOT, EX-OR, NOR are \nverified "
-                }
-              ]
+              "blocks": []
             },
             "references": {
               "pages": [],
