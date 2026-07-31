@@ -1,31 +1,33 @@
-import acsManualContent from './manuals/acs/manualContent.json';
-import bel_adaManualContent from './manuals/bel-ada/manualContent.json';
-import bel_ditManualContent from './manuals/bel-dit/manualContent.json';
-
 import manualIndex from './manualIndex.json';
+import bel_ditManualContent from './manuals/bel-dit/manualContent.json';
 
 export const submittedManualIndex = manualIndex;
 
 export const submittedManuals = {
-  'acs': acsManualContent.manuals['acs'],
-  'bel-ada': bel_adaManualContent.manuals['bel-ada'],
   'bel-dit': bel_ditManualContent.manuals['bel-dit'],
 };
 
 export const submittedManualAssets = {
-  'acs/images/test/objective/71XA_N8Xj1L._SX522_.jpg': require('./manuals/acs/images/test/objective/71XA_N8Xj1L._SX522_.webp'),
-  'acs/images/test/objective/71XA_N8Xj1L._SX522_.webp': require('./manuals/acs/images/test/objective/71XA_N8Xj1L._SX522_.webp'),
-  'bel-ada/images/exp1/observation/01_Screenshot_from_2026-07-18_12-40-43.png': require('./manuals/bel-ada/images/exp1/observation/01_Screenshot_from_2026-07-18_12-40-43.webp'),
-  'bel-ada/images/exp1/observation/01_Screenshot_from_2026-07-18_12-40-43.webp': require('./manuals/bel-ada/images/exp1/observation/01_Screenshot_from_2026-07-18_12-40-43.webp'),
-  'bel-ada/images/exp1/observation/02_Screenshot_from_2026-07-18_12-40-50.png': require('./manuals/bel-ada/images/exp1/observation/02_Screenshot_from_2026-07-18_12-40-50.webp'),
-  'bel-ada/images/exp1/observation/02_Screenshot_from_2026-07-18_12-40-50.webp': require('./manuals/bel-ada/images/exp1/observation/02_Screenshot_from_2026-07-18_12-40-50.webp'),
-  'bel-ada/images/exp1/observation/03_Screenshot_from_2026-07-18_12-41-04.png': require('./manuals/bel-ada/images/exp1/observation/03_Screenshot_from_2026-07-18_12-41-04.webp'),
-  'bel-ada/images/exp1/observation/03_Screenshot_from_2026-07-18_12-41-04.webp': require('./manuals/bel-ada/images/exp1/observation/03_Screenshot_from_2026-07-18_12-41-04.webp'),
-  'bel-ada/images/exp1/technicalData/circuitDiagram/Screenshot_from_2026-07-18_11-20-10.png': require('./manuals/bel-ada/images/exp1/technicalData/circuitDiagram/Screenshot_from_2026-07-18_11-20-10.webp'),
-  'bel-ada/images/exp1/technicalData/circuitDiagram/Screenshot_from_2026-07-18_11-20-10.webp': require('./manuals/bel-ada/images/exp1/technicalData/circuitDiagram/Screenshot_from_2026-07-18_11-20-10.webp'),
+  'bel-dit/images/exp2/theory/01_image_-_1.webp': require('./manuals/bel-dit/images/exp2/theory/01_image_-_1.webp'),
+  'bel-dit/images/exp2/theory/02_image_-_2.webp': require('./manuals/bel-dit/images/exp2/theory/02_image_-_2.webp'),
+  'bel-dit/images/exp2/theory/03_image_-_3.webp': require('./manuals/bel-dit/images/exp2/theory/03_image_-_3.webp'),
+  'bel-dit/images/exp2/theory/04_image_-_4.webp': require('./manuals/bel-dit/images/exp2/theory/04_image_-_4.webp'),
+  'bel-dit/images/exp2/theory/05_image_-_5.webp': require('./manuals/bel-dit/images/exp2/theory/05_image_-_5.webp'),
+  'bel-dit/images/exp2/theory/06_image_-_6.webp': require('./manuals/bel-dit/images/exp2/theory/06_image_-_6.webp'),
+  'bel-dit/images/exp2/theory/07_image_-_7.webp': require('./manuals/bel-dit/images/exp2/theory/07_image_-_7.webp'),
+  'bel-dit/images/exp2/theory/08_image_-8.webp': require('./manuals/bel-dit/images/exp2/theory/08_image_-8.webp'),
+  'bel-dit/images/exp2/theory/09_image_-_9.webp': require('./manuals/bel-dit/images/exp2/theory/09_image_-_9.webp'),
+  'bel-dit/images/exp2/theory/10_image_-_10.webp': require('./manuals/bel-dit/images/exp2/theory/10_image_-_10.webp'),
+  'bel-dit/images/exp2/theory/11_image_-_11.webp': require('./manuals/bel-dit/images/exp2/theory/11_image_-_11.webp'),
+  'bel-dit/images/exp3/theory/01_image_-1.webp': require('./manuals/bel-dit/images/exp3/theory/01_image_-1.webp'),
+  'bel-dit/images/exp3/theory/02_image_-_2.webp': require('./manuals/bel-dit/images/exp3/theory/02_image_-_2.webp'),
+  'bel-dit/images/exp3/theory/03_image_-_3.webp': require('./manuals/bel-dit/images/exp3/theory/03_image_-_3.webp'),
+  'bel-dit/images/exp3/theory/04_image_-_4.webp': require('./manuals/bel-dit/images/exp3/theory/04_image_-_4.webp'),
+  'bel-dit/images/exp3/theory/05_image_-_5.webp': require('./manuals/bel-dit/images/exp3/theory/05_image_-_5.webp'),
+  'bel-dit/images/exp3/theory/06_image_-_6.webp': require('./manuals/bel-dit/images/exp3/theory/06_image_-_6.webp'),
+  'bel-dit/images/exp3/theory/07_image_-_7.webp': require('./manuals/bel-dit/images/exp3/theory/07_image_-_7.webp'),
 };
 
 export const getSubmittedManualImageSource = (manualId, imageFile) => (
   submittedManualAssets[`${manualId}/${imageFile}`] || null
 );
-
