@@ -1,102 +1,227 @@
 {
   "manuals": {
     "bel-ada": {
+      "schemaVersion": 3,
+      "contentMode": "pdfPageMapping",
       "manualId": "bel-ada",
       "productId": "bel-ada",
       "categoryId": "basic-electronics",
       "productName": "BEL-ADA: Analog to Digital and Digital to Analog Converter Trainer",
       "categoryName": "Basic Electronics",
+      "pdfFile": "manual.pdf",
+      "originalFilename": "BEL-ADA_VER 19.0.pdf",
+      "totalPages": 59,
+      "compressedByteSize": 1885021,
+      "sha256": "113d2ded5e2d2a5fa17336427f2097ce7297f0c2539c518993d95efc6c9f278d",
       "experiments": [
         {
           "id": "exp1",
           "experimentNumber": "Experiment 1",
-          "title": "Study of D/A Conversion Using Binary Weighted Resistor And Measurement Of Its Resolution",
+          "title": "Study of D/A Conversion Using Binary Weighted Resistor And Measurement Of Its  Resolution",
+          "displayOrder": 1,
           "sections": {
-            "objective": [
-              {
-                "id": "objective_001",
-                "type": "text",
-                "order": 1,
-                "text": "To study 8 bit Digital to Analog Conversion using Binary Weighted Resistors Method and measures its resolution."
-              }
-            ],
-            "theory": [
-              {
-                "id": "theory_001",
-                "type": "text",
-                "order": 1,
-                "text": "THEORY:-\n\nDigital to Analog Conversion involve conversion of Digital signal to Analog signal. It is an integral part of any A/D converter. This can be easily accomplished by designing a resistive network that will change each digital level into an equivalent binary weighted voltage. There are two methods by which we can do this process.\n\nFirst method is using binary weighted resistor method.\n\nIn this method the binary coded decimal code is used for the representation of the decimal number. The LSB which is at right most location is expressed as (1 or 0) × 2^0, the next bit is (1 or 0) × 2^1 and so on, where 0 indicates 0V and 1 indicates 5V. Thus the weight of each column from right to left in n bit converter are 1, 2, 4, 8………2^(n-1).\n\nFollowing criteria can be applied to this divider.\n\nThere must be one input resistor for each digital bit.\nBeginning with the LSB, each following resistor value is one half of the size of the previous resistor.\nThe full scale output voltage is equal to the positive voltage of the digital I/P signal.\nThe LSB has a weight of 1/(2^n - 1), where n is the number of input bits.\nThe change in output voltage due change in LSB is equal to V/(2^n - 1), where V is the digital input voltage level.\nThe output voltage can be found for any digital input signal by using the following modified form of Mill man’s theorem.\n\nVOUT = (V0 × 2^0 + V1 × 2^1 + V2 × 2^2 + ………….. + VN-1 × 2^(N-1)) / (2^N - 1)\n\nWhere V0, V1, V2…..VN-1 are the digital input voltage level (0V or 5V) and n is the number of input bits.\n\nRESOLUTION:-\n\nResolution indicates the smallest increment of the output corresponding to a 1 LSB input code change. For example for 8 bit DAC, 2^8 = 256 codes, so the resolution is 1/256 of the output range."
-              }
-            ],
-            "functionalBlock": [],
-            "procedure": [
-              {
-                "id": "procedure_001",
-                "type": "text",
-                "order": 1,
-                "text": "1. Connect the trainer kit with its power supply.\n2. Give the desired logic input to the 8 BIT BINARY WEIGHTED DAC from on board slider switches as shown below in FIGURE-1.1.\n3. Measure the equivalent output voltage at VOUT of 8 BIT BINARY WEIGHTED DAC for different digital input voltage level with the help of DMM.\n4. Observed the calculated and observed readings for different input levels.\n"
-              }
-            ],
-            "observation": [
-              {
-                "id": "observation_001",
-                "type": "image",
-                "order": 1,
-                "imageFile": "images/exp1/observation/01_Screenshot_from_2026-07-18_12-40-43.png",
-                "imageFiles": [
-                  "images/exp1/observation/01_Screenshot_from_2026-07-18_12-40-43.png",
-                  "images/exp1/observation/02_Screenshot_from_2026-07-18_12-40-50.png",
-                  "images/exp1/observation/03_Screenshot_from_2026-07-18_12-41-04.png"
-                ],
-                "caption": ""
-              },
-              {
-                "id": "observation_002",
-                "type": "text",
-                "order": 2,
-                "text": "CALCULATIONS:-\n\nVOUT = (V0 × 2^0 + V1 × 2^1 + V2 × 2^2 + ............ + VN-1 × 2^(N-1)) / (2^8 - 1)\n\nTake any combination, e.g. 00011000\n\nVOUT = 0 × 2^0 + 0 × 2^1 + 0 × 2^2 + 1 × 2^3 + 1 × 2^4 + 0 × 2^5 + 0 × 2^6 + 0 × 2^7\n\nVOUT = (24 × 5) / (2^8 - 1) = 0.470 V\n\nTake another one, i.e. 00111111\n\nVOUT = 1 × 2^0 + 1 × 2^1 + 1 × 2^2 + 1 × 2^3 + 1 × 2^4 + 1 × 2^5 + 0 × 2^6 + 0 × 2^7\n\nVOUT = (63 × 5) / (2^8 - 1) = 1.235 V\n\n"
-              }
-            ],
-            "equipments": [
-              {
-                "id": "equipments_001",
-                "type": "text",
-                "order": 1,
-                "text": "1) BEL-ADA Board\n2) Power supply\n3) DMM"
-              }
-            ],
-            "result": [
-              {
-                "id": "result_001",
-                "type": "text",
-                "order": 1,
-                "text": "RESOLUTION:-\n\nResolution of 8 bit converter can be calculated by using formula:\n\nResolution = (1 / 2^N) × Vref\n\nCalculated Value of Resolution = (1 / 2^8) × 5 = 0.019 V\n\nFor observed value, subtract any two consecutive observed readings:\n\nObserved Resolution = 0.042 - 0.021 = 0.021 V\n\nThis will give the observed value of Resolution."
-              }
-            ],
-            "conclusion": [
-              {
-                "id": "conclusion_001",
-                "type": "text",
-                "order": 1,
-                "text": "The analog output voltage can be found for any digital input signal by using the binary weighted resister network and its resolution for 8 bits is 0.019V(LSB)"
-              }
-            ],
-            "technicalData": {
-              "datasheet": [],
-              "blockDiagram": [],
-              "circuitDiagram": [
+            "objective": {
+              "pages": [],
+              "blocks": [
                 {
-                  "id": "circuitDiagram_001",
-                  "type": "image",
+                  "id": "objective_001",
+                  "type": "text",
                   "order": 1,
-                  "imageFile": "images/exp1/technicalData/circuitDiagram/Screenshot_from_2026-07-18_11-20-10.png",
+                  "text": "To study 8 bit Digital to Analog Conversion using Binary Weighted Resistors Method and measures its resolution. "
+                }
+              ]
+            },
+            "theory": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "theory_001",
+                  "type": "text",
+                  "order": 1,
+                  "text": "Digital to Analog Conversion involve conversion of Digital signal to Analog signal. It is an integral part of any A/D converter. This can be easily accomplished by designing  a resistive network that will change each digital level into an equivalent  binary weighted voltage. There are two methods by which we can do this process. First method is using binary weighted resistor method. In this method the binary coded decimal code is used for the representation of the decimal number. The LSB which is at right most location is expressed as (1 or 0)*2^0, the next bit is 1 or 0*21 and so on, where 0 indicates 0V and 1 indicates 5V). Thus the weight of each column from right to left in n bit converter are 1,2,4,8………2n-1.\n\nFollowing criteria can be applied to this divider. \n* There must be one input resistor for each digital bit. \n* Beginning with the LSB, each following resistor value is one half of the size of the previous resistor. \n* The full scale output voltage is equal to the positive voltage of the digital I/P signal. \n* The LSB has a weight of 1/ (2n-1),where n is the number of input bits. \n* The change in output voltage due change in LSB is equal to the V/ (2n-1), where V is the digital input voltage level. \n* The output voltage can be found for any digital input signal by using the following modified form of Mill man’s\n   theorem. (Image-1&2).\nRESOLUTION:- \nResolution indicates the smallest increment of the output corresponding to a 1 LSB input \ncode change. For example for 8 bit DAC, 28= 256 codes, so the resolution is 1/256 of the \noutput range. \n  \n "
+                },
+                {
+                  "id": "theory_002",
+                  "type": "image",
+                  "order": 2,
+                  "imageFile": "images/exp1/theory/01_theory.webp",
                   "imageFiles": [
-                    "images/exp1/technicalData/circuitDiagram/Screenshot_from_2026-07-18_11-20-10.png"
+                    {
+                      "imageFile": "images/exp1/theory/01_theory.webp",
+                      "width": 396,
+                      "height": 35,
+                      "byteSize": 2598,
+                      "sha256": "ef7b9f87e4a10b69695a3248bdd493f69768d92dfdd00d5ef5ec7cd36f6a43d8"
+                    },
+                    {
+                      "imageFile": "images/exp1/theory/02_image-2.webp",
+                      "width": 604,
+                      "height": 56,
+                      "byteSize": 4790,
+                      "sha256": "871dd6efb24bf711e7cbd0ea65f3161ef61a4b37950787d6cb1607491c7e693b"
+                    }
                   ],
                   "caption": ""
                 }
+              ]
+            },
+            "functionalBlock": {
+              "pages": [
+                8
               ],
-              "referenceSignal": []
+              "blocks": []
+            },
+            "procedure": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "procedure_001",
+                  "type": "text",
+                  "order": 1,
+                  "text": "Connect the trainer kit with its power supply :-\n* Give the desired logic input to the 8 BIT BINARY WEIGHTED DACfrom on board slider switches as shown below in\n   FIGURE-1.1 \n* Measure the equivalent output voltage at VOUT of 8 BIT BINARY WEIGHTED DAC for different digital input voltage \n   level with the help of DMM. \n* Observed the calculated and observed readings for different input levels. "
+                },
+                {
+                  "id": "procedure_002",
+                  "type": "image",
+                  "order": 2,
+                  "imageFile": "images/exp1/procedure/procedure.webp",
+                  "imageFiles": [
+                    {
+                      "imageFile": "images/exp1/procedure/procedure.webp",
+                      "width": 562,
+                      "height": 238,
+                      "byteSize": 14322,
+                      "sha256": "5e66dccaf2e8ccaee8714e7653fd0ba09f9ca70e07d0ad058cb812545238c124"
+                    }
+                  ],
+                  "caption": ""
+                }
+              ]
+            },
+            "observation": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "observation_001",
+                  "type": "image",
+                  "order": 1,
+                  "imageFile": "images/exp1/observation/01_observations-1.webp",
+                  "imageFiles": [
+                    {
+                      "imageFile": "images/exp1/observation/01_observations-1.webp",
+                      "width": 329,
+                      "height": 425,
+                      "byteSize": 22898,
+                      "sha256": "ca403e193414f83b356816fb1b5edcade5775251f6d753d817f72150e9207882"
+                    },
+                    {
+                      "imageFile": "images/exp1/observation/02_observations-1.webp",
+                      "width": 317,
+                      "height": 488,
+                      "byteSize": 19486,
+                      "sha256": "eb64f80f4eba5968ac49b030e196794037827255d8aad0b8f19ba100169de972"
+                    },
+                    {
+                      "imageFile": "images/exp1/observation/03_observations.1.webp",
+                      "width": 322,
+                      "height": 64,
+                      "byteSize": 2754,
+                      "sha256": "f187a7f411c0176ae2dd98bbf0a6a7dbe676b5f0e88b2c29dfa7bb27e53eb3b6"
+                    },
+                    {
+                      "imageFile": "images/exp1/observation/04_observations-calculation.webp",
+                      "width": 551,
+                      "height": 167,
+                      "byteSize": 12024,
+                      "sha256": "1f831c2e090f1aa7724aa784695947d38f520055b274971583173f5a6964548b"
+                    }
+                  ],
+                  "caption": ""
+                },
+                {
+                  "id": "observation_002",
+                  "type": "text",
+                  "order": 2,
+                  "text": "RESOLUTION:- \nResolution of 8 bit converter can be calculated by using formula \n= (1/2N) ×Vref=0.019V \nCalculated Value of Resolution= (1/28) ×5=0.019V \nFor observed value subtract any consecutive observed reading like 0.042-0.021=0.021V, this will give observed Value of Resolution. "
+                }
+              ]
+            },
+            "equipments": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "equipments_001",
+                  "type": "text",
+                  "order": 1,
+                  "text": "* BEL-ADA Board  \n* Power supply  \n* DMM"
+                }
+              ]
+            },
+            "result": {
+              "pages": [],
+              "blocks": []
+            },
+            "conclusion": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "conclusion_001",
+                  "type": "text",
+                  "order": 1,
+                  "text": "The analog output voltage can be found for any digital input signal by using the binary weighted resister network and its resolution for 8 bits  is 0.019V(LSB)."
+                }
+              ]
+            },
+            "references": {
+              "pages": [],
+              "blocks": []
+            },
+            "technicalData": {
+              "datasheet": {
+                "pages": [],
+                "blocks": [
+                  {
+                    "id": "datasheet_001",
+                    "type": "text",
+                    "order": 1,
+                    "text": "Sine Wave Generator: \n*  Amplitude            : 0 to 5V. \n*  Frequency            : 1 KHz                \n\nVariable DC Generator: \n*  Voltage Range     : -12V to +12V                \n\nClock Generator: \n*  Frequency Range : 0.5Hz, 1Hz, 2Hz, 4Hz              \n\nDigital To Analog Converter: \n*  8 bit Binary Weighted Resistors DAC \n*  8 bit Ladder type D to A Converter. \n*  8 bit D to A Converter using monolithic IC. \n\nAnalog To Digital Converter: \n*  8  bit discrete ADC  \n*  12 bit successive approximation monolithic ADC IC. \n\nInterconnections: \n*This is done with the help of supplied connecting patch chords (2 mm banana socket). \n\nBinary Counter: \n*  8 bit binary counter with external clock frequency. \n\nTest Points: \n*  5  onboard test points avails the user to observe various signals on Oscilloscope \n\nPower Supply: \n* -12V, +12V, +5V, GND "
+                  },
+                  {
+                    "id": "datasheet_002",
+                    "type": "image",
+                    "order": 2,
+                    "imageFile": "images/exp1/technicalData/datasheet/technical_specification.webp",
+                    "imageFiles": [
+                      {
+                        "imageFile": "images/exp1/technicalData/datasheet/technical_specification.webp",
+                        "width": 548,
+                        "height": 191,
+                        "byteSize": 5824,
+                        "sha256": "23cd245e8d061e4e9c27946a52dd1ad44c3d4e2a4288c00e2531a96760dac1cd"
+                      }
+                    ],
+                    "caption": ""
+                  }
+                ]
+              },
+              "blockDiagram": {
+                "pages": [],
+                "blocks": []
+              },
+              "circuitDiagram": {
+                "pages": [
+                  10,
+                  11,
+                  12,
+                  13,
+                  14
+                ],
+                "blocks": []
+              },
+              "referenceSignal": {
+                "pages": [],
+                "blocks": []
+              }
             }
           }
         }
