@@ -1,0 +1,171 @@
+{
+  "manuals": {
+    "bel-cot": {
+      "schemaVersion": 3,
+      "contentMode": "pdfPageMapping",
+      "manualId": "bel-cot",
+      "productId": "bel-cot",
+      "categoryId": "basic-electronics",
+      "productName": "BEL-COT: Discrete Components Trainer",
+      "categoryName": "Basic Electronics",
+      "pdfFile": "manual.pdf",
+      "originalFilename": "BEL-COT-EXPERIMENTAL-VER 25.0.pdf",
+      "totalPages": 138,
+      "compressedByteSize": 1277641,
+      "sha256": "b6548c2aa051f18bb1989199197425f14298e106dbec5c699e3ffc820d082740",
+      "experiments": [
+        {
+          "id": "exp1",
+          "experimentNumber": "Experiment 1",
+          "title": "TO STUDY THE WORKING OF RESISTORS",
+          "displayOrder": 1,
+          "sections": {
+            "objective": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "objective_001",
+                  "type": "text",
+                  "order": 1,
+                  "text": "1. To study the color codes, types of resistors. \n2. Working of resistors in series and parallel combination."
+                }
+              ]
+            },
+            "theory": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "theory_001",
+                  "type": "text",
+                  "order": 1,
+                  "text": "A resistor is a two-terminal electronic component that produces a voltage across its terminals that is proportional to the electric current passing through it in accordance with Ohm's law: V = IR\nResistors are elements of electrical networks and electronic circuits and are ubiquitous in most electronic equipment. Practical resistors can be made of various compounds and films, as well as resistance wire (wire made of a high-resistivity alloy, such as nickel/chrome). \nThe primary characteristics of a resistor are the resistance, the tolerance, maximum working voltage and the power rating. Other characteristics include temperature coefficient, noise, and inductance. Less well-known is critical resistance, the value below which power dissipation limits the maximum permitted current flow, and above which the limit is applied voltage. Critical resistance depends upon the materials constituting the resistor as well as its physical dimensions; it's determined by design. \nDC resistance: \nThe resistance R of a conductor of uniform cross section can be computed as R = l . p/A\nWhere,  is the length of the conductor, measured in meters (m) A is the cross-sectional area, measured in square meters (m²) ρ (Greek: rho) is the electrical resistivity (also called specific electrical resistance) of the material, measured in Ohm · meter (Ω m). Resistivity is a measure of the material's ability to oppose electric current.  \n\nAC resistance: \nIf a wire conducts high-frequency alternating current then the effective cross sectional area of the wire is reduced because of the skin effect. If several conductors are together, then due to proximity effect, the effective resistance of each is higher than if that conductor were alone. \nAll modern resistors can be classified into four broad groups;\n1. Carbon Composition Resistor - Made of carbon dust or graphite paste, low wattage values.  \n2. Film or Cermet Resistor - Made from conductive metal oxide paste, very low wattage values.  \n3. Wire-Wound Resistors. - Metallic bodies for heatsink mounting, very high wattage ratings.  \n4. Semiconductor Resistors - High frequency/precision surface mount thin film technology.  \nThere are a large variety of fixed and variable resistor types with different construction styles available for each group, with each one having its own particular Characteristics, Advantages and Disadvantages. To include all types would make this section very large so I shall limit it to the most commonly used, and readily available general purpose resistor types. (Image-1)\nResistors are color coded. To read the color code of a common 4 band 1K ohm resistor with a 5% tolerance, start at the opposite side of the GOLD tolerance band and read from left to right. Write down the corresponding number from the color chart below for the 1st color band (BROWN). To the right of that number, write the corresponding number for the 2nd band (BLACK). Now multiply that number (you should have 10) by the corresponding multiplier number of the 3rd band (RED) (100). Your answer will be 1000 or 1K. It's that easy.  \nIf a resistor has 5 color bands, write the corresponding number of the 3rd band to the right of the 2nd before you multiply by the corresponding number of the multiplier band. If you only have 4 color bands that include atolerance band, ignore this column and go straight to the multiplier. \nThe tolerance band is usually gold or silver, but some may have none. Because resistors are not the exact value as indicated by the color bands, manufactures have included a tolerance color band to indicate the accuracy of the resistor. Gold band indicates the resistor is within 5% of what is indicated. Silver = 10% and None = 20%. Others are shown in the chart below. The 1K ohm resistor in the example (left), may have an actual measurement any where from 950 ohms to 1050 ohms. If a resistor does not have a tolerance band, start from the band closest to a lead. This will be the 1st band. If you are unable to read the color bands, then you'll have to use your multimeter. Be sure to zero it out first! (Image-2)\nResistor Combinations: \nThe combination rules for any number of resistors in series or parallel can be derived with the use of Ohm's Law, the voltage law, and the current law. (Image-3)"
+                },
+                {
+                  "id": "theory_002",
+                  "type": "image",
+                  "order": 2,
+                  "imageFile": "images/exp1/theory/01_image-1.webp",
+                  "imageFiles": [
+                    {
+                      "imageFile": "images/exp1/theory/01_image-1.webp",
+                      "width": 240,
+                      "height": 201,
+                      "byteSize": 8382,
+                      "sha256": "f41a31d23d1dab88f601fa387f9099ade760151d310935913946a16c181ef716"
+                    },
+                    {
+                      "imageFile": "images/exp1/theory/02_image-2.webp",
+                      "width": 503,
+                      "height": 388,
+                      "byteSize": 20854,
+                      "sha256": "ebe687f011b3c9db1d9883e6fb9a25a428b6e33470071df6698c581182eb472e"
+                    },
+                    {
+                      "imageFile": "images/exp1/theory/03_image-3.webp",
+                      "width": 464,
+                      "height": 417,
+                      "byteSize": 18294,
+                      "sha256": "04e3303d2beb4132eafe13695b26895bee02f71af6bbd1ddc9269b372c7c950c"
+                    }
+                  ],
+                  "caption": ""
+                }
+              ]
+            },
+            "functionalBlock": {
+              "pages": [],
+              "blocks": []
+            },
+            "procedure": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "procedure_001",
+                  "type": "text",
+                  "order": 1,
+                  "text": "1) Identify the resistors value, which are used for experiment using color code.  \n2) Make the connections on COT-01 board as shown in fig. below for series and parallel combination. \n3) Calculate the series and parallel combination of resistors value.  \n4) Use the multi-meter to read the series and parallel combination of resistor value. \n5) Verify the calculated and observed value.\nDESIGN:-  \nConsider   \nR1 = 1K resistor. \nR2 = 2K resistor. \nR3 = 10K resistor. "
+                }
+              ]
+            },
+            "observation": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "observation_001",
+                  "type": "image",
+                  "order": 1,
+                  "imageFile": "images/exp1/observation/observation.webp",
+                  "imageFiles": [
+                    {
+                      "imageFile": "images/exp1/observation/observation.webp",
+                      "width": 603,
+                      "height": 115,
+                      "byteSize": 8314,
+                      "sha256": "b798363d03ffbf6c8f801bf433e8d44fe6fb755ba8083ad02cebcef8616b32ca"
+                    }
+                  ],
+                  "caption": ""
+                }
+              ]
+            },
+            "equipments": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "equipments_001",
+                  "type": "text",
+                  "order": 1,
+                  "text": "* BEL-COT Trainer kit.     \n* Power Supply. \n* Patch cords. \n* Multi-meters as current and volt meters. "
+                }
+              ]
+            },
+            "result": {
+              "pages": [],
+              "blocks": []
+            },
+            "conclusion": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "conclusion_001",
+                  "type": "text",
+                  "order": 1,
+                  "text": "The calculated and observed values of the resistor combinations are almost equal.  "
+                }
+              ]
+            },
+            "references": {
+              "pages": [],
+              "blocks": []
+            },
+            "technicalData": {
+              "datasheet": {
+                "pages": [],
+                "blocks": [
+                  {
+                    "id": "datasheet_001",
+                    "type": "text",
+                    "order": 1,
+                    "text": "Technical Specification:\n1) Dual Isolated power supply +35V,-12V, GND and +35VA,-12VA, AGND 500mA.  \n2) Dual DC 0 to 30V, 0 to 30VA Variable On-Board power supply.  \n3) Basic component study like resistors, capacitors, inductors and potentiometer. \n4) 6 different types of diode characteristics study like General purpose diode, Ge Diode, FSD, Zener Diode, LED and \n     Varactor Diode.   \n5) 5 different types of transistors characteristics study like BJT, JFET, MOSFET, UJT and PUT. \n6) 4 different types of power component study like DIAC, TRIAC, SCR and IGBT. \n7) Opto-copular and relay study. \n8) 16 Resistors bank with different wattage.  \n9) 6 Capacitors bank.  \n10) 2 inductors. \n11) 1 Potentiometer.  \n12) 3 diodes.  \n13) 1 Bread board. "
+                  }
+                ]
+              },
+              "blockDiagram": {
+                "pages": [],
+                "blocks": []
+              },
+              "circuitDiagram": {
+                "pages": [],
+                "blocks": []
+              },
+              "referenceSignal": {
+                "pages": [],
+                "blocks": []
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}
