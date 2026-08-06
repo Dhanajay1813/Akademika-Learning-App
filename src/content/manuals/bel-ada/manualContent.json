@@ -1,102 +1,302 @@
 {
   "manuals": {
     "bel-ada": {
+      "schemaVersion": 3,
+      "contentMode": "pdfPageMapping",
       "manualId": "bel-ada",
       "productId": "bel-ada",
       "categoryId": "basic-electronics",
       "productName": "BEL-ADA: Analog to Digital and Digital to Analog Converter Trainer",
       "categoryName": "Basic Electronics",
+      "pdfFile": "manual.pdf",
+      "originalFilename": "BEL-ADA_VER 19.0.pdf",
+      "totalPages": 59,
+      "compressedByteSize": 1885021,
+      "sha256": "06968841292395e3c988418747aa6b7178cd5e2297421b066aa44d70c0b04e16",
       "experiments": [
         {
-          "id": "exp1",
-          "experimentNumber": "Experiment 1",
-          "title": "Study of D/A Conversion Using Binary Weighted Resistor And Measurement Of Its Resolution",
+          "id": "exp6",
+          "experimentNumber": "Experiment 6",
+          "title": "To measure the conversion time of ADC ",
+          "displayOrder": 1,
           "sections": {
-            "objective": [
-              {
-                "id": "objective_001",
-                "type": "text",
-                "order": 1,
-                "text": "To study 8 bit Digital to Analog Conversion using Binary Weighted Resistors Method and measures its resolution."
-              }
-            ],
-            "theory": [
-              {
-                "id": "theory_001",
-                "type": "text",
-                "order": 1,
-                "text": "THEORY:-\n\nDigital to Analog Conversion involve conversion of Digital signal to Analog signal. It is an integral part of any A/D converter. This can be easily accomplished by designing a resistive network that will change each digital level into an equivalent binary weighted voltage. There are two methods by which we can do this process.\n\nFirst method is using binary weighted resistor method.\n\nIn this method the binary coded decimal code is used for the representation of the decimal number. The LSB which is at right most location is expressed as (1 or 0) × 2^0, the next bit is (1 or 0) × 2^1 and so on, where 0 indicates 0V and 1 indicates 5V. Thus the weight of each column from right to left in n bit converter are 1, 2, 4, 8………2^(n-1).\n\nFollowing criteria can be applied to this divider.\n\nThere must be one input resistor for each digital bit.\nBeginning with the LSB, each following resistor value is one half of the size of the previous resistor.\nThe full scale output voltage is equal to the positive voltage of the digital I/P signal.\nThe LSB has a weight of 1/(2^n - 1), where n is the number of input bits.\nThe change in output voltage due change in LSB is equal to V/(2^n - 1), where V is the digital input voltage level.\nThe output voltage can be found for any digital input signal by using the following modified form of Mill man’s theorem.\n\nVOUT = (V0 × 2^0 + V1 × 2^1 + V2 × 2^2 + ………….. + VN-1 × 2^(N-1)) / (2^N - 1)\n\nWhere V0, V1, V2…..VN-1 are the digital input voltage level (0V or 5V) and n is the number of input bits.\n\nRESOLUTION:-\n\nResolution indicates the smallest increment of the output corresponding to a 1 LSB input code change. For example for 8 bit DAC, 2^8 = 256 codes, so the resolution is 1/256 of the output range."
-              }
-            ],
-            "functionalBlock": [],
-            "procedure": [
-              {
-                "id": "procedure_001",
-                "type": "text",
-                "order": 1,
-                "text": "1. Connect the trainer kit with its power supply.\n2. Give the desired logic input to the 8 BIT BINARY WEIGHTED DAC from on board slider switches as shown below in FIGURE-1.1.\n3. Measure the equivalent output voltage at VOUT of 8 BIT BINARY WEIGHTED DAC for different digital input voltage level with the help of DMM.\n4. Observed the calculated and observed readings for different input levels.\n"
-              }
-            ],
-            "observation": [
-              {
-                "id": "observation_001",
-                "type": "image",
-                "order": 1,
-                "imageFile": "images/exp1/observation/01_Screenshot_from_2026-07-18_12-40-43.png",
-                "imageFiles": [
-                  "images/exp1/observation/01_Screenshot_from_2026-07-18_12-40-43.png",
-                  "images/exp1/observation/02_Screenshot_from_2026-07-18_12-40-50.png",
-                  "images/exp1/observation/03_Screenshot_from_2026-07-18_12-41-04.png"
-                ],
-                "caption": ""
-              },
-              {
-                "id": "observation_002",
-                "type": "text",
-                "order": 2,
-                "text": "CALCULATIONS:-\n\nVOUT = (V0 × 2^0 + V1 × 2^1 + V2 × 2^2 + ............ + VN-1 × 2^(N-1)) / (2^8 - 1)\n\nTake any combination, e.g. 00011000\n\nVOUT = 0 × 2^0 + 0 × 2^1 + 0 × 2^2 + 1 × 2^3 + 1 × 2^4 + 0 × 2^5 + 0 × 2^6 + 0 × 2^7\n\nVOUT = (24 × 5) / (2^8 - 1) = 0.470 V\n\nTake another one, i.e. 00111111\n\nVOUT = 1 × 2^0 + 1 × 2^1 + 1 × 2^2 + 1 × 2^3 + 1 × 2^4 + 1 × 2^5 + 0 × 2^6 + 0 × 2^7\n\nVOUT = (63 × 5) / (2^8 - 1) = 1.235 V\n\n"
-              }
-            ],
-            "equipments": [
-              {
-                "id": "equipments_001",
-                "type": "text",
-                "order": 1,
-                "text": "1) BEL-ADA Board\n2) Power supply\n3) DMM"
-              }
-            ],
-            "result": [
-              {
-                "id": "result_001",
-                "type": "text",
-                "order": 1,
-                "text": "RESOLUTION:-\n\nResolution of 8 bit converter can be calculated by using formula:\n\nResolution = (1 / 2^N) × Vref\n\nCalculated Value of Resolution = (1 / 2^8) × 5 = 0.019 V\n\nFor observed value, subtract any two consecutive observed readings:\n\nObserved Resolution = 0.042 - 0.021 = 0.021 V\n\nThis will give the observed value of Resolution."
-              }
-            ],
-            "conclusion": [
-              {
-                "id": "conclusion_001",
-                "type": "text",
-                "order": 1,
-                "text": "The analog output voltage can be found for any digital input signal by using the binary weighted resister network and its resolution for 8 bits is 0.019V(LSB)"
-              }
-            ],
-            "technicalData": {
-              "datasheet": [],
-              "blockDiagram": [],
-              "circuitDiagram": [
+            "objective": {
+              "pages": [],
+              "blocks": [
                 {
-                  "id": "circuitDiagram_001",
-                  "type": "image",
+                  "id": "objective_001",
+                  "type": "text",
                   "order": 1,
-                  "imageFile": "images/exp1/technicalData/circuitDiagram/Screenshot_from_2026-07-18_11-20-10.png",
+                  "text": "Study to measure the conversion time of ADC"
+                }
+              ]
+            },
+            "theory": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "theory_001",
+                  "type": "text",
+                  "order": 1,
+                  "text": "CONVERSION TIME  \nThe time between the start and end of the conversion is known as the conversion time. The positive pulse on CONVST pin starts the conversion and when BUSY pin is high, it indicates that conversion is completed. We can measure the time between the two using DSO. Given conversion time of ADC: 1.6uS"
+                }
+              ]
+            },
+            "functionalBlock": {
+              "pages": [
+                8
+              ],
+              "blocks": []
+            },
+            "procedure": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "procedure_001",
+                  "type": "text",
+                  "order": 1,
+                  "text": "1. Make the connection as shown in FIGURE-6.1. \n2. Give onboard analog input signal of 1 KHz to the ANALOG IN of 12 BIT ADC and then connect the probes of DSO to \n     the IC pins where we have the SOC and BUSY test points. \n3. Now observe the waveform on DSO, we can measure the conversion time using cursor of DSO. \n4. Bring one cursor at the falling edge of SOC and other cursor at the rising edge of BUSY pulse as shown in \n     FIGURE-6.2 \nCONVERSION TIME OBSERVED: 1.520us \n5. The time between these two is the total conversion time."
+                },
+                {
+                  "id": "procedure_002",
+                  "type": "image",
+                  "order": 2,
+                  "imageFile": "images/exp6/procedure/01_6.1.webp",
                   "imageFiles": [
-                    "images/exp1/technicalData/circuitDiagram/Screenshot_from_2026-07-18_11-20-10.png"
+                    {
+                      "imageFile": "images/exp6/procedure/01_6.1.webp",
+                      "width": 416,
+                      "height": 450,
+                      "byteSize": 20156,
+                      "sha256": "0f5d901e8a7077d00c1f3d3030aa7b0e09cc5bec073d512d03470986421344ec"
+                    },
+                    {
+                      "imageFile": "images/exp6/procedure/02_6.2.webp",
+                      "width": 485,
+                      "height": 263,
+                      "byteSize": 18586,
+                      "sha256": "8ab33eb81a5e53259357086c59911080f46e5fb5eec0cb9dd6353c1dbe06dd1c"
+                    }
                   ],
                   "caption": ""
                 }
+              ]
+            },
+            "observation": {
+              "pages": [],
+              "blocks": []
+            },
+            "equipments": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "equipments_001",
+                  "type": "text",
+                  "order": 1,
+                  "text": "BEL-ADA board, its power supply and DSO"
+                }
+              ]
+            },
+            "result": {
+              "pages": [],
+              "blocks": []
+            },
+            "conclusion": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "conclusion_001",
+                  "type": "text",
+                  "order": 1,
+                  "text": "LTC1278 is 500ksps, sampling 12-bit A/D converter which has conversion time of 1.6uS.By observing the values of give conversion time of IC and measured conversion time of IC we can conclude that both are nearly same."
+                }
+              ]
+            },
+            "references": {
+              "pages": [],
+              "blocks": []
+            },
+            "technicalData": {
+              "datasheet": {
+                "pages": [],
+                "blocks": [
+                  {
+                    "id": "datasheet_001",
+                    "type": "text",
+                    "order": 1,
+                    "text": "TECHNICAL SPECIFICATION \nSine Wave Generator: \n* Amplitude           : 0 to 5V.   \n* Frequency           : 1 KHz             \n\nVariable DC Generator: \n* Voltage Range    : -12V to +12V                  \n\nClock Generator: \n* Frequency Range : 0.5Hz, 1Hz, 2Hz, 4Hz             \n\nDigital To Analog Converter: \n* 8 bit Binary Weighted Resistors DAC \n* 8 bit Ladder type D to A Converter. \n* 8 bit D to A Converter using monolithic IC. \n\nAnalog To Digital Converter: \n* 8  bit discrete ADC  \n* 12 bit successive approximation monolithic ADC IC. \n\nInterconnections: \n* This is done with the help of supplied connecting patch chords (2 mm banana socket). \n\nBinary Counter: \n* 8 bit binary counter with external clock frequency. \n\nTest Points: \n* 5  onboard test points avails the user to observe various signals on \n\nOscilloscope \nPower Supply: \n* -12V, +12V, +5V, GND "
+                  }
+                ]
+              },
+              "blockDiagram": {
+                "pages": [],
+                "blocks": []
+              },
+              "circuitDiagram": {
+                "pages": [
+                  10,
+                  11,
+                  12,
+                  13,
+                  14
+                ],
+                "blocks": []
+              },
+              "referenceSignal": {
+                "pages": [],
+                "blocks": []
+              }
+            }
+          }
+        },
+        {
+          "id": "exp7",
+          "experimentNumber": "Experiment 7",
+          "title": "To measure the resolution of ADC",
+          "displayOrder": 2,
+          "sections": {
+            "objective": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "objective_001",
+                  "type": "text",
+                  "order": 1,
+                  "text": "Study to measure the resolution of ADC"
+                }
+              ]
+            },
+            "theory": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "theory_001",
+                  "type": "text",
+                  "order": 1,
+                  "text": "The resolution of a n-bit analog-to-digital Converter (ADC) is a function of how many parts the maximum signal can be divided into. The formula to calculate resolution is 2n. For example, a 12 bit ADC has a resolution of 212 = 4,096. Therefore, our best resolution is 1 part out of 4,096, or 0.012% of the full scale. An ADC takes an analog signal and turns it into a binary number. Thus, each binary number from the ADC represents a certain voltage level. Resolution is the smallest input voltage change a digitizer can capture. Resolution can be expressed in bits (LSB), in proportions, or in percent of full scale.  Resolution limits the precision of a measurement. The higher the resolution (number of bits), the more precise the measurement. An 8-bit ADC divides the vertical range of the input amplifier into 256 discrete levels. With a vertical range of 5 V, the 8-bit ADC cannot ideally resolve voltage differences smaller than 19 mV. In comparison, a 12-bit ADC with 4096 discrete levels can ideally resolve voltage differences as small as 1.2mV \nRESOLUTION OF UNIPOLAR ADC  \nFor calculating resolution of 12 bits unipolar input analog voltage we have following formula: \n                 Resolution = 1/212 ×Vref \nWhere Vref is the applied unipolar input voltage range and 12 is the no. of bits of ADC. "
+                }
+              ]
+            },
+            "functionalBlock": {
+              "pages": [
+                8
               ],
-              "referenceSignal": []
+              "blocks": []
+            },
+            "procedure": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "procedure_001",
+                  "type": "text",
+                  "order": 1,
+                  "text": "PROCEDURE:-\n1. Make the connection as shown in FIGURE-7.1 in 12 BIT ADC Section, move the slider switch SW26 in unipolar   \n     mode, remove the jumper J4. \n2. Give on board variable DC input voltage to the ANALOG IN of 12 BIT ADC and observe the equivalent digital output   \n     voltage by connecting the output pins to the onboard OUTPUT LEDs. \n3. Take the difference of applied voltage when all LEDs are glowing (Vmax) and when all LEDs are off (Vmin). \n4. This will give the voltage range of ADC. \n     Vref= (Vmax-Vmin) \n     Vmin(observed)=0V \n     Vmax(observed)=4.99V \n     Vref=4.99V \nResolution = 1/212 ×Vref=4.99/4096=0.0012V \n\nRESOLUTION OF BIPOLAR ADC \nFor calculating the resolution of 12 bits bipolar input ADC we have following formul\nResolution = 1/212-1× V(ref)  \nWhere V(ref) is the difference between applied maximum and minimum bipolar input voltage to the ADC and 12-1 i.e. 11 is the number of bits of ADC and the 12th bit (MSB) indicates the sign of input voltage.0 indicates the positive input voltage and 1 indicates the negative input voltage.\n\nPROCEDURE:-\n1. Make the connection as shown in FIGURE-7.2, move the slider switch SW26 in bipolar mode, connect the jumper    \n    J4. \n2. Give on board variable DC input voltage to the ANALOG IN of 12 BIT ADC and observe the equivalent digital output \n    voltage by connecting the output pins to the onboard OUTPUT LEDs. \n3. Observe the glowing of LEDs representing the bipolar analog equivalent digital output. Take the difference of \n    applied voltage when all LEDs are glowing (Vmax) except MSB and when only MSB is glowing (Vmin).This is V(ref). \nVmin observed= -2.49V \nVmax observed=+2.49V \nV(ref)=(Vmax-Vmin)=4.98 \nResolution = 1/212-1× V(ref)=4.98/4096=0.0012V"
+                },
+                {
+                  "id": "procedure_002",
+                  "type": "image",
+                  "order": 2,
+                  "imageFile": "images/exp7/procedure/01_7.1.webp",
+                  "imageFiles": [
+                    {
+                      "imageFile": "images/exp7/procedure/01_7.1.webp",
+                      "width": 422,
+                      "height": 398,
+                      "byteSize": 19316,
+                      "sha256": "6f6f12ad0a20b5c031a486fd9ce82dd688118591a0befb5db62ab55f974d20fc"
+                    },
+                    {
+                      "imageFile": "images/exp7/procedure/02_7.2.webp",
+                      "width": 422,
+                      "height": 442,
+                      "byteSize": 19664,
+                      "sha256": "fb60241dfaf494291d840f32558e3d8fd7787458e939e5e60ffceb0ae6caa951"
+                    }
+                  ],
+                  "caption": ""
+                }
+              ]
+            },
+            "observation": {
+              "pages": [],
+              "blocks": []
+            },
+            "equipments": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "equipments_001",
+                  "type": "text",
+                  "order": 1,
+                  "text": "* BEL-ADA Board  \n* Power supply  \n* DSO "
+                }
+              ]
+            },
+            "result": {
+              "pages": [],
+              "blocks": []
+            },
+            "conclusion": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "conclusion_001",
+                  "type": "text",
+                  "order": 1,
+                  "text": "LTC1278 is a 12-bit ADC with 4096 discrete levels that can ideally resolve voltage differences as small as 1.2mV.12 bit ADC has more resolution that 8 bit ADC with the same reference voltage."
+                }
+              ]
+            },
+            "references": {
+              "pages": [],
+              "blocks": []
+            },
+            "technicalData": {
+              "datasheet": {
+                "pages": [],
+                "blocks": [
+                  {
+                    "id": "datasheet_001",
+                    "type": "text",
+                    "order": 1,
+                    "text": "TECHNICAL SPECIFICATION \nSine Wave Generator: \n* Amplitude              : 0 to 5V. \n* Frequency              : 1 KHz           \n\nVariable DC Generator: \n* Voltage Range       : -12V to +12V                \n\nClock Generator: \n* Frequency Range : 0.5Hz, 1Hz, 2Hz, 4Hz             \n\nDigital To Analog Converter:  \n* 8 bit Binary Weighted Resistors DAC \n* 8 bit Ladder type D to A Converter. \n* 8 bit D to A Converter using monolithic IC. \n\nAnalog To Digital Converter: \n* 8  bit discrete ADC  \n* 12 bit successive approximation monolithic ADC IC. \n\nInterconnections: \n* This is done with the help of supplied connecting patch chords (2 mm banana socket). \n\nBinary Counter: \n* 8 bit binary counter with external clock frequency. \n\nTest Points: \n* 5  onboard test points avails the user to observe various signals on Oscilloscope \n\nPower Supply: \n* -12V, +12V, +5V, GND"
+                  },
+                  {
+                    "id": "datasheet_002",
+                    "type": "image",
+                    "order": 2,
+                    "imageFile": "images/exp6/technicalData/datasheet/technical_specification.webp",
+                    "imageFiles": [
+                      {
+                        "imageFile": "images/exp6/technicalData/datasheet/technical_specification.webp",
+                        "width": 455,
+                        "height": 157,
+                        "byteSize": 4790,
+                        "sha256": "4228339723f8862daf7c6064047483b02c02d0e10463a64f441b1fb409455e71"
+                      }
+                    ],
+                    "caption": ""
+                  }
+                ]
+              },
+              "blockDiagram": {
+                "pages": [],
+                "blocks": []
+              },
+              "circuitDiagram": {
+                "pages": [
+                  10,
+                  11,
+                  12,
+                  13,
+                  14
+                ],
+                "blocks": []
+              },
+              "referenceSignal": {
+                "pages": [],
+                "blocks": []
+              }
             }
           }
         }
