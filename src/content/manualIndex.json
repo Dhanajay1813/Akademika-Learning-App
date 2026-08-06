@@ -15,8 +15,11 @@
       "categoryId": "basic-electronics",
       "productName": "BEL-ADA: Analog to Digital and Digital to Analog Converter Trainer",
       "categoryName": "Basic Electronics",
+      "contentMode": "pdfPageMapping",
+      "contentFile": "src/content/manuals/bel-ada/manualContent.json",
       "path": "src/content/manuals/bel-ada/manualContent.json",
-      "experimentCount": 1
+      "experimentCount": 5,
+      "pdfFile": "src/content/manuals/bel-ada/manual.pdf"
     },
     {
       "manualId": "bel-dit",
