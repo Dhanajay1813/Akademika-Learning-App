@@ -19,6 +19,18 @@
       "experimentCount": 1
     },
     {
+      "manualId": "bel-cot",
+      "productId": "bel-cot",
+      "categoryId": "basic-electronics",
+      "productName": "BEL-COT: Discrete Components Trainer",
+      "categoryName": "Basic Electronics",
+      "contentMode": "pdfPageMapping",
+      "contentFile": "src/content/manuals/bel-cot/manualContent.json",
+      "path": "src/content/manuals/bel-cot/manualContent.json",
+      "experimentCount": 4,
+      "pdfFile": "src/content/manuals/bel-cot/manual.pdf"
+    },
+    {
       "manualId": "bel-dit",
       "productId": "bel-dit",
       "categoryId": "basic-electronics",
