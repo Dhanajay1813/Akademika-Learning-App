@@ -1,0 +1,482 @@
+{
+  "manuals": {
+    "bel-cot": {
+      "schemaVersion": 3,
+      "contentMode": "pdfPageMapping",
+      "manualId": "bel-cot",
+      "productId": "bel-cot",
+      "categoryId": "basic-electronics",
+      "productName": "BEL-COT: Discrete Components Trainer",
+      "categoryName": "Basic Electronics",
+      "pdfFile": "manual.pdf",
+      "originalFilename": "BEL-COT-EXPERIMENTAL-VER 25.0.pdf",
+      "totalPages": 138,
+      "compressedByteSize": 1277641,
+      "sha256": "112432dde9c02effa820ec1d42e8df00f7ba206abc5aad826a7e3e3999a3a157",
+      "experiments": [
+        {
+          "id": "exp3",
+          "experimentNumber": "Experiment 3",
+          "title": "TO STUDY THE WORKING OF INDUCTORS ",
+          "displayOrder": 1,
+          "sections": {
+            "objective": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "objective_001",
+                  "type": "text",
+                  "order": 1,
+                  "text": "1. To study the types of Inductors and color code of inductor. \n2. Working of inductor in series and parallel combination."
+                }
+              ]
+            },
+            "theory": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "theory_001",
+                  "type": "text",
+                  "order": 1,
+                  "text": "An inductor is a passive electronic component that stores energy in the form of a magnetic field. In its simplest form, an inductor consists of a wire loop or coil. The inductance is directly proportional to the number of turns in the coil. Inductance also depends on the radius of the coil and on the type of material around which the coil is wound.  \nFor a given coil radius and number of turns, air cores result in the least inductance. Materials such as wood, glass, and plastic - known as dielectric materials - are essentially the same as air for the purposes of inductor winding. Ferromagnetic substances such as iron, laminated iron, and powdered iron increase the inductance obtainable with a coil having a given number of turns. In some cases, this increase is on the order of thousands of times. The shape of the core is also significant. Toroidal (donut-shaped) cores provide more inductance, for a given core material and number of turns, than solenoidal (rod-shaped) cores.  (image-1)\nIt is difficult to fabricate inductors onto integrated circuit (IC) chips. Fortunately, resistors can be substituted for inductors in most microcircuit applications. In some cases, inductance can be simulated by simple electronic circuits using transistors, resistors, and capacitors fabricated onto IC chips.\nInductors are used with capacitors in various wireless communications applications. An inductor connected in series or parallel with a capacitor can provide discrimination against unwanted signals. Large inductors are used in the power supplies of electronic equipment of all types, including computers and their peripherals. In these systems, the inductors help to smooth out the rectified utility AC, providing pure, battery-like DC.\nNote that usually, the voltage will fall off to zero as the magnetic field is set up, reaching zero at an infinite time after the voltage is applied, so the integral of voltage tends to a finite limit, meaning that the current is also a finite quantity. (Image-2)\nQuality factor: (Image-3)\nTypes of Inductors: \nInductors are classified by the type of core and the winding. Kinds of inductors are: coupled inductors, multi-layer chip inductors, wire wound ceramic core inductors, molded chip inductors, power inductors, shielded power inductors, molded inductors, conformal coated inductors, and wide band chokes. \n1) Coupled inductors: In these types of conductors, the magnetic flux of one inductor is linked to another conductor.    \n     These are used in special applications where mutual inductance is required like in transformers.  \n2) Multi layer inductors: In this type, the coil is wound in multiple layers with insulation between each layer. This \n     provides very high inductance.  \n3) Ceramic core inductors: The core is made of a ceramic, which is a dielectric material and this type F conductor \n     has high linearity, low Hysteresis and low distortion.  \n4) Molded inductors: These are low value inductors used in printed circuit boards. Usually bar or cylindrical in \n     shape, they have windings on a core and the whole assembly is molded in plastic or ceramic insulation. \n     Terminations are given at the ends and they come in two types: through mount and surface mount.  Other types \n     are variations of the above types. Shielded types are shielded to avoid EMI and RFI.\n\nColor Coding: \nSmall capacity molded inductors are given a color code for easy identification when they are mounted in circuits. Four-color bands are given in circles around the inductor. The bands are called 1st band, 2nd band, the third band is the multiplier and the fourth band indicates the tolerance. Colors used are: black, brown, red, orange, yellow, green, blue, violet, gray, white, no color, gold and silver. Colors in the first and second band have a specific value of inductance, the third band is a multiplier and the fourth band stands for the +- inductance tolerance like 1%, 2%, 3%, 20%, etc. (Image-4)"
+                },
+                {
+                  "id": "theory_002",
+                  "type": "image",
+                  "order": 2,
+                  "imageFile": "images/exp3/theory/01_image-1.webp",
+                  "imageFiles": [
+                    {
+                      "imageFile": "images/exp3/theory/01_image-1.webp",
+                      "width": 651,
+                      "height": 64,
+                      "byteSize": 12320,
+                      "sha256": "b55974b03d7ecb0d1bbcac6320a08ff21ce667852de1f6ec21dd5a0216bd4b4a"
+                    },
+                    {
+                      "imageFile": "images/exp3/theory/02_image-2.webp",
+                      "width": 437,
+                      "height": 134,
+                      "byteSize": 4238,
+                      "sha256": "ba0bdc64272f59fd6283d789c7d325c071c44cf3730594938ecfd678a37360ee"
+                    },
+                    {
+                      "imageFile": "images/exp3/theory/03_image-3.webp",
+                      "width": 655,
+                      "height": 468,
+                      "byteSize": 32760,
+                      "sha256": "fa891a67a106c3339dcb0ae9924aac6aaf788a9f45bf50d888b0cd4a4c375b39"
+                    },
+                    {
+                      "imageFile": "images/exp3/theory/04_image-4.webp",
+                      "width": 579,
+                      "height": 550,
+                      "byteSize": 40556,
+                      "sha256": "5340a5fb2e0b045224fb4b6b150fe7a4afcc93dfbcc0d17a7adb37512bf0cdce"
+                    }
+                  ],
+                  "caption": ""
+                }
+              ]
+            },
+            "functionalBlock": {
+              "pages": [],
+              "blocks": []
+            },
+            "procedure": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "procedure_001",
+                  "type": "text",
+                  "order": 1,
+                  "text": "1. Identify the inductor value, which are used for experiment using color code on it.\n2. Make the connections on COT-01 board as shown below for series and parallel combination.\n                                  1. Series Combination :-(Image1)\n                                  2. Parallel Combination :-(Image2)\n3. Calculate the series and parallel combination of inductor value.  \nDESIGN:- \nConsider   \nL1 = L2 = 1 mH Inductor.\n4. Use the multi-meter to read the series and parallel combination of inductor value.\n5. Verify the calculated and observed value. "
+                },
+                {
+                  "id": "procedure_002",
+                  "type": "image",
+                  "order": 2,
+                  "imageFile": "images/exp3/procedure/01_series_combination.webp",
+                  "imageFiles": [
+                    {
+                      "imageFile": "images/exp3/procedure/01_series_combination.webp",
+                      "width": 359,
+                      "height": 126,
+                      "byteSize": 4064,
+                      "sha256": "281b26f3b01e70a7210a33d2783faf5e7c5abd49279b4a24eb7e74e8b40b90f7"
+                    },
+                    {
+                      "imageFile": "images/exp3/procedure/02_parallel_combination.webp",
+                      "width": 249,
+                      "height": 195,
+                      "byteSize": 4964,
+                      "sha256": "75a2204d1396cb093dd06cf1e044a605fdd2a5351332a206acdfe9dc628b677c"
+                    }
+                  ],
+                  "caption": ""
+                }
+              ]
+            },
+            "observation": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "observation_001",
+                  "type": "image",
+                  "order": 1,
+                  "imageFile": "images/exp3/observation/observation.webp",
+                  "imageFiles": [
+                    {
+                      "imageFile": "images/exp3/observation/observation.webp",
+                      "width": 544,
+                      "height": 111,
+                      "byteSize": 8432,
+                      "sha256": "20ad040d46edc81349c99493b67b20a27a56e7fe5f0fdb2d530281c1b9cf7f7b"
+                    }
+                  ],
+                  "caption": ""
+                }
+              ]
+            },
+            "equipments": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "equipments_001",
+                  "type": "text",
+                  "order": 1,
+                  "text": "* BEL-COT Trainer kit.     \n* Power Supply. \n* Patch cords. \n* LCR meter"
+                }
+              ]
+            },
+            "result": {
+              "pages": [],
+              "blocks": []
+            },
+            "conclusion": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "conclusion_001",
+                  "type": "text",
+                  "order": 1,
+                  "text": "The calculated and observed values of the inductors combinations are almost equal.  "
+                }
+              ]
+            },
+            "references": {
+              "pages": [],
+              "blocks": []
+            },
+            "technicalData": {
+              "datasheet": {
+                "pages": [],
+                "blocks": [
+                  {
+                    "id": "datasheet_001",
+                    "type": "text",
+                    "order": 1,
+                    "text": "TECHNICAL SPECIFICATIONS \n1) Dual Isolated power supply +35V,-12V, GND and +35VA,-12VA, AGND 500mA.\n2) Dual DC 0 to 30V, 0 to 30VA Variable On-Board power supply.  \n3) Basic component study like resistors, capacitors, inductors and potentiometer. \n4) 6 different types of diode characteristics study like General purpose diode, Ge Diode, FSD, Zener Diode, LED and \n     Varactor Diode. \n5) 5 different types of transistors characteristics study like BJT, JFET, MOSFET, UJT and PUT. \n6) 4 different types of power component study like DIAC, TRIAC, SCR and IGBT. \n7) Opto-copular and relay study. \n8) 16 Resistors bank with different wattage.  \n9) 6 Capacitors bank.  \n10) 2 inductors. \n11) 1 Potentiometer.  \n12) 3 diodes.  \n13) 1 Bread board."
+                  }
+                ]
+              },
+              "blockDiagram": {
+                "pages": [],
+                "blocks": []
+              },
+              "circuitDiagram": {
+                "pages": [],
+                "blocks": []
+              },
+              "referenceSignal": {
+                "pages": [],
+                "blocks": []
+              }
+            }
+          }
+        },
+        {
+          "id": "exp4",
+          "experimentNumber": "Experiment 4",
+          "title": "TO STUDY THE WORKING OF POTENTIOMETER",
+          "displayOrder": 2,
+          "sections": {
+            "objective": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "objective_001",
+                  "type": "text",
+                  "order": 1,
+                  "text": "To study the types and working of potentiometer as a Voltage divider "
+                }
+              ]
+            },
+            "theory": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "theory_001",
+                  "type": "text",
+                  "order": 1,
+                  "text": "A potentiometer (colloquially known as a \"pot\") is a three-terminal resistor with a sliding contact that forms an adjustable voltage divider. If only two terminals are used (one side and the wiper), it acts as a variable resistor or rheostat. Potentiometers are commonly used to control electrical devices such as volume controls on audio equipment. Potentiometers operated by a mechanism can be used as position transducers, for example, in a joystick. Potentiometers are rarely used to directly control significant power (more than a watt). Instead they are used to adjust the level of analog signals (e.g. volume controls on audio equipment), and as control inputs for electronic circuits. For example, a light dimmer uses a potentiometer to control the switching of a TRIAC and so indirectly control the brightness of lamps. Potentiometers are sometimes provided with one or more switches mounted on the same shaft. For instance, when attached to a volume control, the knob can also function as an on/off switch at the lowest volume.\n\nTypes of potentiometers: \n1) Low-power types:  \n   A potentiometer is constructed using a flat graphite annulus as the resistive element, with a sliding contact (wiper)  \n   sliding around this annulus.  \n2) Linear potentiometers:  \n     A linear pot has a resistive element of constant cross-section, resulting in a device where the resistance between   \n     the wiper and one end terminal is proportional to the distance between them.  \n3) Logarithmic potentiometers: \n     A log pot has a resistive element that either 'tapers' in from one end to the other, or is made from a material  \n     whose resistivity varies from one end to the other. Most (cheaper) \"log\" pots are actually not logarithmic, but use  \n     two regions of different, but constant, resistivity to approximate a logarithmic law.  \n4) High-power types: \n     A rheostat is essentially a potentiometer, but is usually much larger, designed to handle much higher voltage and   \n    current. Sometimes a rheostat is made from resistance wire wound on a heat resisting cylinder with the slider    \n    made from a number of metal fingers that grip lightly onto a small portion of the turns of resistance wire.  \n5) Digital control:  \n     Digitally controlled potentiometers can be used in analogue signal processing circuits to replace potentiometers.  \n     The same idea can be used to create digital volume controls, attenuators, or other controls under digital control.   \n     The DCP should not be confused with the digital to analogue converter (DAC) which actually creates an analogue  \n     signal from a digital one.  "
+                }
+              ]
+            },
+            "functionalBlock": {
+              "pages": [],
+              "blocks": []
+            },
+            "procedure": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "procedure_001",
+                  "type": "text",
+                  "order": 1,
+                  "text": "1. Identify the different terminals of potentiometer like two fixed and one variable.  \n2. Make the connections on COT-01 board as shown below for voltage divider design. (Image-1)\n3. Apply Vin 5V DC as input to potentiometer.   \n4. Calculate output voltage using voltage divider rule.  \n5. Observe the Vout readings on multi-meter. \n6.  Verify the calculated and observed value. "
+                },
+                {
+                  "id": "procedure_002",
+                  "type": "image",
+                  "order": 2,
+                  "imageFile": "images/exp4/procedure/01_image-1.webp",
+                  "imageFiles": [
+                    {
+                      "imageFile": "images/exp4/procedure/01_image-1.webp",
+                      "width": 277,
+                      "height": 159,
+                      "byteSize": 4192,
+                      "sha256": "dbc4843a1f271c92990ed03f16fd23ac9807ae57bf9ef10308347881617dcb24"
+                    },
+                    {
+                      "imageFile": "images/exp4/procedure/02_image-2.webp",
+                      "width": 176,
+                      "height": 56,
+                      "byteSize": 1830,
+                      "sha256": "d74ff4013db2ece650c5a05307d82f25f45ab5e16497f771d4786978168121d0"
+                    }
+                  ],
+                  "caption": ""
+                }
+              ]
+            },
+            "observation": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "observation_001",
+                  "type": "image",
+                  "order": 1,
+                  "imageFile": "images/exp4/observation/observation.webp",
+                  "imageFiles": [
+                    {
+                      "imageFile": "images/exp4/observation/observation.webp",
+                      "width": 639,
+                      "height": 166,
+                      "byteSize": 14694,
+                      "sha256": "e17fb6530bf462e765f1ea78671856656263367c09eeca7f154e107d36d524a1"
+                    }
+                  ],
+                  "caption": ""
+                }
+              ]
+            },
+            "equipments": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "equipments_001",
+                  "type": "text",
+                  "order": 1,
+                  "text": "* BEL-COT Trainer kit.     \n* Power Supply. \n* Patch cords. \n* Multi-meter."
+                }
+              ]
+            },
+            "result": {
+              "pages": [],
+              "blocks": []
+            },
+            "conclusion": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "conclusion_001",
+                  "type": "text",
+                  "order": 1,
+                  "text": "The calculated and observed values of the inductors combinations are almost equal.  "
+                }
+              ]
+            },
+            "references": {
+              "pages": [],
+              "blocks": []
+            },
+            "technicalData": {
+              "datasheet": {
+                "pages": [],
+                "blocks": [
+                  {
+                    "id": "datasheet_001",
+                    "type": "text",
+                    "order": 1,
+                    "text": "TECHNICAL SPECIFICATIONS \n1) Dual Isolated power supply +35V,-12V, GND and +35VA,-12VA, AGND 500mA.\n2) Dual DC 0 to 30V, 0 to 30VA Variable On-Board power supply.\n3) Basic component study like resistors, capacitors, inductors and potentiometer. \n4) 6 different types of diode characteristics study like General purpose diode, Ge Diode, FSD, Zener Diode, LED and\n     Varactor Diode.\n5) 5 different types of transistors characteristics study like BJT, JFET, MOSFET, UJT and PUT.\n6) 4 different types of power component study like DIAC, TRIAC, SCR and IGBT. \n7) Opto-copular and relay study.\n8) 16 Resistors bank with different wattage.\n9) 6 Capacitors bank.  \n10) 2 inductors. \n11) 1 Potentiometer.  \n12) 3 diodes.  \n13) 1 Bread board."
+                  }
+                ]
+              },
+              "blockDiagram": {
+                "pages": [],
+                "blocks": []
+              },
+              "circuitDiagram": {
+                "pages": [],
+                "blocks": []
+              },
+              "referenceSignal": {
+                "pages": [],
+                "blocks": []
+              }
+            }
+          }
+        },
+        {
+          "id": "exp5",
+          "experimentNumber": "Experiment 5",
+          "title": "TO STUDY THE WORKING OF RELAY  ",
+          "displayOrder": 3,
+          "sections": {
+            "objective": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "objective_001",
+                  "type": "text",
+                  "order": 1,
+                  "text": "To study the working and parameters of relay"
+                }
+              ]
+            },
+            "theory": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "theory_001",
+                  "type": "text",
+                  "order": 1,
+                  "text": "A relay is a simple electromechanical switch made up of an electromagnet and a set of contacts. A relay is an electrically operated switch. Current flowing through the coil of the relay creates a magnetic field which attracts a lever and changes the switch contacts. The coil current can be on or off so relays have two switch positions and they are double throw (changeover) switches. Relays allow one circuit to switch a second circuit which can be completely separate from the first. For example a low voltage battery circuit can use a relay to switch a 230V AC \nmains circuit. There is no electrical connection inside the relay between the two circuits; the link is magnetic and mechanical. The coil of a relay passes a relatively large current, typically 30mA for a 12V relay, but it can be as much as 100mA for relays designed to operate from lower voltages. Relays are usually SPDT or DPDT but they can have many more sets of switch contacts, for example relays with 4 sets of changeover contacts are readily available.\n\nThe relay's switch connections are usually labeled COM, NC and NO:  \n• COM = Common, always connect to this; it is the moving part of the switch.  \n• NC = Normally Closed, COM is connected to this when the relay coil is off.  \n• NO = Normally Open, COM is connected to this when the relay coil is on.  \n\nElectromagnetic Relay Basic Construction: \nAn iron core has a wire wound around it. A movable arm is provided and is mounted in such a way that it is in contact with one of the terminals ‘NC’ to the movable arm a terminal is provided called pole ‘P’ There are two terminals provided to the coil when the coil is not activated. The arm will be held in the position by the spring. Any circuit connected between pole and NC will be ON and circuit connected between pole and ‘NO’ will be OFF. When \nthe relay is activated by applying sufficient voltage to the coil and the required current flows through the coil .The iron core gets magnetized and attracts the arm. Due to this the contact ‘NC’ breaks and contact ‘NC’ is made. Now the circuit connected between pole and NC switches OFF and the circuit connected between poles and ‘NO’ becomes ON. "
+                }
+              ]
+            },
+            "functionalBlock": {
+              "pages": [],
+              "blocks": []
+            },
+            "procedure": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "procedure_001",
+                  "type": "text",
+                  "order": 1,
+                  "text": "1. Using Multi-meter, determine the terminal connections of the coil, no. of contacts, NO / NC contacts. \n2. Measure the coil resistance using ohm-meter. Make a note in observation table.  (Image-1)\n3. Make the connections on COT-01 board as shown in practical circuit for relay operation study.  \n4. Apply Vin 12V DC as supply to relay.\n5. Now slowly increase the dc voltage observing the ohm-meter. The ohm-meter will read Zero resistance. Observe \n     and record the minimum current requires tripping the relay. This is called Pickup-current of the relay. \n6. Slowly reduce the Dc voltage, observing the reading on the ohm-meter. When relay resets, the ohm-meter will \n     read infinite resistance. Observe and record the value of current at which relay is resets. This is called Reset \n    current of the relay. \n7. Repeat the 4 and 5 steps to get the average (approximately correct) value. \nDESIGN:- \nConsider, Rin = 200 E/5W and Diode = 1N4148"
+                },
+                {
+                  "id": "procedure_002",
+                  "type": "image",
+                  "order": 2,
+                  "imageFile": "images/exp5/procedure/image-1.webp",
+                  "imageFiles": [
+                    {
+                      "imageFile": "images/exp5/procedure/image-1.webp",
+                      "width": 646,
+                      "height": 235,
+                      "byteSize": 4640,
+                      "sha256": "dd8d4d0bbc0de5b098192af9a58160f98d9238a5570a927059bef21a63e13b5b"
+                    }
+                  ],
+                  "caption": ""
+                }
+              ]
+            },
+            "observation": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "observation_001",
+                  "type": "image",
+                  "order": 1,
+                  "imageFile": "images/exp5/observation/observation.webp",
+                  "imageFiles": [
+                    {
+                      "imageFile": "images/exp5/observation/observation.webp",
+                      "width": 573,
+                      "height": 145,
+                      "byteSize": 11190,
+                      "sha256": "7ff0b5817cdc6934d2fb6e95d93e40f91442be1dc442fea19ca39a1f2264444c"
+                    }
+                  ],
+                  "caption": ""
+                }
+              ]
+            },
+            "equipments": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "equipments_001",
+                  "type": "text",
+                  "order": 1,
+                  "text": "* BEL-COT Trainer kit.     \n* Power Supply. \n* Patch cords. \n* Multi-meter. "
+                }
+              ]
+            },
+            "result": {
+              "pages": [],
+              "blocks": []
+            },
+            "conclusion": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "conclusion_001",
+                  "type": "text",
+                  "order": 1,
+                  "text": "Parameters of the relay are studied and verify with the data-sheet of the used relay."
+                }
+              ]
+            },
+            "references": {
+              "pages": [],
+              "blocks": []
+            },
+            "technicalData": {
+              "datasheet": {
+                "pages": [],
+                "blocks": [
+                  {
+                    "id": "datasheet_001",
+                    "type": "text",
+                    "order": 1,
+                    "text": "TECHNICAL SPECIFICATIONS \n1) Dual Isolated power supply +35V,-12V, GND and +35VA,-12VA, AGND 500mA.\n2) Dual DC 0 to 30V, 0 to 30VA Variable On-Board power supply.  \n3) Basic component study like resistors, capacitors, inductors and potentiometer. \n4) 6 different types of diode characteristics study like General purpose diode, Ge Diode, FSD, Zener Diode, LED and \n     Varactor Diode.  \n5) 5 different types of transistors characteristics study like BJT, JFET, MOSFET, UJT and PUT.\n6) 4 different types of power component study like DIAC, TRIAC, SCR and IGBT.\n7) Opto-copular and relay study. \n8) 16 Resistors bank with different wattage.  \n9) 6 Capacitors bank.  \n10) 2 inductors. \n11) 1 Potentiometer.  \n12) 3 diodes.  \n13) 1 Bread board."
+                  }
+                ]
+              },
+              "blockDiagram": {
+                "pages": [],
+                "blocks": []
+              },
+              "circuitDiagram": {
+                "pages": [],
+                "blocks": []
+              },
+              "referenceSignal": {
+                "pages": [],
+                "blocks": []
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}
