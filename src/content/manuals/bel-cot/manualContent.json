@@ -1,0 +1,208 @@
+{
+  "manuals": {
+    "bel-cot": {
+      "schemaVersion": 3,
+      "contentMode": "pdfPageMapping",
+      "manualId": "bel-cot",
+      "productId": "bel-cot",
+      "categoryId": "basic-electronics",
+      "productName": "BEL-COT: Discrete Components Trainer",
+      "categoryName": "Basic Electronics",
+      "pdfFile": "manual.pdf",
+      "originalFilename": "BEL-COT-EXPERIMENTAL-VER 25.0.pdf",
+      "totalPages": 138,
+      "compressedByteSize": 1277641,
+      "sha256": "577a05a97968eab9aee06cfb7bbd56d868f615ede8878974866229220b13ea46",
+      "experiments": [
+        {
+          "id": "exp2",
+          "experimentNumber": "Experiment 2",
+          "title": "TO STUDY THE WORKING OF CAPACITORS",
+          "displayOrder": 1,
+          "sections": {
+            "objective": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "objective_001",
+                  "type": "text",
+                  "order": 1,
+                  "text": "1. To study the types of capacitors. \n2. Working of capacitors in series and parallel combination"
+                }
+              ]
+            },
+            "theory": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "theory_001",
+                  "type": "text",
+                  "order": 1,
+                  "text": "A capacitor or condenser is a passive electronic component consisting of a pair of conductors separated by a dielectric (insulator). When a potential difference (voltage) exists across the conductors, an electric field is present in the dielectric. This field stores energy and produces a mechanical force between the conductors. The effect is greatest when there is a narrow separation between large areas of conductor; hence capacitor conductors are often called plates. \nAn ideal capacitor is characterized by a single constant value, capacitance, which is measured in farads. This is the ratio of the electric charge on each conductor to the potential difference between them. In practice, the dielectric between the plates passes a small amount of leakage current. The conductors and leads introduce an equivalent series resistance and the dielectric has an electric field strength limit resulting in a breakdown voltage. \nA capacitor consists of two conductors separated by a non-conductive region. The nonconductive substance is called the dielectric medium, although this may also mean a vacuum or a semiconductor depletion region chemically identical to the conductors. A capacitor is assumed to be self-contained and isolated, with no net electric charge and no influence from an external electric field. The conductors thus contain equal and opposite \ncharges on their facing surfaces, and the dielectric contains an electric field. The capacitor is a reasonably general model for electric fields within electric circuits. An ideal capacitor is wholly characterized by a constant capacitance C, defined as the ratio of charge ±Q on each conductor to the voltage V between them:  C=Q/V\nSometimes charge buildup affects the mechanics of the capacitor, causing the capacitance to vary. In this case, capacitance is defined in terms of incremental changes: C=dq/dv\nIn SI units, a capacitance of one farad means that one coulomb of charge on each conductor causes a voltage of one volt across the device. \nA capacitor is a passive electronic component that stores energy in the form of an electrostatic field. In its simplest form, a capacitor consists of two conducting plates separated by an insulating material called the dielectric. The capacitance is directly proportional to the surface areas of the plates, and is inversely proportional to the separation between the plates. Capacitance also depends on the dielectric constant of the substance separating the plates. (Image-1)\nTypes of Capacitors:-  \n1) Metalized film Capacitors: - It uses a very thin aluminum foil, interlink with a very thin plastic dielectric. For high voltage capacitors, polyester, polystyrene plastic materials are used. Dielectric strength – is the ability of an inductor to resist the flow of current when voltage is applied across it. \n2) Ceramic Capacitors: - Ceramic capacitors are used when small values of capacitance and large value of linkage current are acceptable. Ceramic capacitors are inexpensive and consist of a thin ceramic dielectric that is metalized on each side and coated with a thick protective layer usually applied by Deepings the component in an electrified protective material. Both plastics film and ceramic capacitors are available in ranges of 10pfto1uf. \n3) Electrolytic Capacitors:- Electrolytic capacitors are high voltage capacitors, they give high value of capacitance in a small component at the expenses of wide tolerance in the marked value typically between -25 to 50% and the necessity of connecting the capacitor so that one terminal is always positive. The most commonly used types of electrolytic capacitors is aluminum electrolytic capacitor. Electrolytic capacitors must not be subjected \nto voltages in the wrong direction.  \n4) Variable Capacitors: - These capacitors are variable in values. Either air or thin mica sheet are used as dielectric and therefore variable capacitors is usually low, there two types of variable capacitors namely  \na) Rotary     \nb) Compression type     \nFor capacitors in series  \nSeveral capacitors in series. (image-2)\nConnected in series, the schematic diagram reveals that the separation distance, not the plate area, adds up. The capacitors each store instantaneous charge build-up equal to that of every other capacitor in the series. The total voltage difference from end to end is apportioned to each capacitor according to the inverse of its capacitance. The entire series acts as a capacitor smaller than any of its components. (image-3)\nCapacitors are combined in series to achieve a higher working voltage, for example for smoothing a high voltage power supply.\nFor capacitors in parallel: (image-4)\nSeveral capacitors in parallel: \nCapacitors in a parallel configuration each have the same applied voltage. Their capacitances add up. Charge is apportioned among them by size. Using the schematic diagram to visualize parallel plates, it is apparent that each capacitor contributes to the total surface area.  (image-5)"
+                },
+                {
+                  "id": "theory_002",
+                  "type": "image",
+                  "order": 2,
+                  "imageFile": "images/exp2/theory/01_image-1.webp",
+                  "imageFiles": [
+                    {
+                      "imageFile": "images/exp2/theory/01_image-1.webp",
+                      "width": 650,
+                      "height": 279,
+                      "byteSize": 21584,
+                      "sha256": "832bed4eb7f3cfeb13c1f3d63855ae26b769c8f887b7be47475c00101918217e"
+                    },
+                    {
+                      "imageFile": "images/exp2/theory/02_image-2.webp",
+                      "width": 171,
+                      "height": 45,
+                      "byteSize": 876,
+                      "sha256": "158c9637b2685eb6bd7ea0b8c3d0e8077944aa77e8a9fc229806aa71017c8b41"
+                    },
+                    {
+                      "imageFile": "images/exp2/theory/03_image-3.webp",
+                      "width": 241,
+                      "height": 56,
+                      "byteSize": 1432,
+                      "sha256": "80bb1b3366b886df731296e586f9f68d13cb5de3f9eee44080714a18b9eac9e5"
+                    },
+                    {
+                      "imageFile": "images/exp2/theory/04_image-4.webp",
+                      "width": 175,
+                      "height": 86,
+                      "byteSize": 1448,
+                      "sha256": "f6db769b2f649488062706b9091e3eaacc2761e15e3bc3f7b352adf9ac9f817d"
+                    },
+                    {
+                      "imageFile": "images/exp2/theory/05_image-5.webp",
+                      "width": 226,
+                      "height": 30,
+                      "byteSize": 1120,
+                      "sha256": "9051ed73f974b26f73bf3c2ba263fc0184c8f06e4ee7061b319e2010fe477179"
+                    }
+                  ],
+                  "caption": ""
+                }
+              ]
+            },
+            "functionalBlock": {
+              "pages": [],
+              "blocks": []
+            },
+            "procedure": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "procedure_001",
+                  "type": "text",
+                  "order": 1,
+                  "text": "Identify the capacitor value, which are used for experiment using no. on it. Make the connections on COT-01 board as shown below for series and parallel combination. \n1) Series Combination :-  \nFor series-connected capacitors the equivalent capacitance can be expressed as, 1/C = 1/C1 + 1/C2 + . . + 1/Cn  \n2) Parallel Combination :-\nFor parallel-connected capacitors the equivalent capacitance can be expressed as, C = C1 + C2 + . . + Cn          \nWhere, C = capacitance (Farad, F, μF)\n3) Calculate the series and parallel combination of capacitor value.  \n4) Use the multi-meter to read the series and parallel combination of capacitor value. \n5) Verify the calculated and observed value.  \nDESIGN:- \nConsider   \nC1 = 1uf capacitor. \nC2 = 1uf capacitor. \nC3 = 100uf capacitor. "
+                },
+                {
+                  "id": "procedure_002",
+                  "type": "image",
+                  "order": 2,
+                  "imageFile": "images/exp2/procedure/01_series_combination.webp",
+                  "imageFiles": [
+                    {
+                      "imageFile": "images/exp2/procedure/01_series_combination.webp",
+                      "width": 327,
+                      "height": 159,
+                      "byteSize": 2174,
+                      "sha256": "1aff82a5b91d2d83e05b496ea7478fccd5a95f0a4b31b667200df0f245cdc9c5"
+                    },
+                    {
+                      "imageFile": "images/exp2/procedure/02_parallel_combination.webp",
+                      "width": 119,
+                      "height": 191,
+                      "byteSize": 1078,
+                      "sha256": "40621a7b8a1f387af8e25808b6eb7ec4ab1d39a84ecb4e5320630910eeda40f3"
+                    }
+                  ],
+                  "caption": ""
+                }
+              ]
+            },
+            "observation": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "observation_001",
+                  "type": "image",
+                  "order": 1,
+                  "imageFile": "images/exp2/observation/observation.webp",
+                  "imageFiles": [
+                    {
+                      "imageFile": "images/exp2/observation/observation.webp",
+                      "width": 614,
+                      "height": 107,
+                      "byteSize": 8600,
+                      "sha256": "567c0e4bd81531c53f051f0d05306b6f6a31c8cc4234f88c70a72f0a4503e0b9"
+                    }
+                  ],
+                  "caption": ""
+                }
+              ]
+            },
+            "equipments": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "equipments_001",
+                  "type": "text",
+                  "order": 1,
+                  "text": "BEL-COT Trainer kit.     \n* Power Supply. \n* Patch cords. \n* LCR mete"
+                }
+              ]
+            },
+            "result": {
+              "pages": [],
+              "blocks": []
+            },
+            "conclusion": {
+              "pages": [],
+              "blocks": [
+                {
+                  "id": "conclusion_001",
+                  "type": "text",
+                  "order": 1,
+                  "text": "The calculated and observed values of the capacitors combinations are almost equal.  "
+                }
+              ]
+            },
+            "references": {
+              "pages": [],
+              "blocks": []
+            },
+            "technicalData": {
+              "datasheet": {
+                "pages": [],
+                "blocks": [
+                  {
+                    "id": "datasheet_001",
+                    "type": "text",
+                    "order": 1,
+                    "text": "TECHNICAL SPECIFICATIONS \n1) Dual Isolated power supply +35V,-12V, GND and +35VA,-12VA, AGND 500mA.  \n2) Dual DC 0 to 30V, 0 to 30VA Variable On-Board power supply.  \n3) Basic component study like resistors, capacitors, inductors and potentiometer. \n4) 6 different types of diode characteristics study like General purpose diode, Ge Diode, FSD, Zener Diode, LED and  \n     Varactor Diode. \n5) 5 different types of transistors characteristics study like BJT, JFET, MOSFET, UJT and PUT. \n6) 4 different types of power component study like DIAC, TRIAC, SCR and IGBT. \n7) Opto-copular and relay study. \n8) 16 Resistors bank with different wattage.\n9) 6 Capacitors bank.  \n10) 2 inductors. \n11) 1 Potentiometer.\n12) 3 diodes.  \n13) 1 Bread board."
+                  }
+                ]
+              },
+              "blockDiagram": {
+                "pages": [],
+                "blocks": []
+              },
+              "circuitDiagram": {
+                "pages": [],
+                "blocks": []
+              },
+              "referenceSignal": {
+                "pages": [],
+                "blocks": []
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}
